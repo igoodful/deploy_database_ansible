@@ -1,0 +1,33 @@
+---
+# Extract
+- name: "Extract {{ install_tmpdir }}/alertmanager-{{ alertmanager_version }}"
+  become: yes
+  unarchive:
+    src: "{{ install_tmpdir }}/alertmanager-{{ alertmanager_version }}.linux-amd64.tar.gz"
+    dest: "{{ alertmanager_bin_dir }}/"
+    remote_src: true
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: 0755
+    extra_opts:
+      - --strip-components=1
+    exclude:
+      - "*.md"
+      - "Document*"
+  when: ansible_architecture == 'x86_64'
+
+- name: "Extract {{ install_tmpdir }}/alertmanager-{{ alertmanager_version }}"
+  become: yes
+  unarchive:
+    src: "{{ install_tmpdir }}/alertmanager-{{ alertmanager_version }}.linux-arm64.tar.gz"
+    dest: "{{ alertmanager_bin_dir }}/"
+    remote_src: true
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    extra_opts:
+      - --strip-components=1
+    exclude:
+      - "*.md"
+      - "Document*"
+  when: ansible_architecture == 'aarch64'
+

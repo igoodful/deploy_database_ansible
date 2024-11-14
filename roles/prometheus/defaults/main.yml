@@ -1,0 +1,15 @@
+---
+# defaults file for prometheus
+prometheus_port: "9090"
+prometheus_version: "2.51.2"
+
+prometheus_download: false
+prometheus_download_url_amd64: "https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz"
+prometheus_download_url_arm64: "https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/prometheus-{{ prometheus_version }}.linux-arm64.tar.gz"
+
+prometheus_base_dir: "{{ base_dir }}/prometheus"
+prometheus_bin_dir: "{{ prometheus_base_dir }}/bin"
+prometheus_conf_dir: "{{ prometheus_base_dir }}/conf"
+prometheus_data_dir: "{{ prometheus_base_dir }}/data"
+prometheus_log_dir: "{{ prometheus_base_dir }}/log"
+prometheus_rules_dir: "{{ prometheus_base_dir }}/rules"

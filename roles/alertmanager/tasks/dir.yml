@@ -1,0 +1,14 @@
+---
+- name: Create dir for alertmanager
+  become: yes
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+  with_items:
+    - "{{ base_dir }}"
+    - "{{ alertmanager_base_dir }}"
+    - "{{ alertmanager_bin_dir }}"
+    - "{{ alertmanager_conf_dir }}"
+    - "{{ alertmanager_data_dir }}"
+    - "{{ alertmanager_log_dir }}"

@@ -1,0 +1,31 @@
+---
+# tasks file for nfs
+
+- name: "Create directory: nfs_dir base_dir "
+  become: yes
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0775"
+  when:
+    - install_tmpdir is defined
+    - base_dir is defined
+  loop:
+    - "{{ base_dir }}"
+    - "{{ nfs_dir }}"
+
+
+
+#yum install -y nfs-utils
+
+
+
+
+
+
+
+
+
+

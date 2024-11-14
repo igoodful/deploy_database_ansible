@@ -1,0 +1,7 @@
+---
+- name: started and enabled prometheus
+  systemd:
+    name: prometheus_{{ prometheus_port }}
+    state: started
+    enabled: yes
+

@@ -1,0 +1,6 @@
+---
+
+- name: execute sysctl -p
+  become: true
+  command: "sysctl -p"
+

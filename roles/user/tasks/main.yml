@@ -1,0 +1,32 @@
+---
+# tasks file for user
+
+- name: create user for system
+  become: true
+  user:
+    name: "{{ item.username }}"
+    password: "{{ item.password | password_hash('sha512') }}"
+    state: present
+    generate_ssh_key: yes
+    update_password: on_create
+    home: "/home/{{ item.username }}"
+  loop:
+    - {username: "mysql", password: "QWer12#$"}
+    - {username: "admin", password: "QWer12#$"}
+    - {username: "redis", password: "QWer12#$"}
+
+- name: Add sudo for users
+  lineinfile:
+    path: /etc/sudoers
+    line: "{{ item }} ALL=(ALL) NOPASSWD: ALL"
+    validate: 'visudo -cf %s'
+    state: present
+  loop:
+    - "mysql"
+    - "admin"
+    - "redis"
+
+
+
+
+

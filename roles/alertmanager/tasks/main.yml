@@ -1,0 +1,8 @@
+---
+# tasks file for alertmanager
+- import_tasks: dir.yml
+- import_tasks: download.yml
+- import_tasks: install.yml
+- import_tasks: configure.yml
+- import_tasks: service.yml
+

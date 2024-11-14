@@ -1,0 +1,8 @@
+---
+# defaults file for nfs
+
+nfs_dir: "{{base_dir}}/nfs"
+
+
+
+

@@ -1,0 +1,10 @@
+---
+- name: Apply role node_exporter
+  hosts: all
+  gather_facts: true
+  roles:
+    - {
+        role: node_exporter,
+        tags: node_exporter,
+      }
+

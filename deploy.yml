@@ -1,0 +1,27 @@
+---
+- name: Apply role os
+  hosts: all
+  gather_facts: true
+  roles:
+    - {
+        role: os,
+        tags: os,
+      }
+
+- name: Apply user role
+  hosts: all
+  gather_facts: true
+  roles:
+    - {
+        role: user,
+        tags: user,
+      }
+
+- name: Apply mysql role
+  hosts: all
+  gather_facts: true
+  roles:
+    - {
+        role: mysql,
+        tags: mysql,
+      }

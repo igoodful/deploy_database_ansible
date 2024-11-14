@@ -1,0 +1,30 @@
+---
+# Extract
+- name: "Extract {{ install_tmpdir }}/node_exporter-{{ node_exporter_version }}"
+  become: yes
+  unarchive:
+    src: "{{ install_tmpdir }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
+    dest: "{{ install_tmpdir }}/"
+    remote_src: true
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: 0755
+  when: ansible_architecture == 'x86_64'
+
+- name: "Extract {{ install_tmpdir }}/node_exporter-{{ node_exporter_version }}"
+  become: yes
+  unarchive:
+    src: "{{ install_tmpdir }}/node_exporter-{{ node_exporter_version }}.linux-arm64.tar.gz"
+    dest: "{{ install_tmpdir }}/"
+    remote_src: true
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+  when: ansible_architecture == 'aarch64'
+
+# mv node_exporter
+- name: mv node_exporter to {{ node_exporter_bin_dir }}/
+  become: yes
+  shell:
+    cmd: "/bin/bash -c 'mv {{ install_tmpdir }}/node_exporter-{{ node_exporter_version }}.linux-*/* {{ node_exporter_bin_dir }}/'"
+
+

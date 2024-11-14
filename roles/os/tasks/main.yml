@@ -1,0 +1,36 @@
+---
+#- name: Check VIP status
+#  ping: "{{ g_vip_address }}"
+#  when: deploy_mode != "all-in-one"
+#  register: ping_result
+#  ignore_errors: yes
+#
+#- fail:
+#    msg: "vip 可以正常 ping 通，请检查是否该 vip 已经被占用 "
+#  when:
+#    - deploy_mode != "all-in-one"
+#    - ping_result.failed == False
+
+- name: Check the running environment
+  fail:
+    msg: "CPU数量不能小于2, 当前{{ ansible_processor_vcpus }}"
+  when: ansible_processor_vcpus < 2
+
+- include_tasks: dns.yml
+  when: change_hosts | bool
+
+- include_tasks: limits.yml
+
+- include_tasks: firewall.yml
+
+- include_tasks: network.yml
+
+#- include_tasks: logrotate.yml
+
+- include_tasks: dir.yml
+
+#- include_tasks: ansible-dep.yml
+
+# selinux play should run at last because it may reboot Ansible controller
+# - include_tasks: selinux.yml
+#   when: ansible_distribution | lower != "kylin linux advanced server"

@@ -1,0 +1,15 @@
+---
+- name: set hostname
+  hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: Generate /etc/hosts for all of the nodes
+  template:
+    src: hosts.j2
+    dest: /etc/hosts
+
+- name: Config nameserver
+  template:
+    src: resolv.conf.j2
+    dest: /etc/resolv.conf
+    mode: "0644"

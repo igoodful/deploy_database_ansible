@@ -1,0 +1,15 @@
+---
+- name: Create dir for prometheus
+  become: yes
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+  with_items:
+    - "{{ base_dir }}"
+    - "{{ prometheus_base_dir }}"
+    - "{{ prometheus_bin_dir }}"
+    - "{{ prometheus_conf_dir }}"
+    - "{{ prometheus_data_dir }}"
+    - "{{ prometheus_log_dir }}"
+    - "{{ prometheus_rules_dir }}"
