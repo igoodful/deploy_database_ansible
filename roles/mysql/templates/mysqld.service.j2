@@ -1,0 +1,22 @@
+# /usr/lib/systemd/system/mysqld.service
+[Unit]
+Description=MySQL Server
+After=network.target
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+User=greatdb
+Group=greatdb
+Type=forking
+PIDFile={{ mysql_tmp_dir }}/mysqld.pid
+TimeoutSec=0
+ExecStart={{ mysql_base_dir }}/bin/mysqld --defaults-file={{ mysql_conf_dir }}/my.cnf --daemonize $MYSQLD_OPTS
+LimitNOFILE = 1024000
+LimitNPROC = 1024000
+Restart=on-failure
+RestartPreventExitStatus=1
+PrivateTmp=false
+
+

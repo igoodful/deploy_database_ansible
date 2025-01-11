@@ -1,2 +1,129 @@
+[client]
+socket = {{ mysql_tmp_dir }}/mysql.sock
+
 [mysqld]
-performance_schema = on
+basedir = {{ mysql_app_dir }}
+datadir = {{ mysql_data_dir }}
+tmpdir = {{ mysql_tmp_dir }}
+socket = {{ mysql_tmp_dir }}/mysql.sock
+pid-file = {{ mysql_tmp_dir }}/mysqld.pid
+
+general-log-file ={{ mysql_log_dir }}/general.log
+slow-query-log-file = {{ mysql_log_dir }}/slow.log
+log-error = {{ mysql_log_dir }}/error.log
+relay_log = {{ mysql_log_dir }}/relay
+log_bin = {{ mysql_log_dir }}/bin
+
+port = {{ mysql_port }}
+server-id = 44049338
+character_set_server = utf8mb4
+collation_server = utf8mb4_bin
+default_authentication_plugin = mysql_native_password
+default-time-zone = +08:00
+transaction_isolation = READ-COMMITTED
+innodb_adaptive_hash_index = off
+skip_replica_start = 1
+lower_case_table_names = 1
+local_infile = off
+secure_file_priv = ''
+
+
+lock_wait_timeout = 5
+innodb_lock_wait_timeout = 20
+wait_timeout = 31536000
+interactive_timeout = 31536000
+long_query_time = 1
+max_allowed_packet = 134217728
+max_connections = 4000
+
+
+
+slow_query_log = on
+gtid_mode = on
+enforce_gtid_consistency = on
+binlog_cache_size = 2097152
+binlog_checksum = NONE
+binlog_expire_logs_seconds = 1296000
+binlog_format = row
+binlog_ignore_db = dbscale_tmp
+binlog_rows_query_log_events = ON
+binlog_transaction_dependency_tracking = WRITESET
+sync_binlog = 1
+innodb_flush_log_at_trx_commit = 1
+innodb_flush_method = O_DIRECT
+
+mysqlx = 0
+back_log = 5000
+federated = 1
+group_concat_max_len = 102400
+init_connect = SET NAMES utf8
+
+innodb_thread_concurrency = 4
+innodb_buffer_pool_size = 4294967296
+innodb_buffer_pool_instances = 4
+innodb_log_file_size = 1073741824
+innodb_log_files_in_group = 4
+innodb_max_undo_log_size = 2147483648
+innodb_data_file_path = ibdata1:1024M:autoextend
+innodb_temp_data_file_path = ibtmp1:512M:autoextend:max:30720M
+
+innodb_change_buffering = all
+innodb_doublewrite = 1
+innodb_file_per_table = 1
+innodb_io_capacity = 20000
+innodb_io_capacity_max = 40000
+innodb_log_buffer_size = 33554432
+innodb_monitor_enable = all
+innodb_numa_interleave = ON
+innodb_online_alter_log_max_size = 2147483648
+innodb_open_files = 40960
+innodb_page_cleaners = 8
+innodb_parallel_read_threads = 16
+innodb_print_all_deadlocks = on
+innodb_purge_rseg_truncate_frequency = 16
+innodb_read_io_threads = 8
+innodb_rollback_on_timeout = ON
+innodb_undo_log_truncate = ON
+innodb_use_native_aio = ON
+innodb_write_io_threads = 8
+internal_tmp_mem_storage_engine = MEMORY
+join_buffer_size = 2097152
+key_buffer_size = 2097152
+log_bin_trust_function_creators = 1
+log_replica_updates = 1
+log_timestamps = SYSTEM
+max_connect_errors = 18446744073709500000
+max_heap_table_size = 536870912
+max_prepared_stmt_count = 1048576
+net_read_timeout = 10000
+net_write_timeout = 10000
+open_files_limit = 1024000
+performance-schema-consumer-events_stages_current = on
+performance-schema-consumer-events_stages_history = on
+performance-schema-consumer-events_statements_current = on
+performance-schema-consumer-events_statements_history = on
+performance-schema-consumer-events_transactions_current = on
+performance-schema-consumer-events_transactions_history = on
+performance-schema-consumer-events_waits_current = on
+performance-schema-consumer-events_waits_history = on
+performance-schema-instrument = %=ON
+plugin-load = rpl_semi_sync_master=semisync_master.so;rpl_semi_sync_slave=semisync_slave.so
+read_rnd_buffer_size = 16777216
+relay_log_recovery = ON
+replica_parallel_type = LOGICAL_CLOCK
+replica_parallel_workers = 32
+replica_pending_jobs_size_max = 134217728
+replica_preserve_commit_order = 1
+skip_external_locking = 1
+skip_name_resolve = 1
+sort_buffer_size = 8388608
+sql_require_primary_key = ON
+ssl = off
+
+table_definition_cache = 10240
+table_open_cache = 20480
+table_open_cache_instances = 16
+thread_cache_size = 3000
+tmp_table_size = 536870912
+
+
