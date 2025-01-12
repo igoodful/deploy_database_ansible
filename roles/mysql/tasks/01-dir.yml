@@ -1,0 +1,30 @@
+---
+- name: "mkdir for mysql"
+  become: true
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+  with_items:
+    - "{{ base_dir }}"
+    - "{{ mysql_dir }}"
+    - "{{ mysql_app_dir }}"
+    - "{{ mysql_base_dir }}"
+    - "{{ mysql_conf_dir }}"
+    - "{{ mysql_data_dir }}"
+    - "{{ mysql_log_dir }}"
+    - "{{ mysql_tmp_dir }}"
+  when: mysql_deploy_mode == "bin"
+
+- name: "mkdir {{ mysql_source_dir }}"
+  become: true
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+  with_items:
+    - "{{ base_dir }}"
+    - "{{ mysql_source_dir }}"
+  when: mysql_deploy_mode == "source"
+
+

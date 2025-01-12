@@ -11,36 +11,7 @@ all:
     ansible_python_interpreter: /usr/bin/python
     base_dir: "/data"
     install_tmpdir: "{{base_dir}}/tmpdir"
-    mysql_port: 16315
-    mysql_targz: "mysql-8.0.32-linux-glibc2.17-x86_64"
-    mysql_root_password: "123456"
-    mysql_admin_password: "123456"
-    zk_port: 16309
-    zk_targz: "zookeeper-3.6.2-x86_64"
-    zk_kazoo_rpm: "python-kazoo-2.0-2.el7-centos7-x86_64.noarch.rpm"
-    router_port: 16310
-    transparent_port: 23399
-    router_targz: "GreatDBRouter-6.0.0.6026-RC-3-d9998cb6-CentOS7.4_x86_64"
 
-
-# 1. mysql_targz file list:
-# mysql-8.0.32-linux-glibc2.17-aarch64
-# mysql-8.0.32-linux-glibc2.17-x86_64
-
-# 2. zk_targz file list:
-# zookeeper-3.6.2-arm64
-# zookeeper-3.6.2-x86_64
-
-# 3. zk_kazoo_rpm file list:
-# python-kazoo-2.0-2.el7-centos7-arm64.noarch.rpm
-# python-kazoo-2.0-2.el7-centos7-x86_64.noarch.rpm
-# python-kazoo-2.0-2.el7-ky10-arm64.noarch.rpm
-# python-kazoo-2.0-2.el7-ky10-x86_64.noarch.rpm
-
-# 4. router_targz file list:
-# GreatDBRouter-6.0.0.6026-RC-3-d9998cb6-CentOS7.4_x86_64
-# GreatDBRouter-6.0.0.6026-RC-3-d9998cb6-Kylin-V10_AltArch.tar.gz
-# GreatDBRouter-6.0.0.6026-RC-3-d9998cb6-Kylin-V10-x86_64.tar.gz
 
 
 

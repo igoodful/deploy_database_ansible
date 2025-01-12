@@ -1,10 +1,10 @@
 ---
-# Extract
+# bin
 - name: "Extract {{ install_tmpdir }}/prometheus-{{ prometheus_version }}"
   become: true
   unarchive:
-    src: "{{ install_tmpdir }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz"
-    dest: "{{ prometheus_bin_dir }}/"
+    src: "{{ install_tmpdir }}/mysql-{{ mysql_version }}-{{ ansible_architecture }}.tar.gz"
+    dest: "{{ mysql_base_dir }}/"
     remote_src: true
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
@@ -14,13 +14,14 @@
     exclude:
       - "*.md"
       - "Document*"
-  when: ansible_architecture == 'x86_64'
+  when: mysql_deploy_mode == "bin"
 
+# source
 - name: "Extract {{ install_tmpdir }}/prometheus-{{ prometheus_version }}"
   become: true
   unarchive:
-    src: "{{ install_tmpdir }}/prometheus-{{ prometheus_version }}.linux-arm64.tar.gz"
-    dest: "{{ prometheus_bin_dir }}/"
+    src: "{{ install_tmpdir }}/mysql-{{ mysql_version }}.tar.gz"
+    dest: "{{ mysql_source_dir }}/"
     remote_src: true
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
@@ -29,5 +30,5 @@
     exclude:
       - "*.md"
       - "Document*"
-  when: ansible_architecture == 'aarch64'
+  when: mysql_deploy_mode == "source"
 

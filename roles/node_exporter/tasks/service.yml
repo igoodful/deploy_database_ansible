@@ -1,6 +1,6 @@
 ---
 - name: Ensure node_exporter service is started and enabled
-  become: yes
+  become: true
   systemd:
     name: "node_exporter_{{ node_exporter_port }}"
     state: started

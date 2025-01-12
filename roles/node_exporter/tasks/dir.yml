@@ -1,6 +1,6 @@
 ---
 - name: Create dir for node_exporter
-  become: yes
+  become: true
   file:
     path: "{{ item }}"
     state: directory

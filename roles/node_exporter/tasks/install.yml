@@ -1,7 +1,7 @@
 ---
 # Extract
 - name: "Extract {{ install_tmpdir }}/node_exporter-{{ node_exporter_version }}"
-  become: yes
+  become: true
   unarchive:
     src: "{{ install_tmpdir }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
     dest: "{{ install_tmpdir }}/"
@@ -12,7 +12,7 @@
   when: ansible_architecture == 'x86_64'
 
 - name: "Extract {{ install_tmpdir }}/node_exporter-{{ node_exporter_version }}"
-  become: yes
+  become: true
   unarchive:
     src: "{{ install_tmpdir }}/node_exporter-{{ node_exporter_version }}.linux-arm64.tar.gz"
     dest: "{{ install_tmpdir }}/"
@@ -23,7 +23,7 @@
 
 # mv node_exporter
 - name: mv node_exporter to {{ node_exporter_bin_dir }}/
-  become: yes
+  become: true
   shell:
     cmd: "/bin/bash -c 'mv {{ install_tmpdir }}/node_exporter-{{ node_exporter_version }}.linux-*/* {{ node_exporter_bin_dir }}/'"
 

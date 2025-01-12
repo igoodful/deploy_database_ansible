@@ -14,14 +14,14 @@
 
 # copy prometheus
 - name: copy prometheus for aarch64
-  become: yes
+  become: true
   copy:
     src: "prometheus-{{ prometheus_version }}.linux-arm64.tar.gz"
     dest: "{{ install_tmpdir }}/"
   when: ansible_architecture == 'aarch64' and (not prometheus_download)
 
 - name: copy prometheus for x86_64
-  become: yes
+  become: true
   copy:
     src: "prometheus-{{ prometheus_version }}.linux-amd64.tar.gz"
     dest: "{{ install_tmpdir }}/"
