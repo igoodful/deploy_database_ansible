@@ -3,7 +3,8 @@
 - include_tasks: 01-dir.yml
 - include_tasks: 02-package.yml
 - include_tasks: 03-deploy.yml
-
+- include_tasks: 04-init.yml
+- include_tasks: 05-replica_or_mgr.yml
 
 
 # innodb_buffer_pool_size=$(free -h | awk '/^Mem/ {printf "%.0fG\n",$2 * 0.6}')

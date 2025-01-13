@@ -146,8 +146,18 @@ table_open_cache                                        =  20480
 table_open_cache_instances                              =  16
 thread_cache_size                                       =  3000
 tmp_table_size                                          =  536870912
-
-
+{% if single_primary_mode == "on" %}
+loose-group_replication_single_primary_mode             =  on
+loose-group_replication_enforce_update_everywhere_checks=  off
+{% else %}
+loose-group_replication_single_primary_mode             =  off
+loose-group_replication_enforce_update_everywhere_checks=  on
+{% endif %}
+group_replication_consistency                           =  before_on_primary_failover
+report-host={{ ansible_host }}
+group_replication_group_name                            =  "{{ group_replication_group_name.stdout }}"
+group_replication_local_address                         =  "{{ ansible_host }}:{{ mysql_mgr_port }}"
+group_replication_group_seeds                           =  "{% for host in groups['all'] %}{{ hostvars[host]['ansible_host'] }}:{{ mysql_mgr_port }}{% if not loop.last %},{% endif %}{% endfor %}"
 
 
 

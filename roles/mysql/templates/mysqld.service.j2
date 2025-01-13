@@ -7,8 +7,8 @@ After=network.target
 WantedBy=multi-user.target
 
 [Service]
-User=greatdb
-Group=greatdb
+User={{ mysql_install_user }}
+Group={{ mysql_install_group }}
 Type=forking
 PIDFile={{ mysql_tmp_dir }}/mysqld.pid
 TimeoutSec=0

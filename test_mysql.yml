@@ -1,0 +1,10 @@
+---
+- name: Apply role mysql
+  hosts: all
+  gather_facts: true
+  roles:
+    - {
+        role: mysql,
+        tags: mysql,
+      }
+

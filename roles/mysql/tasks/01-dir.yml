@@ -4,6 +4,8 @@
   file:
     path: "{{ item }}"
     state: directory
+    owner: "{{ mysql_install_user }}"
+    group: "{{ mysql_install_group }}"
     mode: 0755
   with_items:
     - "{{ base_dir }}"
@@ -14,7 +16,6 @@
     - "{{ mysql_data_dir }}"
     - "{{ mysql_log_dir }}"
     - "{{ mysql_tmp_dir }}"
-  when: mysql_deploy_mode == "bin"
 
 - name: "mkdir {{ mysql_source_dir }}"
   become: true
@@ -22,6 +23,8 @@
     path: "{{ item }}"
     state: directory
     mode: 0755
+    owner: "{{ mysql_install_user }}"
+    group: "{{ mysql_install_group }}"
   with_items:
     - "{{ base_dir }}"
     - "{{ mysql_source_dir }}"
