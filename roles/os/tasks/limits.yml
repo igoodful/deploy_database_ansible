@@ -1,24 +1,63 @@
 ---
-
 - name: Set sysctl file limiits
-# pam_limits: domain='*' limit_type=`item`.`limit_type` limit_item=`item`.`limit_item` value=`item`.`value`
+  # pam_limits: domain='*' limit_type=`item`.`limit_type` limit_item=`item`.`limit_item` value=`item`.`value`
   become: true
   become_user: root
   become_method: sudo
   pam_limits:
-     dest:  "{{ item.dest }}"
-     domain: "{{ ansible_host }}"
-     limit_type:  "{{ item.limit_type }}"
-     limit_item:  "{{ item.limit_item }}"
-     value:  "{{ item.value }}"
+          dest: "{{ item.dest }}"
+          domain: "{{ ansible_host }}"
+          limit_type: "{{ item.limit_type }}"
+          limit_item: "{{ item.limit_item }}"
+          value: "{{ item.value }}"
   with_items:
-     - { dest:  '/etc/security/limits.conf' ,limit_type:  'soft' ,limit_item:  'nofile' , value:  '1024000'  }
-     - { dest:  '/etc/security/limits.conf' ,limit_type:  'hard' ,limit_item:  'nofile' , value:  '1024000' }
-     - { dest:  '/etc/security/limits.conf' ,limit_type:  'soft' ,limit_item:  'nproc' , value:  '1024000'  }
-     - { dest:  '/etc/security/limits.conf' ,limit_type:  'hard' ,limit_item:  'nproc' , value:  '1024000'  }
-     - { dest:  '/etc/security/limits.conf' ,limit_type:  'soft' ,limit_item:  'sigpending' , value:  '1024000'  }
-     - { dest:  '/etc/security/limits.conf' ,limit_type:  'hard' ,limit_item:  'sigpending' , value:  '1024000'  }
-     - { dest:  '/etc/security/limits.d/90-nproc.conf' , limit_type:  'soft' ,limit_item:  'nproc' , value:  '1024000'  }
-     - { dest:  '/etc/security/limits.d/90-nproc.conf' , limit_type:  'hard' ,limit_item:  'nproc' , value:  '1024000'  }
+          - {
+                    dest: "/etc/security/limits.conf",
+                    limit_type: "soft",
+                    limit_item: "nofile",
+                    value: "1024000",
+            }
+          - {
+                    dest: "/etc/security/limits.conf",
+                    limit_type: "hard",
+                    limit_item: "nofile",
+                    value: "1024000",
+            }
+          - {
+                    dest: "/etc/security/limits.conf",
+                    limit_type: "soft",
+                    limit_item: "nproc",
+                    value: "1024000",
+            }
+          - {
+                    dest: "/etc/security/limits.conf",
+                    limit_type: "hard",
+                    limit_item: "nproc",
+                    value: "1024000",
+            }
+          - {
+                    dest: "/etc/security/limits.conf",
+                    limit_type: "soft",
+                    limit_item: "sigpending",
+                    value: "1024000",
+            }
+          - {
+                    dest: "/etc/security/limits.conf",
+                    limit_type: "hard",
+                    limit_item: "sigpending",
+                    value: "1024000",
+            }
+          - {
+                    dest: "/etc/security/limits.d/90-nproc.conf",
+                    limit_type: "soft",
+                    limit_item: "nproc",
+                    value: "1024000",
+            }
+          - {
+                    dest: "/etc/security/limits.d/90-nproc.conf",
+                    limit_type: "hard",
+                    limit_item: "nproc",
+                    value: "1024000",
+            }
   tags:
-     - setlimits
+          - setlimits

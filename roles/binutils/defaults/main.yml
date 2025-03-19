@@ -1,0 +1,17 @@
+---
+# defaults file for binutils
+# binutils-2.44.tar.gz
+binutils_install_user: "{{ ansible_user }}"
+binutils_install_group: "{{ ansible_user }}"
+binutils_version: "2.44"
+binutils_base_url: "{{ base_url }}"
+binutils_base_url_remote: "https://ftp.gnu.org/gnu/binutils/"
+# binary/source
+binutils_deploy_mode: "source"
+binutils_package_name_bin: "binutils-{{ binutils_version }}"
+binutils_package_name_source: "binutils-{{ binutils_version }}"
+
+binutils_dir: "{{ base_dir }}/binutils"
+binutils_app_dir: "{{ base_dir }}/binutils/app"
+binutils_base_dir: "{{ binutils_app_dir }}/binutils-{{ binutils_version }}"
+binutils_source_dir: "{{ binutils_app_dir }}/source/binutils-{{ binutils_version }}"

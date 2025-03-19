@@ -13,7 +13,7 @@
 
 - name: Check the running environment
   fail:
-    msg: "CPU数量不能小于2, 当前{{ ansible_processor_vcpus }}"
+          msg: "CPU数量不能小于2, 当前{{ ansible_processor_vcpus }}"
   when: ansible_processor_vcpus < 2
 
 - include_tasks: dns.yml
@@ -29,6 +29,7 @@
 
 - include_tasks: dir.yml
 
+- include_tasks: package.yml
 #- include_tasks: ansible-dep.yml
 
 # selinux play should run at last because it may reboot Ansible controller

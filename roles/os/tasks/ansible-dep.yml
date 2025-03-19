@@ -1,32 +1,31 @@
 ---
-
 - name: install mysql command line client
   become: true
   copy:
-    src: "../../files/install-base/{{ arch_modifier }}/{{ mysql_client_binary }}"
-    dest: "/usr/bin/mysql"
-    mode: +x
+          src: "../../files/install-base/{{ arch_modifier }}/{{ mysql_client_binary }}"
+          dest: "/usr/bin/mysql"
+          mode: +x
 
 - name: upload and extract ansible-deps
   unarchive:
-    src: "../../files/ansible_install/{{ ansible_deps_base_name }}{{ ansible_deps_tarball_suffix }}"
-    dest: "{{ tmp_dir }}"
-    owner: "{{ rds_user }}"
-    group: "{{ rds_group }}"
-    mode: 0755
+          src: "../../files/ansible_install/{{ ansible_deps_base_name }}{{ ansible_deps_tarball_suffix }}"
+          dest: "{{ tmp_dir }}"
+          owner: "{{ rds_user }}"
+          group: "{{ rds_group }}"
+          mode: 0755
 
 - name: install pip, setuptools and wheel
   command: "python {{ ansible_deps_dir }}/get-pip.py --no-index --find-links={{ ansible_deps_dir }}/pip"
-  become: yes
+  become: true
 
 - name: install Docker Python SDK (required by Ansible Docker modules, e.g. docker_container)
   pip:
-    name: docker
-    extra_args: "--no-index --find-links={{ ansible_deps_dir }}/docker-py"
-  become: yes
+          name: docker
+          extra_args: "--no-index --find-links={{ ansible_deps_dir }}/docker-py"
+  become: true
 
 - name: install PyMySQL (required by Ansible MySQL modules, e.g. mysql_db)
   pip:
-    name: pymysql
-    extra_args: "--no-index --find-links={{ ansible_deps_dir }}/pymysql"
-  become: yes
+          name: pymysql
+          extra_args: "--no-index --find-links={{ ansible_deps_dir }}/pymysql"
+  become: true

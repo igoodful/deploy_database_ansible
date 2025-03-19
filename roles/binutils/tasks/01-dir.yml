@@ -1,0 +1,38 @@
+---
+# tasks file for binutils
+- name: "remove {{ binutils_source_dir }} {{ binutils_base_dir }}"
+  become: true
+  file:
+          path: "{{ item }}"
+          state: absent
+  with_items:
+          - "{{ binutils_source_dir }}"
+          - "{{ binutils_base_dir }}"
+
+- name: "mkdir for binutils"
+  become: true
+  file:
+          path: "{{ item }}"
+          state: directory
+          owner: "{{ binutils_install_user }}"
+          group: "{{ binutils_install_group }}"
+          mode: 0755
+  with_items:
+          - "{{ base_dir }}"
+          - "{{ binutils_dir }}"
+          - "{{ install_tmpdir }}"
+          - "{{ binutils_app_dir }}"
+          - "{{ binutils_base_dir }}"
+
+- name: "mkdir {{ binutils_source_dir }}"
+  become: true
+  file:
+          path: "{{ item }}"
+          state: directory
+          mode: 0755
+          owner: "{{ binutils_install_user }}"
+          group: "{{ binutils_install_group }}"
+  with_items:
+          - "{{ base_dir }}"
+          - "{{ binutils_source_dir }}"
+  when: binutils_deploy_mode == "source"

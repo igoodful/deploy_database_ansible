@@ -63,6 +63,8 @@
   service:
     name: mysqld.service
     state: stopped
+  when:
+    - mysql_cluster_mode == "mgr"
 
 - name: "ps aux|grep mysqld"
   become: true

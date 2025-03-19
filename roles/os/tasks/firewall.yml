@@ -1,10 +1,9 @@
 ---
-
 - name: disable UFW (Kylin)
   become: True
   ufw:
-    state: disabled
-    policy: allow
+          state: disabled
+          policy: allow
   when: ansible_os_family == 'Kylin'
 
 - name: Check if firewalld is installed (Red Hat)
@@ -13,17 +12,17 @@
   changed_when: false
   failed_when: firewalld_check.rc > 1
   args:
-    warn: false
+          warn: false
   when: ansible_os_family == 'RedHat'
 
 - name: Disable firewalld (Red Hat)
   become: True
   service:
-    name: "{{ item }}"
-    enabled: false
-    state: stopped
+          name: "{{ item }}"
+          enabled: false
+          state: stopped
   with_items:
-    - firewalld
+          - firewalld
   when:
-    - ansible_os_family == 'RedHat'
-    - firewalld_check.rc == 0
+          - ansible_os_family == 'RedHat'
+          - firewalld_check.rc == 0

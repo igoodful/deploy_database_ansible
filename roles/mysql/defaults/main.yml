@@ -19,11 +19,11 @@ mysql_monitor_init_password: "XqgLB0DztWYouSBJ8L0P5p5Hq83Ks5Jm"
 
 mysql_port: "8032"
 mysql_version: "8.0.32"
-mysql_base_url: "ftp://ip:port/"
+mysql_base_url: "{{ base_url }}"
 mysql_deploy_mode: "bin"
 mysql_url: "local"
 # replica,mgr
-mysql_cluster_mode: "replica"
+mysql_cluster_mode: "mgr"
 mysql_mgr_port: "1{{ mysql_port }}"
 # on,off
 single_primary_mode: "on"
@@ -32,7 +32,7 @@ mysql_source_package_name: "mysql-{{ mysql_version }}"
 
 mysql_dir: "{{ base_dir }}/mysql"
 mysql_app_dir: "{{ base_dir }}/mysql/app"
-mysql_base_dir: "{{ base_dir }}/mysql/app/mysql-{{ mysql_version }}"
+mysql_base_dir: "{{ mysql_app_dir }}/mysql-{{ mysql_version }}"
 mysql_conf_dir: "{{ base_dir }}/mysql/conf"
 mysql_data_dir: "{{ base_dir }}/mysql/data"
 mysql_log_dir: "{{ base_dir }}/mysql/log"

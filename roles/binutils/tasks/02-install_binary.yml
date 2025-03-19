@@ -1,0 +1,82 @@
+---
+# tasks file for binutils by binary
+
+# remote_host_binutils_check
+- name: "gzip -t {{ install_tmpdir }}/binutils-{{ binutils_version }}-{{ ansible_architecture }}.tar.gz"
+  become: true
+  command: "gzip -t {{ install_tmpdir }}/binutils-{{ binutils_version }}-{{ ansible_architecture }}.tar.gz"
+  register: remote_host_binutils_check
+  ignore_errors: true
+
+- name: "check remote binutils-{{ binutils_version }}-{{ ansible_architecture }}.tar.gz result"
+  debug:
+          msg: "{{ '.tar.gz is ok ' if remote_host_binutils_check.rc == 0 else '.tar.gz is not ok' }}"
+
+# ansible_host_binutils_check
+- name: "stat {{ role_path }}/files/binutils-{{ binutils_version }}-{{ ansible_architecture }}.tar.gz"
+  delegate_to: localhost
+  run_once: true
+  stat:
+          path: "{{ role_path }}/files/binutils-{{ binutils_version }}-{{ ansible_architecture }}.tar.gz"
+  register: ansible_host_binutils_check
+  ignore_errors: true
+
+- name: "cp binutils-{{ binutils_version }}-{{ ansible_architecture }}.tar.gz {{ install_tmpdir }}/"
+  become: true
+  copy:
+          src: "binutils-{{ binutils_version }}-{{ ansible_architecture }}.tar.gz"
+          dest: "{{ install_tmpdir }}/"
+          owner: "{{ ansible_user }}"
+          group: "{{ ansible_user }}"
+          mode: 0755
+  when: remote_host_binutils_check !=0 and ansible_host_binutils_check.stat.exists
+
+# binutils_base_url
+- name: "download {{ binutils_base_url }}/binutils-{{ binutils_version }}-{{ ansible_architecture }}.tar.gz"
+  get_url:
+          url: "{{ binutils_base_url }}/binutils-{{ binutils_version }}-{{ ansible_architecture }}.tar.gz"
+          dest: "{{ install_tmpdir }}/"
+          owner: "{{ ansible_user }}"
+          group: "{{ ansible_user }}"
+          mode: 0755
+          timeout: 600
+  when: not ansible_host_binutils_check.stat.exists and remote_host_binutils_check !=0
+  ignore_errors: true
+
+# binutils_base_url_remote
+- name: "gzip -t {{ install_tmpdir }}/binutils-{{ binutils_version }}-{{ ansible_architecture }}.tar.gz"
+  become: true
+  command: "gzip -t {{ install_tmpdir }}/binutils-{{ binutils_version }}-{{ ansible_architecture }}.tar.gz"
+  register: remote_host_binutils_check
+  ignore_errors: true
+
+- name: "download {{ binutils_base_url_remote }}/binutils-{{ binutils_version }}-{{ ansible_architecture }}.tar.gz"
+  get_url:
+          url: "{{ binutils_base_url_remote }}/binutils-{{ binutils_version }}-{{ ansible_architecture }}.tar.gz"
+          dest: "{{ install_tmpdir }}/"
+          owner: "{{ ansible_user }}"
+          group: "{{ ansible_user }}"
+          mode: 0755
+          timeout: 600
+  when: remote_host_binutils_check !=0
+
+## 解压
+- name: "gzip -t {{ install_tmpdir }}/binutils-{{ binutils_version }}-{{ ansible_architecture }}.tar.gz"
+  become: true
+  command: "gzip -t {{ install_tmpdir }}/binutils-{{ binutils_version }}-{{ ansible_architecture }}.tar.gz"
+
+- name: "Extract {{ install_tmpdir }}/binutils-{{ binutils_version }}-{{ ansible_architecture }}.tar.gz"
+  become: true
+  unarchive:
+          src: "{{ install_tmpdir }}/binutils-{{ binutils_version }}-{{ ansible_architecture }}.tar.gz"
+          dest: "{{ binutils_base_dir }}/"
+          remote_src: true
+          owner: "{{ ansible_user }}"
+          group: "{{ ansible_user }}"
+          mode: 0755
+          extra_opts:
+                  - --strip-components=1
+          exclude:
+                  - "*.md"
+                  - "Document*"
+  when: binutils_deploy_mode == "binary"

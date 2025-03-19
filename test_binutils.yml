@@ -1,0 +1,10 @@
+---
+- name: Apply role binutils
+  hosts: all
+  gather_facts: true
+  roles:
+    - {
+        role: binutils,
+        tags: binutils,
+      }
+

@@ -1,2 +1,33 @@
 ---
 # defaults file for os
+os_packages_remove:
+        - "mariadb-libs"
+        - "mariadb"
+
+os_packages:
+        - "epel-release"
+        - "yum-utils"
+        - "net-tools"
+        - "lrzsz"
+        - "tree"
+        - "gcc"
+        - "gcc-c++"
+        - "make"
+        - "cmake3"
+        - "libaio"
+        - "libaio-devel"
+        - "openssl"
+        - "openssl-devel"
+        - "gettext"
+        - "gettext-devel"
+        - "ncurses"
+        - "ncurses-devel"
+        - "zlib"
+        - "zlib-devel"
+        - "libtirpc"
+        - "libtirpc-devel"
+        - "bison"
+        - "perl-Data-Dumper"
+        - "perl-JSON"
+        -
+####

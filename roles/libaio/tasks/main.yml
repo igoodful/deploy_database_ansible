@@ -1,0 +1,6 @@
+---
+# tasks file for libaio
+
+- include_tasks: 01-dir.yml
+- include_tasks: 02-package.yml
+- include_tasks: 03-deploy.yml

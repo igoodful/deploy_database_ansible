@@ -1,6 +1,6 @@
 ---
 # bin
-- name: "Extract {{ install_tmpdir }}/prometheus-{{ prometheus_version }}"
+- name: "Extract {{ install_tmpdir }}/mysql-{{ mysql_version }}-{{ ansible_architecture }}.tar.gz"
   become: true
   unarchive:
     src: "{{ install_tmpdir }}/mysql-{{ mysql_version }}-{{ ansible_architecture }}.tar.gz"
@@ -17,7 +17,7 @@
   when: mysql_deploy_mode == "bin"
 
 # source
-- name: "Extract {{ install_tmpdir }}/prometheus-{{ prometheus_version }}"
+- name: "Extract {{ install_tmpdir }}/mysql-{{ mysql_version }}.tar.gz"
   become: true
   unarchive:
     src: "{{ install_tmpdir }}/mysql-{{ mysql_version }}.tar.gz"

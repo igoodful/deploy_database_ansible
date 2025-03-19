@@ -13,10 +13,12 @@ Type=forking
 PIDFile={{ mysql_tmp_dir }}/mysqld.pid
 TimeoutSec=0
 ExecStart={{ mysql_base_dir }}/bin/mysqld --defaults-file={{ mysql_conf_dir }}/my.cnf --daemonize $MYSQLD_OPTS
+ExecStop={{ mysql_base_dir }}/bin/mysqladmin --defaults-file={{ mysql_conf_dir }}/my.cnf shutdown
 LimitNOFILE = 1024000
 LimitNPROC = 1024000
 Restart=on-failure
 RestartPreventExitStatus=1
 PrivateTmp=false
+TimeoutStopSec=30s
 
 
