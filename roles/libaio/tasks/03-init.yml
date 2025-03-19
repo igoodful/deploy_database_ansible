@@ -1,34 +1,18 @@
 ---
 #
-# PATH
-- name: "remove PATH from /etc/profile"
-  become: true
-  lineinfile:
-          path: /etc/profile
-          regexp: "export PATH={{ binutils_base_dir }}/bin"
-          state: absent
-
-- name: "Add PATH to /etc/profile"
-  become: true
-  lineinfile:
-          path: /etc/profile
-          line: "export PATH={{ binutils_base_dir }}/bin:$PATH"
-          insertafter: EOF
-          state: present
-
 # CPATH
 - name: "remove CPATH from /etc/profile"
   become: true
   lineinfile:
           path: /etc/profile
-          regexp: "export CPATH={{ binutils_base_dir }}/include"
+          regexp: "export CPATH={{ libaio_base_dir }}/include"
           state: absent
 
 - name: "Add CPATH to /etc/profile"
   become: true
   lineinfile:
           path: /etc/profile
-          line: "export CPATH={{ binutils_base_dir }}/include:$CPATH"
+          line: "export CPATH={{ libaio_base_dir }}/include:$CPATH"
           insertafter: EOF
           state: present
 
@@ -37,14 +21,14 @@
   become: true
   lineinfile:
           path: /etc/profile
-          regexp: "export LIBRARY_PATH={{ binutils_base_dir }}/lib"
+          regexp: "export LIBRARY_PATH={{ libaio_base_dir }}/lib"
           state: absent
 
 - name: "Add LIBRARY_PATH to /etc/profile"
   become: true
   lineinfile:
           path: /etc/profile
-          line: "export LIBRARY_PATH={{ binutils_base_dir }}/lib:$LIBRARY_PATH"
+          line: "export LIBRARY_PATH={{ libaio_base_dir }}/lib:$LIBRARY_PATH"
           insertafter: EOF
           state: present
 
@@ -53,14 +37,14 @@
   become: true
   lineinfile:
           path: /etc/profile
-          regexp: "export LD_LIBRARY_PATH={{ binutils_base_dir }}/lib"
+          regexp: "export LD_LIBRARY_PATH={{ libaio_base_dir }}/lib"
           state: absent
 
 - name: "Add LD_LIBRARY_PATH to /etc/profile"
   become: true
   lineinfile:
           path: /etc/profile
-          line: "export LD_LIBRARY_PATH={{ binutils_base_dir }}/lib:$LD_LIBRARY_PATH"
+          line: "export LD_LIBRARY_PATH={{ libaio_base_dir }}/lib:$LD_LIBRARY_PATH"
           insertafter: EOF
           state: present
 
@@ -77,7 +61,7 @@
           cmd: ldconfig
 ####################################################
 
-# cd binutils-2.40.90
+# cd libaio-2.40.90
 # ./configure --prefix=$HOME/local
 # make
 # make install

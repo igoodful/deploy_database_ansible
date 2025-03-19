@@ -1,0 +1,10 @@
+---
+- name: Apply role libaio
+  hosts: all
+  gather_facts: true
+  roles:
+    - {
+        role: libaio,
+        tags: libaio,
+      }
+

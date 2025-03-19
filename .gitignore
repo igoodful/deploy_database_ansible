@@ -1,3 +1,6 @@
 *.tar.gz
-
+ticbase_ansible.log
 files/*
+fact_files/*
+
+

@@ -2,5 +2,13 @@
 # tasks file for libaio
 
 - include_tasks: 01-dir.yml
-- include_tasks: 02-package.yml
-- include_tasks: 03-deploy.yml
+
+- name: "02-install_binary.yml"
+  include_tasks: 02-install_binary.yml
+  when: libaio_deploy_mode == "binary"
+
+- name: "02-install_source.yml"
+  include_tasks: 02-install_source.yml
+  when: libaio_deploy_mode == "source"
+
+- include_tasks: 03-init.yml
