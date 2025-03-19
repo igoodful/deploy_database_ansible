@@ -1,2 +1,18 @@
 ---
 # defaults file for bison
+# bison-3.8.2.tar.gz
+bison_install_user: "{{ ansible_user }}"
+bison_install_group: "{{ ansible_user }}"
+bison_version: "3.8.2"
+bison_base_url: "{{ base_url }}"
+bison_base_url_remote: "https://ftp.gnu.org/gnu/bison"
+
+# binary/source
+bison_deploy_mode: "source"
+bison_package_name_bin: "bison-{{ bison_version }}"
+bison_package_name_source: "bison-{{ bison_version }}"
+
+bison_dir: "{{ base_dir }}/bison"
+bison_app_dir: "{{ base_dir }}/bison/app"
+bison_base_dir: "{{ bison_app_dir }}/bison-{{ bison_version }}"
+bison_source_dir: "{{ bison_app_dir }}/source/bison-{{ bison_version }}"

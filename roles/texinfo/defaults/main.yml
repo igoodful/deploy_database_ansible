@@ -1,0 +1,20 @@
+---
+# defaults file for texinfo
+texinfo_install_user: "{{ ansible_user }}"
+texinfo_install_group: "{{ ansible_user }}"
+texinfo_base_url: "{{ base_url }}"
+# https://ftp.gnu.org/gnu/texinfo/texinfo-7.2.tar.gz
+texinfo_version: "7.2"
+texinfo_base_url_remote: "https://ftp.gnu.org/gnu/texinfo"
+
+# binary/source
+
+texinfo_deploy_mode: "source"
+texinfo_package_suffix: ".tar.gz"
+texinfo_package_name_bin: "texinfo-{{ texinfo_version }}"
+texinfo_package_name_source: "texinfo-{{ texinfo_version }}"
+
+texinfo_dir: "{{ base_dir }}/texinfo"
+texinfo_app_dir: "{{ base_dir }}/texinfo/app"
+texinfo_base_dir: "{{ texinfo_app_dir }}/texinfo-{{ texinfo_version }}"
+texinfo_source_dir: "{{ texinfo_app_dir }}/source/texinfo-{{ texinfo_version }}"

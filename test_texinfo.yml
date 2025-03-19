@@ -1,0 +1,10 @@
+---
+- name: Apply role texinfo
+  hosts: all
+  gather_facts: true
+  roles:
+    - {
+        role: texinfo,
+        tags: texinfo,
+      }
+

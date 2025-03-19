@@ -1,0 +1,10 @@
+---
+- name: Apply role ncurses
+  hosts: all
+  gather_facts: true
+  roles:
+    - {
+        role: ncurses,
+        tags: ncurses,
+      }
+

@@ -1,0 +1,20 @@
+---
+# defaults file for isl
+# https://gcc.gnu.org/pub/gcc/infrastructure/isl-0.18.tar.bz2
+isl_install_user: "{{ ansible_user }}"
+isl_install_group: "{{ ansible_user }}"
+isl_version: "0.18"
+isl_base_url: "{{ base_url }}"
+isl_base_url_remote: "https://gcc.gnu.org/pub/gcc/infrastructure"
+
+# binary/source
+
+isl_deploy_mode: "source"
+isl_package_suffix: ".tar.bz2"
+isl_package_name_bin: "isl-{{ isl_version }}-{{ ansible_architecture }}{{ isl_package_suffix }}"
+isl_package_name_source: "isl-{{ isl_version }}{{ isl_package_suffix }}"
+
+isl_dir: "{{ base_dir }}/isl"
+isl_app_dir: "{{ base_dir }}/isl/app"
+isl_base_dir: "{{ isl_app_dir }}/isl-{{ isl_version }}"
+isl_source_dir: "{{ isl_app_dir }}/source/isl-{{ isl_version }}"

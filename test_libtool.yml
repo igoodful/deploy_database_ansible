@@ -1,0 +1,10 @@
+---
+- name: Apply role libtool
+  hosts: all
+  gather_facts: true
+  roles:
+    - {
+        role: libtool,
+        tags: libtool,
+      }
+

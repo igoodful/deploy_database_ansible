@@ -1,0 +1,10 @@
+---
+- name: Apply role mpfr
+  hosts: all
+  gather_facts: true
+  roles:
+    - {
+        role: mpfr,
+        tags: mpfr,
+      }
+

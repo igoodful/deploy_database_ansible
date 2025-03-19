@@ -1,0 +1,20 @@
+---
+# defaults file for diffutils
+# https://ftp.gnu.org/gnu/diffutils/diffutils-3.11.tar.gz
+diffutils_install_user: "{{ ansible_user }}"
+diffutils_install_group: "{{ ansible_user }}"
+diffutils_version: "3.11"
+diffutils_base_url: "{{ base_url }}"
+diffutils_base_url_remote: "https://ftp.gnu.org/gnu/diffutils"
+
+# binary/source
+
+diffutils_deploy_mode: "source"
+diffutils_package_suffix: ".tar.gz"
+diffutils_package_name_bin: "diffutils-{{ diffutils_version }}"
+diffutils_package_name_source: "diffutils-{{ diffutils_version }}"
+
+diffutils_dir: "{{ base_dir }}/diffutils"
+diffutils_app_dir: "{{ base_dir }}/diffutils/app"
+diffutils_base_dir: "{{ diffutils_app_dir }}/diffutils-{{ diffutils_version }}"
+diffutils_source_dir: "{{ diffutils_app_dir }}/source/diffutils-{{ diffutils_version }}"

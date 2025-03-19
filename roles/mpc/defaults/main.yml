@@ -1,0 +1,21 @@
+---
+# defaults file for mpc
+# NOT DONE
+# https://ftp.gnu.org/gnu/mpc/mpc-1.3.0.tar.gz
+mpc_install_user: "{{ ansible_user }}"
+mpc_install_group: "{{ ansible_user }}"
+mpc_version: "1.3.0"
+mpc_base_url: "{{ base_url }}"
+mpc_base_url_remote: "https://ftp.gnu.org/gnu/mpc"
+
+# binary/source
+
+mpc_deploy_mode: "source"
+mpc_package_suffix: ".tar.gz"
+mpc_package_name_bin: "mpc-{{ mpc_version }}"
+mpc_package_name_source: "mpc-{{ mpc_version }}"
+
+mpc_dir: "{{ base_dir }}/mpc"
+mpc_app_dir: "{{ base_dir }}/mpc/app"
+mpc_base_dir: "{{ mpc_app_dir }}/mpc-{{ mpc_version }}"
+mpc_source_dir: "{{ mpc_app_dir }}/source/mpc-{{ mpc_version }}"

@@ -1,0 +1,10 @@
+---
+- name: Apply role zstd
+  hosts: all
+  gather_facts: true
+  roles:
+    - {
+        role: zstd,
+        tags: zstd,
+      }
+

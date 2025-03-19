@@ -1,2 +1,21 @@
 ---
 # defaults file for libtirpc
+# https://downloads.sourceforge.net/libtirpc/libtirpc-1.3.4.tar.bz2
+libtirpc_install_user: "{{ ansible_user }}"
+libtirpc_install_group: "{{ ansible_user }}"
+libtirpc_version: "1.3.4"
+libtirpc_base_url: "{{ base_url }}"
+libtirpc_base_url_remote: "https://ftp.gnu.org/gnu/libtirpc"
+
+# binary/source
+libtirpc_deploy_mode: "source"
+######################################
+libtirpc_package_suffix: ".tar.bz2"
+######################################
+libtirpc_package_name_bin: "libtirpc-{{ libtirpc_version }}"
+libtirpc_package_name_source: "libtirpc-{{ libtirpc_version }}"
+
+libtirpc_dir: "{{ base_dir }}/libtirpc"
+libtirpc_app_dir: "{{ base_dir }}/libtirpc/app"
+libtirpc_base_dir: "{{ libtirpc_app_dir }}/libtirpc-{{ libtirpc_version }}"
+libtirpc_source_dir: "{{ libtirpc_app_dir }}/source/libtirpc-{{ libtirpc_version }}"

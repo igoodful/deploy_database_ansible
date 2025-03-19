@@ -1,0 +1,18 @@
+---
+# defaults file for m4
+# m4-1.4.tar.gz
+m4_base_url: "{{ base_url }}"
+m4_base_url_remote: "https://ftp.gnu.org/gnu/m4"
+m4_install_user: "{{ ansible_user }}"
+m4_install_group: "{{ ansible_user }}"
+m4_version: "1.4"
+
+# binary/source
+m4_deploy_mode: "source"
+m4_package_name_bin: "m4-{{ m4_version }}"
+m4_package_name_source: "m4-{{ m4_version }}"
+
+m4_dir: "{{ base_dir }}/m4"
+m4_app_dir: "{{ base_dir }}/m4/app"
+m4_base_dir: "{{ m4_app_dir }}/m4-{{ m4_version }}"
+m4_source_dir: "{{ m4_app_dir }}/source/m4-{{ m4_version }}"

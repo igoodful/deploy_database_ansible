@@ -1,2 +1,20 @@
 ---
 # defaults file for gcc
+# https://ftp.gnu.org/gnu/gcc/gcc-9.3.0/gcc-9.3.0.tar.gz
+gcc_install_user: "{{ ansible_user }}"
+gcc_install_group: "{{ ansible_user }}"
+gcc_version: "9.3.0"
+gcc_base_url: "{{ base_url }}"
+gcc_base_url_remote: "https://ftp.gnu.org/gnu/gcc/gcc-{{ gcc_version }}"
+
+# binary/source
+
+gcc_deploy_mode: "source"
+gcc_package_suffix: ".tar.gz"
+gcc_package_name_bin: "gcc-{{ gcc_version }}"
+gcc_package_name_source: "gcc-{{ gcc_version }}"
+
+gcc_dir: "{{ base_dir }}/gcc"
+gcc_app_dir: "{{ base_dir }}/gcc/app"
+gcc_base_dir: "{{ gcc_app_dir }}/gcc-{{ gcc_version }}"
+gcc_source_dir: "{{ gcc_app_dir }}/source/gcc-{{ gcc_version }}"

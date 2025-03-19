@@ -1,0 +1,38 @@
+---
+# tasks file for autoconf
+- name: "remove {{ autoconf_source_dir }} {{ autoconf_base_dir }}"
+  become: true
+  file:
+          path: "{{ item }}"
+          state: absent
+  with_items:
+          - "{{ autoconf_source_dir }}"
+          - "{{ autoconf_base_dir }}"
+
+- name: "mkdir for autoconf"
+  become: true
+  file:
+          path: "{{ item }}"
+          state: directory
+          owner: "{{ autoconf_install_user }}"
+          group: "{{ autoconf_install_group }}"
+          mode: 0755
+  with_items:
+          - "{{ base_dir }}"
+          - "{{ autoconf_dir }}"
+          - "{{ install_tmpdir }}"
+          - "{{ autoconf_app_dir }}"
+          - "{{ autoconf_base_dir }}"
+
+- name: "mkdir {{ autoconf_source_dir }}"
+  become: true
+  file:
+          path: "{{ item }}"
+          state: directory
+          mode: 0755
+          owner: "{{ autoconf_install_user }}"
+          group: "{{ autoconf_install_group }}"
+  with_items:
+          - "{{ base_dir }}"
+          - "{{ autoconf_source_dir }}"
+  when: autoconf_deploy_mode == "source"

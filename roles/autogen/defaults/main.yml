@@ -1,0 +1,18 @@
+---
+# defaults file for autogen
+# https://ftp.gnu.org/gnu/autogen/rel5.18.10/autogen-5.18.10.tar.gz
+autogen_install_user: "{{ ansible_user }}"
+autogen_install_group: "{{ ansible_user }}"
+autogen_version: "5.18.10"
+autogen_base_url: "{{ base_url }}"
+autogen_base_url_remote: "https://ftp.gnu.org/gnu/autogen/rel{{ autogen_version }}"
+
+# binary/source
+autogen_deploy_mode: "source"
+autogen_package_name_bin: "autogen-{{ autogen_version }}"
+autogen_package_name_source: "autogen-{{ autogen_version }}"
+
+autogen_dir: "{{ base_dir }}/autogen"
+autogen_app_dir: "{{ base_dir }}/autogen/app"
+autogen_base_dir: "{{ autogen_app_dir }}/autogen-{{ autogen_version }}"
+autogen_source_dir: "{{ autogen_app_dir }}/source/autogen-{{ autogen_version }}"

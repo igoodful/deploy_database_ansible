@@ -1,0 +1,22 @@
+---
+# defaults file for guile
+# 依赖: libunistring
+# 还没成功
+# https://ftp.gnu.org/gnu/guile/guile-3.0.10.tar.gz
+guile_install_user: "{{ ansible_user }}"
+guile_install_group: "{{ ansible_user }}"
+guile_version: "3.0.10"
+guile_base_url: "{{ base_url }}"
+guile_base_url_remote: "https://ftp.gnu.org/gnu/guile"
+
+# binary/source
+
+guile_deploy_mode: "source"
+guile_package_suffix: ".tar.gz"
+guile_package_name_bin: "guile-{{ guile_version }}"
+guile_package_name_source: "guile-{{ guile_version }}"
+
+guile_dir: "{{ base_dir }}/guile"
+guile_app_dir: "{{ base_dir }}/guile/app"
+guile_base_dir: "{{ guile_app_dir }}/guile-{{ guile_version }}"
+guile_source_dir: "{{ guile_app_dir }}/source/guile-{{ guile_version }}"

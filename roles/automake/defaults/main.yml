@@ -1,2 +1,18 @@
 ---
 # defaults file for automake
+# https://ftp.gnu.org/gnu/automake/automake-1.16.4.tar.gz
+automake_install_user: "{{ ansible_user }}"
+automake_install_group: "{{ ansible_user }}"
+automake_version: "1.16.4"
+automake_base_url: "{{ base_url }}"
+automake_base_url_remote: "https://ftp.gnu.org/gnu/automake"
+
+# binary/source
+automake_deploy_mode: "source"
+automake_package_name_bin: "automake-{{ automake_version }}"
+automake_package_name_source: "automake-{{ automake_version }}"
+
+automake_dir: "{{ base_dir }}/automake"
+automake_app_dir: "{{ base_dir }}/automake/app"
+automake_base_dir: "{{ automake_app_dir }}/automake-{{ automake_version }}"
+automake_source_dir: "{{ automake_app_dir }}/source/automake-{{ automake_version }}"

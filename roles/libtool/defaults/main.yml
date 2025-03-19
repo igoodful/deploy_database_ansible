@@ -1,2 +1,18 @@
 ---
 # defaults file for libtool
+# https://ftp.gnu.org/gnu/libtool/libtool-2.5.4.tar.gz
+libtool_install_user: "{{ ansible_user }}"
+libtool_install_group: "{{ ansible_user }}"
+libtool_version: "2.5.4"
+libtool_base_url: "{{ base_url }}"
+libtool_base_url_remote: "https://ftp.gnu.org/gnu/libtool"
+
+# binary/source
+libtool_deploy_mode: "source"
+libtool_package_name_bin: "libtool-{{ libtool_version }}"
+libtool_package_name_source: "libtool-{{ libtool_version }}"
+
+libtool_dir: "{{ base_dir }}/libtool"
+libtool_app_dir: "{{ base_dir }}/libtool/app"
+libtool_base_dir: "{{ libtool_app_dir }}/libtool-{{ libtool_version }}"
+libtool_source_dir: "{{ libtool_app_dir }}/source/libtool-{{ libtool_version }}"

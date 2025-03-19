@@ -1,0 +1,104 @@
+---
+# tasks file for m4 by binary
+
+# 检查远程主机上的文件是否存在
+# 检查远程主机上的文件是否完整
+- name: "Check file exists first"
+  stat:
+          path: "{{ install_tmpdir }}/m4-{{ m4_version }}-{{ ansible_architecture }}.tar.gz"
+  register: check_file_exists_first
+
+- name: "Check file valid first"
+  command: "gzip -t {{ install_tmpdir }}/m4-{{ m4_version }}-{{ ansible_architecture }}.tar.gz"
+  register: check_file_valid_first
+  ignore_errors: true
+  when: check_file_exists_first.stat.exists
+
+############################################
+# 从控制机拷贝
+############################################
+- name: "Check file exists on ansible host"
+  delegate_to: localhost
+  run_once: true
+  stat:
+          path: "{{ role_path }}/files/m4-{{ m4_version }}-{{ ansible_architecture }}.tar.gz"
+  register: local_file_stat
+
+- name: "Copy file from control machine if remote file is missing or invalid"
+  become: true
+  copy:
+          src: "m4-{{ m4_version }}-{{ ansible_architecture }}.tar.gz"
+          dest: "{{ install_tmpdir }}/"
+          owner: "{{ ansible_user }}"
+          group: "{{ ansible_user }}"
+          mode: 0755
+  when:
+          - (not check_file_exists_first.stat.exists or check_file_valid_first.rc != 0)
+          - local_file_stat.stat.exists
+
+#################################################
+# 从 m4_base_url 下载
+#################################################
+
+- name: "Check file exists second"
+  stat:
+          path: "{{ install_tmpdir }}/m4-{{ m4_version }}-{{ ansible_architecture }}.tar.gz"
+  register: check_file_exists_second
+
+- name: "Check file valid second"
+  command: "gzip -t {{ install_tmpdir }}/m4-{{ m4_version }}-{{ ansible_architecture }}.tar.gz"
+  register: check_file_valid_second
+  ignore_errors: true
+  when: check_file_exists_second.stat.exists
+
+- name: "Download file from m4_base_url if remote file is missing or invalid"
+  get_url:
+          url: "{{ m4_base_url }}/m4-{{ m4_version }}-{{ ansible_architecture }}.tar.gz"
+          dest: "{{ install_tmpdir }}/"
+          owner: "{{ ansible_user }}"
+          group: "{{ ansible_user }}"
+          mode: 0755
+          timeout: 600
+  when:
+          - (not check_file_exists_second.stat.exists or check_file_valid_second.rc != 0)
+  ignore_errors: true
+
+#################################################
+# 尝试从 m4_base_url_remote 下载
+#################################################
+
+- name: "Check file exists third"
+  stat:
+          path: "{{ install_tmpdir }}/m4-{{ m4_version }}-{{ ansible_architecture }}.tar.gz"
+  register: check_file_exists_third
+
+- name: "Check file valid third"
+  command: "gzip -t {{ install_tmpdir }}/m4-{{ m4_version }}-{{ ansible_architecture }}.tar.gz"
+  register: check_file_valid_third
+  ignore_errors: true
+  when: check_file_exists_third.stat.exists
+
+- name: "Download file from m4_base_url_remote if previous download failed"
+  get_url:
+          url: "{{ m4_base_url_remote }}/m4-{{ m4_version }}-{{ ansible_architecture }}.tar.gz"
+          dest: "{{ install_tmpdir }}/"
+          owner: "{{ ansible_user }}"
+          group: "{{ ansible_user }}"
+          mode: 0755
+          timeout: 600
+  when:
+          - (not check_file_exists_third.stat.exists or check_file_valid_third.rc != 0)
+
+#################################################
+# 如果部署模式为源码编译，则解压并安装
+#################################################
+- name: "Extract {{ install_tmpdir }}/m4-{{ m4_version }}-{{ ansible_architecture }}.tar.gz"
+  become: true
+  unarchive:
+          src: "{{ install_tmpdir }}/m4-{{ m4_version }}-{{ ansible_architecture }}.tar.gz"
+          dest: "{{ m4_source_dir }}/"
+          remote_src: true
+          owner: "{{ ansible_user }}"
+          group: "{{ ansible_user }}"
+          extra_opts:
+                  - --strip-components=1

@@ -1,0 +1,20 @@
+---
+# defaults file for patch
+# https://ftp.gnu.org/gnu/patch/patch-2.7.tar.gz
+patch_install_user: "{{ ansible_user }}"
+patch_install_group: "{{ ansible_user }}"
+patch_version: "2.7"
+patch_base_url: "{{ base_url }}"
+patch_base_url_remote: "https://ftp.gnu.org/gnu/patch"
+
+# binary/source
+
+patch_deploy_mode: "source"
+patch_package_suffix: ".tar.gz"
+patch_package_name_bin: "patch-{{ patch_version }}"
+patch_package_name_source: "patch-{{ patch_version }}"
+
+patch_dir: "{{ base_dir }}/patch"
+patch_app_dir: "{{ base_dir }}/patch/app"
+patch_base_dir: "{{ patch_app_dir }}/patch-{{ patch_version }}"
+patch_source_dir: "{{ patch_app_dir }}/source/patch-{{ patch_version }}"

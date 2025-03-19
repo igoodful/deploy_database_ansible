@@ -1,0 +1,10 @@
+---
+- name: Apply role diffutils
+  hosts: all
+  gather_facts: true
+  roles:
+    - {
+        role: diffutils,
+        tags: diffutils,
+      }
+

@@ -1,0 +1,10 @@
+---
+- name: Apply role guile
+  hosts: all
+  gather_facts: true
+  roles:
+    - {
+        role: guile,
+        tags: guile,
+      }
+

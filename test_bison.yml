@@ -1,0 +1,10 @@
+---
+- name: Apply role bison
+  hosts: all
+  gather_facts: true
+  roles:
+    - {
+        role: bison,
+        tags: bison,
+      }
+

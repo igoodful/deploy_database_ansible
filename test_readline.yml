@@ -1,0 +1,10 @@
+---
+- name: Apply role readline
+  hosts: all
+  gather_facts: true
+  roles:
+    - {
+        role: readline,
+        tags: readline,
+      }
+

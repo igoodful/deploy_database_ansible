@@ -1,0 +1,10 @@
+---
+- name: Apply role gmp
+  hosts: all
+  gather_facts: true
+  roles:
+    - {
+        role: gmp,
+        tags: gmp,
+      }
+

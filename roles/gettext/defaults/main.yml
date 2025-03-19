@@ -1,2 +1,18 @@
 ---
 # defaults file for gettext
+# gettext-0.22.4.tar.gz
+gettext_base_url: "{{ base_url }}"
+gettext_base_url_remote: "https://ftp.gnu.org/pub/gnu/gettext"
+gettext_install_user: "{{ ansible_user }}"
+gettext_install_group: "{{ ansible_user }}"
+gettext_version: "0.22.4"
+
+# binary/source
+gettext_deploy_mode: "source"
+gettext_package_name_bin: "gettext-{{ gettext_version }}"
+gettext_package_name_source: "gettext-{{ gettext_version }}"
+
+gettext_dir: "{{ base_dir }}/gettext"
+gettext_app_dir: "{{ base_dir }}/gettext/app"
+gettext_base_dir: "{{ gettext_app_dir }}/gettext-{{ gettext_version }}"
+gettext_source_dir: "{{ gettext_app_dir }}/source/gettext-{{ gettext_version }}"

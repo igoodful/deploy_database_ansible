@@ -1,0 +1,10 @@
+---
+- name: Apply role gperf
+  hosts: all
+  gather_facts: true
+  roles:
+    - {
+        role: gperf,
+        tags: gperf,
+      }
+

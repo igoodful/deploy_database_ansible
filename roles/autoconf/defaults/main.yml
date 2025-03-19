@@ -1,2 +1,18 @@
 ---
 # defaults file for autoconf
+# https://ftp.gnu.org/gnu/autoconf/autoconf-2.72.tar.gz
+autoconf_install_user: "{{ ansible_user }}"
+autoconf_install_group: "{{ ansible_user }}"
+autoconf_version: "2.72"
+autoconf_base_url: "{{ base_url }}"
+autoconf_base_url_remote: "https://ftp.gnu.org/gnu/autoconf"
+
+# binary/source
+autoconf_deploy_mode: "source"
+autoconf_package_name_bin: "autoconf-{{ autoconf_version }}"
+autoconf_package_name_source: "autoconf-{{ autoconf_version }}"
+
+autoconf_dir: "{{ base_dir }}/autoconf"
+autoconf_app_dir: "{{ base_dir }}/autoconf/app"
+autoconf_base_dir: "{{ autoconf_app_dir }}/autoconf-{{ autoconf_version }}"
+autoconf_source_dir: "{{ autoconf_app_dir }}/source/autoconf-{{ autoconf_version }}"

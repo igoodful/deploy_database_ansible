@@ -1,0 +1,10 @@
+---
+- name: Apply role flex
+  hosts: all
+  gather_facts: true
+  roles:
+    - {
+        role: flex,
+        tags: flex,
+      }
+

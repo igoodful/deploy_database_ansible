@@ -1,0 +1,20 @@
+---
+# defaults file for gperf
+gperf_install_user: "{{ ansible_user }}"
+gperf_install_group: "{{ ansible_user }}"
+gperf_base_url: "{{ base_url }}"
+# https://ftp.gnu.org/gnu/gperf/gperf-3.1.tar.gz
+gperf_version: "3.1"
+gperf_base_url_remote: "https://ftp.gnu.org/gnu/gperf"
+
+# binary/source
+
+gperf_deploy_mode: "source"
+gperf_package_suffix: ".tar.gz"
+gperf_package_name_bin: "gperf-{{ gperf_version }}"
+gperf_package_name_source: "gperf-{{ gperf_version }}"
+
+gperf_dir: "{{ base_dir }}/gperf"
+gperf_app_dir: "{{ base_dir }}/gperf/app"
+gperf_base_dir: "{{ gperf_app_dir }}/gperf-{{ gperf_version }}"
+gperf_source_dir: "{{ gperf_app_dir }}/source/gperf-{{ gperf_version }}"

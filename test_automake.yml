@@ -1,0 +1,10 @@
+---
+- name: Apply role automake
+  hosts: all
+  gather_facts: true
+  roles:
+    - {
+        role: automake,
+        tags: automake,
+      }
+

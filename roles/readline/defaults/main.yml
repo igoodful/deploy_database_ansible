@@ -1,0 +1,18 @@
+---
+# defaults file for readline
+# https://ftp.gnu.org/gnu/readline/readline-8.2.tar.gz
+readline_install_user: "{{ ansible_user }}"
+readline_install_group: "{{ ansible_user }}"
+readline_version: "8.2"
+readline_base_url: "{{ base_url }}"
+readline_base_url_remote: "https://ftp.gnu.org/gnu/readline"
+
+# binary/source
+readline_deploy_mode: "source"
+readline_package_name_bin: "readline-{{ readline_version }}"
+readline_package_name_source: "readline-{{ readline_version }}"
+
+readline_dir: "{{ base_dir }}/readline"
+readline_app_dir: "{{ base_dir }}/readline/app"
+readline_base_dir: "{{ readline_app_dir }}/readline-{{ readline_version }}"
+readline_source_dir: "{{ readline_app_dir }}/source/readline-{{ readline_version }}"

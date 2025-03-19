@@ -1,2 +1,18 @@
 ---
 # defaults file for cmake
+# https://cmake.org/files/v3.28/cmake-3.28.0.tar.gz
+cmake_install_user: "{{ ansible_user }}"
+cmake_install_group: "{{ ansible_user }}"
+cmake_version: "3.28.0"
+cmake_base_url: "{{ base_url }}"
+cmake_base_url_remote: "https://cmake.org/files/v{{ cmake_version.split('.')[:2] | join('.') }}"
+
+# binary/source
+cmake_deploy_mode: "source"
+cmake_package_name_bin: "cmake-{{ cmake_version }}"
+cmake_package_name_source: "cmake-{{ cmake_version }}"
+
+cmake_dir: "{{ base_dir }}/cmake"
+cmake_app_dir: "{{ base_dir }}/cmake/app"
+cmake_base_dir: "{{ cmake_app_dir }}/cmake-{{ cmake_version }}"
+cmake_source_dir: "{{ cmake_app_dir }}/source/cmake-{{ cmake_version }}"

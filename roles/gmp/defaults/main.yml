@@ -1,0 +1,20 @@
+---
+# defaults file for gmp
+# https://ftp.gnu.org/gnu/gmp/gmp-6.3.0.tar.gz
+gmp_install_user: "{{ ansible_user }}"
+gmp_install_group: "{{ ansible_user }}"
+gmp_version: "6.3.0"
+gmp_base_url: "{{ base_url }}"
+gmp_base_url_remote: "https://ftp.gnu.org/gnu/gmp"
+
+# binary/source
+
+gmp_deploy_mode: "source"
+gmp_package_suffix: ".tar.gz"
+gmp_package_name_bin: "gmp-{{ gmp_version }}"
+gmp_package_name_source: "gmp-{{ gmp_version }}"
+
+gmp_dir: "{{ base_dir }}/gmp"
+gmp_app_dir: "{{ base_dir }}/gmp/app"
+gmp_base_dir: "{{ gmp_app_dir }}/gmp-{{ gmp_version }}"
+gmp_source_dir: "{{ gmp_app_dir }}/source/gmp-{{ gmp_version }}"

@@ -1,0 +1,10 @@
+---
+- name: Apply role mpc
+  hosts: all
+  gather_facts: true
+  roles:
+    - {
+        role: mpc,
+        tags: mpc,
+      }
+

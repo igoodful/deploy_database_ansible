@@ -1,0 +1,10 @@
+---
+- name: Apply role autogen
+  hosts: all
+  gather_facts: true
+  roles:
+    - {
+        role: autogen,
+        tags: autogen,
+      }
+

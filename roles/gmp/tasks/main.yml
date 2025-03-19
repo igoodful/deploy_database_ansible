@@ -1,0 +1,15 @@
+---
+# tasks file for gmp
+# https://ftp.gnu.org/gnu/gmp/gmp-6.3.0.tar.gz
+
+- include_tasks: 01-dir.yml
+
+- name: "02-install_binary.yml"
+  include_tasks: 02-install_binary.yml
+  when: gmp_deploy_mode == "binary"
+
+- name: "02-install_source.yml"
+  include_tasks: 02-install_source.yml
+  when: gmp_deploy_mode == "source"
+
+- include_tasks: 03-init.yml

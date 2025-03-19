@@ -1,2 +1,20 @@
 ---
 # defaults file for ncurses
+# https://ftp.gnu.org/gnu/ncurses/ncurses-6.4.tar.gz
+ncurses_install_user: "{{ ansible_user }}"
+ncurses_install_group: "{{ ansible_user }}"
+ncurses_version: "6.4"
+ncurses_base_url: "{{ base_url }}"
+ncurses_base_url_remote: "https://ftp.gnu.org/gnu/ncurses"
+
+# binary/source
+
+ncurses_deploy_mode: "source"
+ncurses_package_suffix: ".tar.gz"
+ncurses_package_name_bin: "ncurses-{{ ncurses_version }}"
+ncurses_package_name_source: "ncurses-{{ ncurses_version }}"
+
+ncurses_dir: "{{ base_dir }}/ncurses"
+ncurses_app_dir: "{{ base_dir }}/ncurses/app"
+ncurses_base_dir: "{{ ncurses_app_dir }}/ncurses-{{ ncurses_version }}"
+ncurses_source_dir: "{{ ncurses_app_dir }}/source/ncurses-{{ ncurses_version }}"

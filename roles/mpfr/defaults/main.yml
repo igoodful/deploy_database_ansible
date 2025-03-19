@@ -1,0 +1,20 @@
+---
+# defaults file for mpfr
+# https://ftp.gnu.org/gnu/mpfr/mpfr-4.2.0.tar.gz
+mpfr_install_user: "{{ ansible_user }}"
+mpfr_install_group: "{{ ansible_user }}"
+mpfr_version: "4.2.0"
+mpfr_base_url: "{{ base_url }}"
+mpfr_base_url_remote: "https://ftp.gnu.org/gnu/mpfr"
+
+# binary/source
+
+mpfr_deploy_mode: "source"
+mpfr_package_suffix: ".tar.gz"
+mpfr_package_name_bin: "mpfr-{{ mpfr_version }}"
+mpfr_package_name_source: "mpfr-{{ mpfr_version }}"
+
+mpfr_dir: "{{ base_dir }}/mpfr"
+mpfr_app_dir: "{{ base_dir }}/mpfr/app"
+mpfr_base_dir: "{{ mpfr_app_dir }}/mpfr-{{ mpfr_version }}"
+mpfr_source_dir: "{{ mpfr_app_dir }}/source/mpfr-{{ mpfr_version }}"

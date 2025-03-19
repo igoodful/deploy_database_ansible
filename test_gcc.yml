@@ -1,0 +1,10 @@
+---
+- name: Apply role gcc
+  hosts: all
+  gather_facts: true
+  roles:
+    - {
+        role: gcc,
+        tags: gcc,
+      }
+
