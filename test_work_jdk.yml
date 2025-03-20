@@ -1,0 +1,10 @@
+---
+- name: Apply role work_jdk
+  hosts: all
+  gather_facts: true
+  roles:
+    - {
+        role: work_jdk,
+        tags: work_jdk,
+      }
+

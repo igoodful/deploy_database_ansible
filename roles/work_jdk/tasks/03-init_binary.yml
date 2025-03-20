@@ -1,0 +1,22 @@
+---
+# tasks file for jdk
+
+# delete old JAVA_HOME from  ~/.bash_profile
+- name: "delete old JAVA_HOME from  /etc/profile"
+  become: true
+  lineinfile:
+          dest: /etc/profile
+          regex: "^.*JAVA_HOME.*$"
+          state: absent
+
+# add JAVA_HOME PATH  JRE_HOME  CLASSPATH to  /etc/profile
+- name: "add JAVA_HOME to  /etc/profile"
+  become: true
+  lineinfile:
+          dest: /etc/profile
+          line: "{{ item }}"
+  loop:
+          - export JAVA_HOME="{{ jdk_base_dir }}"
+          - export JRE_HOME="$JAVA_HOME/jre"
+          - export CLASSPATH=".:$JAVA_HOME/lib:$JRE_HOME/lib:$CLASSPATH"
+          - export PATH="$JAVA_HOME/bin:$PATH"
