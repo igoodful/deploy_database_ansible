@@ -35,4 +35,4 @@
   with_items:
           - "{{ base_dir }}"
           - "{{ mpfr_source_dir }}"
-  when: mpfr_deploy_mode == "source"
+  when: mpfr_deploy_method == "source"

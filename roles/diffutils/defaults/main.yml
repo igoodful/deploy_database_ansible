@@ -9,7 +9,7 @@ diffutils_base_url_remote: "https://ftp.gnu.org/gnu/diffutils"
 
 # binary/source
 
-diffutils_deploy_mode: "source"
+diffutils_deploy_method: "source"
 diffutils_package_suffix: ".tar.gz"
 diffutils_package_name_binary: "diffutils-{{ diffutils_version }}"
 diffutils_package_name_source: "diffutils-{{ diffutils_version }}"

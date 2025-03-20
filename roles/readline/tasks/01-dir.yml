@@ -35,4 +35,4 @@
   with_items:
           - "{{ base_dir }}"
           - "{{ readline_source_dir }}"
-  when: readline_deploy_mode == "source"
+  when: readline_deploy_method == "source"

@@ -7,7 +7,7 @@ jdk_install_user: "{{ ansible_user }}"
 jdk_install_group: "{{ ansible_user }}"
 jdk_version: "18.0.2"
 # binary/source
-jdk_deploy_mode: "binary"
+jdk_deploy_method: "binary"
 jdk_base_url: "{{ base_url }}"
 jdk_base_url_remote: ""
 

@@ -35,4 +35,4 @@
   with_items:
           - "{{ base_dir }}"
           - "{{ gmp_source_dir }}"
-  when: gmp_deploy_mode == "source"
+  when: gmp_deploy_method == "source"

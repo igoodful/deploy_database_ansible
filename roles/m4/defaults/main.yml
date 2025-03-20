@@ -8,7 +8,7 @@ m4_install_group: "{{ ansible_user }}"
 m4_version: "1.4"
 
 # binary/source
-m4_deploy_mode: "source"
+m4_deploy_method: "source"
 m4_package_name_binary: "m4-{{ m4_version }}"
 m4_package_name_source: "m4-{{ m4_version }}"
 

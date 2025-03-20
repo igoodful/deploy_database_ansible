@@ -5,18 +5,17 @@
 # install
 - name: "02-install_binary.yml"
   include_tasks: 02-install_binary.yml
-  when: binutils_deploy_mode == "binary"
+  when: binutils_deploy_method == "binary"
 
 - name: "02-install_source.yml"
   include_tasks: 02-install_source.yml
-  when: binutils_deploy_mode == "source"
+  when: binutils_deploy_method == "source"
 
 # init
 - name: "03-init_binary.yml"
   include_tasks: 03-init_binary.yml
-  when: binutils_deploy_mode == "binary"
+  when: binutils_deploy_method == "binary"
 
 - name: "03-init_source.yml"
   include_tasks: 03-init_source.yml
-  when: binutils_deploy_mode == "source"
-
+  when: binutils_deploy_method == "source"

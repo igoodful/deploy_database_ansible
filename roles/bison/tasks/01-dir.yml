@@ -35,4 +35,4 @@
   with_items:
           - "{{ base_dir }}"
           - "{{ bison_source_dir }}"
-  when: bison_deploy_mode == "source"
+  when: bison_deploy_method == "source"

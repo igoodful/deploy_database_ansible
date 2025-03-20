@@ -35,4 +35,4 @@
   with_items:
           - "{{ base_dir }}"
           - "{{ jdk_source_dir }}"
-  when: jdk_deploy_mode == "source"
+  when: jdk_deploy_method == "source"

@@ -1,14 +1,14 @@
 ---
 #- name: Check VIP status
 #  ping: "{{ g_vip_address }}"
-#  when: deploy_mode != "all-in-one"
+#  when: deploy_method != "all-in-one"
 #  register: ping_result
 #  ignore_errors: yes
 #
 #- fail:
 #    msg: "vip 可以正常 ping 通，请检查是否该 vip 已经被占用 "
 #  when:
-#    - deploy_mode != "all-in-one"
+#    - deploy_method != "all-in-one"
 #    - ping_result.failed == False
 
 - name: Check the running environment

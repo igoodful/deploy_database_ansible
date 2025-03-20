@@ -35,4 +35,4 @@
   with_items:
           - "{{ base_dir }}"
           - "{{ zlib_source_dir }}"
-  when: zlib_deploy_mode == "source"
+  when: zlib_deploy_method == "source"

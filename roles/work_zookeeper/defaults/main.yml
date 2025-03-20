@@ -1,2 +1,29 @@
 ---
 # defaults file for work_zookeeper
+# https://ftp.gnu.org/gnu/zookeeper/zookeeper-2.44.tar.gz
+zookeeper_install_user: "{{ ansible_user }}"
+zookeeper_install_group: "{{ ansible_user }}"
+zookeeper_version: "3.6.2"
+zookeeper_port: "15309"
+zookeeper_election_port: "28881"
+zookeeper_communication_port: "38881"
+# standalone/cluster/pseudo_cluster
+zookeeper_deploy_mode: "standalone"
+# binary/source
+zookeeper_deploy_method: "binary"
+zookeeper_base_url: "{{ base_url }}"
+zookeeper_base_url_remote: "https://ftp.gnu.org/gnu/zookeeper"
+
+zookeeper_package_suffix: ".tar.gz"
+zookeeper_package_name_binary: "zookeeper-{{ zookeeper_version }}-{{ ansible_architecture }}{{ zookeeper_package_suffix }}"
+zookeeper_package_name_source: "zookeeper-{{ zookeeper_version }}{{ zookeeper_package_suffix }}"
+
+zookeeper_app_dir: "{{ base_dir }}/app"
+zookeeper_base_dir: "{{ zookeeper_app_dir }}/zookeeper-{{ zookeeper_version }}"
+zookeeper_bin_dir: "{{ zookeeper_base_dir }}/bin"
+zookeeper_source_dir: "{{ zookeeper_base_dir }}/source/zookeeper-{{ zookeeper_version }}"
+
+zookeeper_data_base_dir: "{{ base_dir }}/zookeeperdata"
+zookeeper_data_dir: "{{ zookeeper_data_base_dir }}/data"
+zookeeper_conf_dir: "{{ zookeeper_data_base_dir }}/conf"
+zookeeper_log_dir: "{{ zookeeper_data_base_dir }}/log"

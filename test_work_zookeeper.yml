@@ -1,0 +1,10 @@
+---
+- name: Apply role work_zookeeper
+  hosts: all
+  gather_facts: true
+  roles:
+    - {
+        role: work_zookeeper,
+        tags: work_zookeeper,
+      }
+

@@ -35,4 +35,4 @@
   with_items:
           - "{{ base_dir }}"
           - "{{ autogen_source_dir }}"
-  when: autogen_deploy_mode == "source"
+  when: autogen_deploy_method == "source"

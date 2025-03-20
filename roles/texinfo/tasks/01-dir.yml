@@ -35,4 +35,4 @@
   with_items:
           - "{{ base_dir }}"
           - "{{ texinfo_source_dir }}"
-  when: texinfo_deploy_mode == "source"
+  when: texinfo_deploy_method == "source"

@@ -8,7 +8,7 @@ libtirpc_base_url: "{{ base_url }}"
 libtirpc_base_url_remote: "https://ftp.gnu.org/gnu/libtirpc"
 
 # binary/source
-libtirpc_deploy_mode: "source"
+libtirpc_deploy_method: "source"
 ######################################
 libtirpc_package_suffix: ".tar.bz2"
 ######################################

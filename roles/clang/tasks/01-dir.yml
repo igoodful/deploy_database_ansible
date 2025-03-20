@@ -35,4 +35,4 @@
   with_items:
           - "{{ base_dir }}"
           - "{{ clang_source_dir }}"
-  when: clang_deploy_mode == "source"
+  when: clang_deploy_method == "source"

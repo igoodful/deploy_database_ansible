@@ -1,7 +1,7 @@
 all:
         hosts:
                 node1:
-                        ansible_host: 172.17.135.78
+                        ansible_host: 172.17.135.146
         vars:
                 ansible_user: mysql
                 ansible_password: mysql

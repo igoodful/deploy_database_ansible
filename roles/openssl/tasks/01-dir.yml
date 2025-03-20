@@ -35,4 +35,4 @@
   with_items:
           - "{{ base_dir }}"
           - "{{ openssl_source_dir }}"
-  when: openssl_deploy_mode == "source"
+  when: openssl_deploy_method == "source"

@@ -10,7 +10,7 @@ mpc_base_url_remote: "https://ftp.gnu.org/gnu/mpc"
 
 # binary/source
 
-mpc_deploy_mode: "source"
+mpc_deploy_method: "source"
 mpc_package_suffix: ".tar.gz"
 mpc_package_name_binary: "mpc-{{ mpc_version }}"
 mpc_package_name_source: "mpc-{{ mpc_version }}"

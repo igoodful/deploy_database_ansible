@@ -11,7 +11,7 @@ guile_base_url_remote: "https://ftp.gnu.org/gnu/guile"
 
 # binary/source
 
-guile_deploy_mode: "source"
+guile_deploy_method: "source"
 guile_package_suffix: ".tar.gz"
 guile_package_name_binary: "guile-{{ guile_version }}"
 guile_package_name_source: "guile-{{ guile_version }}"

@@ -35,4 +35,4 @@
   with_items:
           - "{{ base_dir }}"
           - "{{ libev_source_dir }}"
-  when: libev_deploy_mode == "source"
+  when: libev_deploy_method == "source"

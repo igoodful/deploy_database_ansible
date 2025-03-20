@@ -8,7 +8,7 @@ libtool_base_url: "{{ base_url }}"
 libtool_base_url_remote: "https://ftp.gnu.org/gnu/libtool"
 
 # binary/source
-libtool_deploy_mode: "source"
+libtool_deploy_method: "source"
 libtool_package_name_binary: "libtool-{{ libtool_version }}"
 libtool_package_name_source: "libtool-{{ libtool_version }}"
 

@@ -5,7 +5,7 @@ jemalloc_install_user: "{{ ansible_user }}"
 jemalloc_install_group: "{{ ansible_user }}"
 jemalloc_version: "5.2.1"
 # binary/source
-jemalloc_deploy_mode: "source"
+jemalloc_deploy_method: "source"
 jemalloc_base_url: "{{ base_url }}"
 jemalloc_base_url_remote: "https://github.com/jemalloc/jemalloc/archive/refs/tags"
 

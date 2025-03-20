@@ -35,4 +35,4 @@
   with_items:
           - "{{ base_dir }}"
           - "{{ flex_source_dir }}"
-  when: flex_deploy_mode == "source"
+  when: flex_deploy_method == "source"

@@ -35,4 +35,4 @@
   with_items:
           - "{{ base_dir }}"
           - "{{ libtirpc_source_dir }}"
-  when: libtirpc_deploy_mode == "source"
+  when: libtirpc_deploy_method == "source"

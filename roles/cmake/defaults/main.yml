@@ -6,7 +6,7 @@ cmake_install_user: "{{ ansible_user }}"
 cmake_install_group: "{{ ansible_user }}"
 cmake_version: "3.30.8"
 # binary/source
-cmake_deploy_mode: "source"
+cmake_deploy_method: "source"
 cmake_base_url: "{{ base_url }}"
 cmake_base_url_remote: "https://github.com/Kitware/CMake/archive/refs/tags"
 

@@ -3,32 +3,31 @@
 - name: "Extract {{ install_tmpdir }}/mysql-{{ mysql_version }}-{{ ansible_architecture }}.tar.gz"
   become: true
   unarchive:
-    src: "{{ install_tmpdir }}/mysql-{{ mysql_version }}-{{ ansible_architecture }}.tar.gz"
-    dest: "{{ mysql_base_dir }}/"
-    remote_src: true
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-    mode: 0755
-    extra_opts:
-      - --strip-components=1
-    exclude:
-      - "*.md"
-      - "Document*"
-  when: mysql_deploy_mode == "bin"
+          src: "{{ install_tmpdir }}/mysql-{{ mysql_version }}-{{ ansible_architecture }}.tar.gz"
+          dest: "{{ mysql_base_dir }}/"
+          remote_src: true
+          owner: "{{ ansible_user }}"
+          group: "{{ ansible_user }}"
+          mode: 0755
+          extra_opts:
+                  - --strip-components=1
+          exclude:
+                  - "*.md"
+                  - "Document*"
+  when: mysql_deploy_method == "bin"
 
 # source
 - name: "Extract {{ install_tmpdir }}/mysql-{{ mysql_version }}.tar.gz"
   become: true
   unarchive:
-    src: "{{ install_tmpdir }}/mysql-{{ mysql_version }}.tar.gz"
-    dest: "{{ mysql_source_dir }}/"
-    remote_src: true
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-    extra_opts:
-      - --strip-components=1
-    exclude:
-      - "*.md"
-      - "Document*"
-  when: mysql_deploy_mode == "source"
-
+          src: "{{ install_tmpdir }}/mysql-{{ mysql_version }}.tar.gz"
+          dest: "{{ mysql_source_dir }}/"
+          remote_src: true
+          owner: "{{ ansible_user }}"
+          group: "{{ ansible_user }}"
+          extra_opts:
+                  - --strip-components=1
+          exclude:
+                  - "*.md"
+                  - "Document*"
+  when: mysql_deploy_method == "source"

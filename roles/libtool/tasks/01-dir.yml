@@ -35,4 +35,4 @@
   with_items:
           - "{{ base_dir }}"
           - "{{ libtool_source_dir }}"
-  when: libtool_deploy_mode == "source"
+  when: libtool_deploy_method == "source"

@@ -1,2 +1,21 @@
 ---
 # tasks file for work_zookeeper
+- include_tasks: 01-dir.yml
+
+# install
+- name: "02-install_binary.yml"
+  include_tasks: 02-install_binary.yml
+  when: zookeeper_deploy_method == "binary"
+
+- name: "02-install_source.yml"
+  include_tasks: 02-install_source.yml
+  when: zookeeper_deploy_method == "source"
+
+# init
+- name: "03-init_binary.yml"
+  include_tasks: 03-init_binary.yml
+  when: zookeeper_deploy_method == "binary"
+
+- name: "03-init_source.yml"
+  include_tasks: 03-init_source.yml
+  when: zookeeper_deploy_method == "source"

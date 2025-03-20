@@ -15,7 +15,7 @@ mysql_rep_init_password: "{{ mysql_admin_init_password }}"
 mysql_install_user: "{{ ansible_user }}"
 mysql_install_group: "{{ ansible_user }}"
 # binary/source
-mysql_deploy_mode: "binary"
+mysql_deploy_method: "binary"
 mysql_base_url: "{{ base_url }}"
 mysql_base_url_remote: ""
 mysql_package_suffix: ".tar.gz"
@@ -38,11 +38,3 @@ mysql_socket_dir: "{{ mysql_base_dir }}/socket"
 mysql_source_dir: "{{ mysql_app_dir }}/source/mysql-{{ mysql_version }}"
 # 一般来说，设置为总 RAM 的 50% – 70% 作为起点
 innodb_buffer_pool_size: "{{ ansible_memtotal_mb * 1 // 2 |int }}"
-
-
-
-
-
-
-
-

@@ -35,4 +35,4 @@
   with_items:
           - "{{ base_dir }}"
           - "{{ automake_source_dir }}"
-  when: automake_deploy_mode == "source"
+  when: automake_deploy_method == "source"

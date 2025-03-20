@@ -2,19 +2,14 @@
 # download
 - name: "Download {{ httpd_download_url }}"
   get_url:
-    url: "{{ httpd_download_url }}"
-    dest: "{{ install_tmpdir }}/"
-  when: httpd_deploy_mode == 'source' and httpd_url != "local"
+          url: "{{ httpd_download_url }}"
+          dest: "{{ install_tmpdir }}/"
+  when: httpd_deploy_method == 'source' and httpd_url != "local"
 
 # copy node_exporter
 
 - name: "cp {{ httpd_package_name }}"
   copy:
-    src: "{{ httpd_package_name }}"
-    dest: "{{ install_tmpdir }}/"
-  when: httpd_deploy_mode == 'source' and httpd_url == "local"
-
-
-
-
-
+          src: "{{ httpd_package_name }}"
+          dest: "{{ install_tmpdir }}/"
+  when: httpd_deploy_method == 'source' and httpd_url == "local"

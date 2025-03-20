@@ -35,4 +35,4 @@
   with_items:
           - "{{ base_dir }}"
           - "{{ ncurses_source_dir }}"
-  when: ncurses_deploy_mode == "source"
+  when: ncurses_deploy_method == "source"

@@ -34,4 +34,4 @@
   with_items:
           - "{{ base_dir }}"
           - "{{ mysql_source_dir }}"
-  when: mysql_deploy_mode == "source"
+  when: mysql_deploy_method == "source"

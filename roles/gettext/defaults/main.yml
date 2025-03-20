@@ -8,7 +8,7 @@ gettext_install_group: "{{ ansible_user }}"
 gettext_version: "0.22.4"
 
 # binary/source
-gettext_deploy_mode: "source"
+gettext_deploy_method: "source"
 gettext_package_name_binary: "gettext-{{ gettext_version }}"
 gettext_package_name_source: "gettext-{{ gettext_version }}"
 

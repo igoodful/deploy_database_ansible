@@ -2,5 +2,9 @@
 ticbase_ansible.log
 files/*
 fact_files/*
+roles/work_dbscale/*
+roles/work_mysql/*
+roles/work_jdk/*
+roles/work_zookeeper/*
 
 

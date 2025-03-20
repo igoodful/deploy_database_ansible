@@ -1,6 +1,6 @@
 ---
 # defaults file for mysql
-# mysql_deploy_mode: bin,source,rpm
+# mysql_deploy_method: bin,source,rpm
 # mysql_url: local,url
 
 # mysql-8.0.32-aarch64.tar.gz
@@ -20,7 +20,7 @@ mysql_monitor_init_password: "XqgLB0DztWYouSBJ8L0P5p5Hq83Ks5Jm"
 mysql_port: "8032"
 mysql_version: "8.0.32"
 mysql_base_url: "{{ base_url }}"
-mysql_deploy_mode: "bin"
+mysql_deploy_method: "bin"
 mysql_url: "local"
 # replica,mgr
 mysql_cluster_mode: "mgr"

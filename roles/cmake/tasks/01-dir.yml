@@ -35,4 +35,4 @@
   with_items:
           - "{{ base_dir }}"
           - "{{ cmake_source_dir }}"
-  when: cmake_deploy_mode == "source"
+  when: cmake_deploy_method == "source"

@@ -8,7 +8,7 @@ automake_base_url: "{{ base_url }}"
 automake_base_url_remote: "https://ftp.gnu.org/gnu/automake"
 
 # binary/source
-automake_deploy_mode: "source"
+automake_deploy_method: "source"
 automake_package_name_binary: "automake-{{ automake_version }}"
 automake_package_name_source: "automake-{{ automake_version }}"
 

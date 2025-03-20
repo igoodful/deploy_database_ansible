@@ -5,7 +5,7 @@ libgcrypt_install_user: "{{ ansible_user }}"
 libgcrypt_install_group: "{{ ansible_user }}"
 libgcrypt_version: "1.8.11"
 # binary/source
-libgcrypt_deploy_mode: "source"
+libgcrypt_deploy_method: "source"
 libgcrypt_base_url: "{{ base_url }}"
 libgcrypt_base_url_remote: "https://gnupg.org/ftp/gcrypt/libgcrypt"
 

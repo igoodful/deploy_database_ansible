@@ -35,4 +35,4 @@
   with_items:
           - "{{ base_dir }}"
           - "{{ m4_source_dir }}"
-  when: m4_deploy_mode == "source"
+  when: m4_deploy_method == "source"

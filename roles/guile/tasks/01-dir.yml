@@ -35,4 +35,4 @@
   with_items:
           - "{{ base_dir }}"
           - "{{ guile_source_dir }}"
-  when: guile_deploy_mode == "source"
+  when: guile_deploy_method == "source"

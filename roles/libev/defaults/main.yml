@@ -5,7 +5,7 @@ libev_install_user: "{{ ansible_user }}"
 libev_install_group: "{{ ansible_user }}"
 libev_version: "4.33"
 # binary/source
-libev_deploy_mode: "source"
+libev_deploy_method: "source"
 libev_base_url: "{{ base_url }}"
 libev_base_url_remote: "https://ftp.gnu.org/gnu/libev"
 

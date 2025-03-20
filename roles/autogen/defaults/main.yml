@@ -8,7 +8,7 @@ autogen_base_url: "{{ base_url }}"
 autogen_base_url_remote: "https://ftp.gnu.org/gnu/autogen/rel{{ autogen_version }}"
 
 # binary/source
-autogen_deploy_mode: "source"
+autogen_deploy_method: "source"
 autogen_package_name_binary: "autogen-{{ autogen_version }}"
 autogen_package_name_source: "autogen-{{ autogen_version }}"
 

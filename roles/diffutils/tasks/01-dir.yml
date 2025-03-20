@@ -35,4 +35,4 @@
   with_items:
           - "{{ base_dir }}"
           - "{{ diffutils_source_dir }}"
-  when: diffutils_deploy_mode == "source"
+  when: diffutils_deploy_method == "source"

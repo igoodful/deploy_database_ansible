@@ -1,9 +1,8 @@
 ---
-
 # server_id
 - name: "generate server_id"
   shell:
-    cmd: echo $RANDOM |cksum |cut -c 1-8
+          cmd: echo $RANDOM |cksum |cut -c 1-8
   register: server_id
 
 # generate group_replication_group_name
@@ -11,177 +10,171 @@
   delegate_to: localhost
   run_once: true
   shell:
-    cmd: uuidgen
+          cmd: uuidgen
   register: group_replication_group_name
 
 # Copy my.cnf.j2 template
 - name: "Copy my.cnf.j2 template"
   become: true
   template:
-    src: my.cnf.j2
-    dest: "{{ mysql_conf_dir }}/my.cnf"
-    owner: "{{ mysql_install_user }}"
-    group: "{{ mysql_install_group }}"
-    mode: "0644"
+          src: my.cnf.j2
+          dest: "{{ mysql_conf_dir }}/my.cnf"
+          owner: "{{ mysql_install_user }}"
+          group: "{{ mysql_install_group }}"
+          mode: "0644"
 
 # Copy mysqld.service.j2 template
 - name: "Copy mysqld.service.j2 template"
   become: true
   template:
-    src: mysqld.service.j2
-    dest: "/usr/lib/systemd/system/mysqld.service"
-    mode: "0644"
-
-
+          src: mysqld.service.j2
+          dest: "/usr/lib/systemd/system/mysqld.service"
+          mode: "0644"
 
 - name: "set owner and group for {{ base_dir }}"
   become: true
   file:
-    dest: "{{ base_dir }}"
-    owner: "{{ mysql_install_user }}"
-    group: "{{ mysql_install_group }}"
-    recurse: true
+          dest: "{{ base_dir }}"
+          owner: "{{ mysql_install_user }}"
+          group: "{{ mysql_install_group }}"
+          recurse: true
 
 # 初始化
 - name: "init mysql"
   become: true
   shell:
-    cmd: "{{ mysql_base_dir }}/bin/mysqld --defaults-file={{ mysql_conf_dir }}/my.cnf --initialize --user={{ mysql_install_user }}"
+          cmd: "{{ mysql_base_dir }}/bin/mysqld --defaults-file={{ mysql_conf_dir }}/my.cnf --initialize --user={{ mysql_install_user }}"
 
 # start mysqld.service
 
 - name: "enabled mysqld.service"
   become: true
   service:
-    name: mysqld.service
-    enabled: true
+          name: mysqld.service
+          enabled: true
 
 - name: "systemctl daemon-reload"
   become: true
   shell:
-    cmd: systemctl daemon-reload
+          cmd: systemctl daemon-reload
 
 - name: "start mysqld.service"
   become: true
   service:
-    name: mysqld.service
-    state: started
+          name: mysqld.service
+          state: started
 
 - name: "check mysqld service"
   become: true
   shell:
-    cmd: "systemctl status mysqld.service"
+          cmd: "systemctl status mysqld.service"
 
 - name: "stop mysqld service"
   become: true
   shell:
-    cmd: "systemctl stop mysqld.service"
+          cmd: "systemctl stop mysqld.service"
 
 - name: "start mysqld service"
   become: true
   shell:
-    cmd: "systemctl start mysqld.service"
+          cmd: "systemctl start mysqld.service"
 
 - name: "ps aux|grep mysqld"
   become: true
   shell:
-    cmd: ps aux|grep mysqld
+          cmd: ps aux|grep mysqld
 
 # get mysql password
 - name: "get mysql password"
   become: true
   shell:
-    chdir: "{{ mysql_log_dir }}"
-    cmd: cat error.log |grep localhost |grep 'temporary password' |tail -1 |awk '{print $NF}'
+          chdir: "{{ mysql_log_dir }}"
+          cmd: cat error.log |grep localhost |grep 'temporary password' |tail -1 |awk '{print $NF}'
   register: mysql_temporary_password
 
 # show temporary password
 - name: "show temporary password"
   debug:
-    msg: "{{ mysql_temporary_password.stdout }}"
+          msg: "{{ mysql_temporary_password.stdout }}"
 
 # slepp 30
 - name: pause 30
   ansible.builtin.pause:
-    seconds: 30
-
+          seconds: 30
 
 #######################################
 # update root@localhost password
 - name: "alter root@localhost password for mysqld"
   become: true
   shell:
-    chdir: "{{ mysql_base_dir }}/bin"
-    cmd: ./mysqladmin -u root -p'{{ mysql_temporary_password.stdout }}' -S{{ mysql_tmp_dir }}/mysql.sock password '{{ mysql_root_loacl_init_password }}'
+          chdir: "{{ mysql_base_dir }}/bin"
+          cmd: ./mysqladmin -u root -p'{{ mysql_temporary_password.stdout }}' -S{{ mysql_tmp_dir }}/mysql.sock password '{{ mysql_root_loacl_init_password }}'
   when: mysql_root_loacl_init_password is defined
 
 # create user for root@'%'
 - name: create user for root@'%'
   shell:
-    chdir: "{{ mysql_base_dir }}/bin"
-    cmd: ./mysql -uroot -p'{{ mysql_root_loacl_init_password }}' -S{{ mysql_tmp_dir }}/mysql.sock -e "{{ item }}"
+          chdir: "{{ mysql_base_dir }}/bin"
+          cmd: ./mysql -uroot -p'{{ mysql_root_loacl_init_password }}' -S{{ mysql_tmp_dir }}/mysql.sock -e "{{ item }}"
   loop:
-    - create user root@'%' identified with mysql_native_password by '{{ mysql_root_init_password }}';
-    - grant all privileges on *.* to root@'%'  with grant option;
+          - create user root@'%' identified with mysql_native_password by '{{ mysql_root_init_password }}';
+          - grant all privileges on *.* to root@'%'  with grant option;
   when: mysql_root_init_password is defined
-
 
 # create user for {{ mysql_admin_init_user }}@'%'
 - name: create user for {{ mysql_admin_init_user }}@'%'
   shell:
-    chdir: "{{ mysql_base_dir }}/bin"
-    cmd: ./mysql -uroot -p'{{ mysql_root_loacl_init_password }}' -S{{ mysql_tmp_dir }}/mysql.sock -e "{{ item }}"
+          chdir: "{{ mysql_base_dir }}/bin"
+          cmd: ./mysql -uroot -p'{{ mysql_root_loacl_init_password }}' -S{{ mysql_tmp_dir }}/mysql.sock -e "{{ item }}"
   loop:
-    - create user {{ mysql_admin_init_user }}@'%' identified with mysql_native_password by '{{ mysql_admin_init_password }}';
-    - grant all privileges on *.* to {{ mysql_admin_init_user }}@'%'  with grant option;
+          - create user {{ mysql_admin_init_user }}@'%' identified with mysql_native_password by '{{ mysql_admin_init_password }}';
+          - grant all privileges on *.* to {{ mysql_admin_init_user }}@'%'  with grant option;
   when: mysql_admin_init_password is defined
 
 # create user for {{ mysql_rep_init_user }}@'%'
 - name: create user for {{ mysql_rep_init_user }}@'%'
   shell:
-    chdir: "{{ mysql_base_dir }}/bin"
-    cmd: ./mysql -uroot -p'{{ mysql_root_loacl_init_password }}' -S{{ mysql_tmp_dir }}/mysql.sock -e "{{ item }}"
+          chdir: "{{ mysql_base_dir }}/bin"
+          cmd: ./mysql -uroot -p'{{ mysql_root_loacl_init_password }}' -S{{ mysql_tmp_dir }}/mysql.sock -e "{{ item }}"
   loop:
-    - create user {{ mysql_rep_init_user }}@'%' identified with mysql_native_password by '{{ mysql_rep_init_password }}';
-    - grant backup_admin,super,reload,replication client,replication slave on *.* to {{ mysql_rep_init_user }}@'%';
+          - create user {{ mysql_rep_init_user }}@'%' identified with mysql_native_password by '{{ mysql_rep_init_password }}';
+          - grant backup_admin,super,reload,replication client,replication slave on *.* to {{ mysql_rep_init_user }}@'%';
   when: mysql_rep_init_password is defined
 
 # create user for {{ mysql_monitor_init_user }}@'%'
 - name: create user for {{ mysql_monitor_init_user }}@'%'
   shell:
-    chdir: "{{ mysql_base_dir }}/bin"
-    cmd: ./mysql -uroot -p'{{ mysql_root_loacl_init_password }}' -S{{ mysql_tmp_dir }}/mysql.sock -e "{{ item }}"
+          chdir: "{{ mysql_base_dir }}/bin"
+          cmd: ./mysql -uroot -p'{{ mysql_root_loacl_init_password }}' -S{{ mysql_tmp_dir }}/mysql.sock -e "{{ item }}"
   loop:
-    - create user {{ mysql_monitor_init_user }}@'%' identified with mysql_native_password by '{{ mysql_monitor_init_password }}';
-    - grant select,process,replication client on *.* to {{ mysql_monitor_init_user }}@'%';
+          - create user {{ mysql_monitor_init_user }}@'%' identified with mysql_native_password by '{{ mysql_monitor_init_password }}';
+          - grant select,process,replication client on *.* to {{ mysql_monitor_init_user }}@'%';
   when: mysql_monitor_init_password is defined
 
 # reset master and reset slave all
 - name: reset master and reset slave all
   shell:
-    chdir: "{{ mysql_base_dir }}/bin"
-    cmd: ./mysql -uroot -p'{{ mysql_root_loacl_init_password }}' -S{{ mysql_tmp_dir }}/mysql.sock -e "{{ item }}"
+          chdir: "{{ mysql_base_dir }}/bin"
+          cmd: ./mysql -uroot -p'{{ mysql_root_loacl_init_password }}' -S{{ mysql_tmp_dir }}/mysql.sock -e "{{ item }}"
   loop:
-    - reset master;
-    - reset slave all;
+          - reset master;
+          - reset slave all;
   when: mysql_root_loacl_init_password is defined
 
 ####################################################
-
 
 # source
 - name: "Extract {{ install_tmpdir }}/mysql-{{ mysql_version }}.tar.gz"
   become: true
   unarchive:
-    src: "{{ install_tmpdir }}/mysql-{{ mysql_version }}.tar.gz"
-    dest: "{{ mysql_source_dir }}/"
-    remote_src: true
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-    extra_opts:
-      - --strip-components=1
-    exclude:
-      - "*.md"
-      - "Document*"
-  when: mysql_deploy_mode == "source"
-
+          src: "{{ install_tmpdir }}/mysql-{{ mysql_version }}.tar.gz"
+          dest: "{{ mysql_source_dir }}/"
+          remote_src: true
+          owner: "{{ ansible_user }}"
+          group: "{{ ansible_user }}"
+          extra_opts:
+                  - --strip-components=1
+          exclude:
+                  - "*.md"
+                  - "Document*"
+  when: mysql_deploy_method == "source"

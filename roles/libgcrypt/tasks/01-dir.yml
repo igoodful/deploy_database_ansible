@@ -35,4 +35,4 @@
   with_items:
           - "{{ base_dir }}"
           - "{{ libgcrypt_source_dir }}"
-  when: libgcrypt_deploy_mode == "source"
+  when: libgcrypt_deploy_method == "source"

@@ -6,7 +6,7 @@ clang_install_user: "{{ ansible_user }}"
 clang_install_group: "{{ ansible_user }}"
 clang_version: "18.1.2"
 # binary/source
-clang_deploy_mode: "source"
+clang_deploy_method: "source"
 clang_base_url: "{{ base_url }}"
 clang_base_url_remote: "https://github.com/llvm/llvm-project/archive/refs/tags"
 

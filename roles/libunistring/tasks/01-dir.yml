@@ -35,4 +35,4 @@
   with_items:
           - "{{ base_dir }}"
           - "{{ libunistring_source_dir }}"
-  when: libunistring_deploy_mode == "source"
+  when: libunistring_deploy_method == "source"

@@ -35,4 +35,4 @@
   with_items:
           - "{{ base_dir }}"
           - "{{ isl_source_dir }}"
-  when: isl_deploy_mode == "source"
+  when: isl_deploy_method == "source"

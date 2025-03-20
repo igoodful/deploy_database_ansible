@@ -9,7 +9,7 @@ patch_base_url_remote: "https://ftp.gnu.org/gnu/patch"
 
 # binary/source
 
-patch_deploy_mode: "source"
+patch_deploy_method: "source"
 patch_package_suffix: ".tar.gz"
 patch_package_name_binary: "patch-{{ patch_version }}"
 patch_package_name_source: "patch-{{ patch_version }}"

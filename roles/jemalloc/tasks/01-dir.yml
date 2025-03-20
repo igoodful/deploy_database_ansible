@@ -35,4 +35,4 @@
   with_items:
           - "{{ base_dir }}"
           - "{{ jemalloc_source_dir }}"
-  when: jemalloc_deploy_mode == "source"
+  when: jemalloc_deploy_method == "source"
