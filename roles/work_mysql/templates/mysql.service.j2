@@ -1,0 +1,17 @@
+[Unit]
+Description=mysql service
+After=network.target
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+User={{ mysql_install_user }}
+Group={{ mysql_install_group }}
+Type=simple
+TimeoutSec=0
+LimitNOFILE = 1024000
+LimitNPROC = 1024000
+PrivateTmp=false
+ExecStart={{ mysql_bin_dir }}/mysqld_safe --defaults-file={{ mysql_conf_dir }}/my{{ mysql_port }}.conf --user={{ mysql_install_user }} --datadir={{ mysql_data_dir }}
+

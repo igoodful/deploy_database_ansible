@@ -11,7 +11,7 @@ mpfr_base_url_remote: "https://ftp.gnu.org/gnu/mpfr"
 
 mpfr_deploy_mode: "source"
 mpfr_package_suffix: ".tar.gz"
-mpfr_package_name_bin: "mpfr-{{ mpfr_version }}"
+mpfr_package_name_binary: "mpfr-{{ mpfr_version }}"
 mpfr_package_name_source: "mpfr-{{ mpfr_version }}"
 
 mpfr_dir: "{{ base_dir }}/mpfr"

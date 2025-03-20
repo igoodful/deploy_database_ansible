@@ -1,0 +1,10 @@
+---
+- name: Apply role jemalloc
+  hosts: all
+  gather_facts: true
+  roles:
+    - {
+        role: jemalloc,
+        tags: jemalloc,
+      }
+

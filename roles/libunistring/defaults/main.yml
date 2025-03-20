@@ -11,7 +11,7 @@ libunistring_base_url_remote: "https://ftp.gnu.org/gnu/libunistring"
 
 libunistring_deploy_mode: "source"
 libunistring_package_suffix: ".tar.gz"
-libunistring_package_name_bin: "libunistring-{{ libunistring_version }}"
+libunistring_package_name_binary: "libunistring-{{ libunistring_version }}"
 libunistring_package_name_source: "libunistring-{{ libunistring_version }}"
 
 libunistring_dir: "{{ base_dir }}/libunistring"

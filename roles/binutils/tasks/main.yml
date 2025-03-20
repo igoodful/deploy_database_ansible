@@ -1,9 +1,8 @@
 ---
 # tasks file for binutils
-# https://ftp.gnu.org/gnu/binutils/binutils-2.44.tar.gz
-
 - include_tasks: 01-dir.yml
 
+# install
 - name: "02-install_binary.yml"
   include_tasks: 02-install_binary.yml
   when: binutils_deploy_mode == "binary"
@@ -12,4 +11,12 @@
   include_tasks: 02-install_source.yml
   when: binutils_deploy_mode == "source"
 
-- include_tasks: 03-init.yml
+# init
+- name: "03-init_binary.yml"
+  include_tasks: 03-init_binary.yml
+  when: binutils_deploy_mode == "binary"
+
+- name: "03-init_source.yml"
+  include_tasks: 03-init_source.yml
+  when: binutils_deploy_mode == "source"
+

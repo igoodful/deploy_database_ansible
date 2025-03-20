@@ -9,7 +9,7 @@ m4_version: "1.4"
 
 # binary/source
 m4_deploy_mode: "source"
-m4_package_name_bin: "m4-{{ m4_version }}"
+m4_package_name_binary: "m4-{{ m4_version }}"
 m4_package_name_source: "m4-{{ m4_version }}"
 
 m4_dir: "{{ base_dir }}/m4"

@@ -8,7 +8,7 @@ libaio_base_url: "{{ base_url }}"
 libaio_base_url_remote: "https://pagure.io/libaio/archive/libaio-{{ libaio_version }}"
 # binary/source
 libaio_deploy_mode: "source"
-libaio_package_name_bin: "libaio-{{ libaio_version }}"
+libaio_package_name_binary: "libaio-{{ libaio_version }}"
 libaio_package_name_source: "libaio-{{ libaio_version }}"
 
 libaio_dir: "{{ base_dir }}/libaio"

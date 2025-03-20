@@ -1,0 +1,38 @@
+---
+# tasks file for clang
+- name: "remove {{ clang_source_dir }} {{ clang_base_dir }}"
+  become: true
+  file:
+          path: "{{ item }}"
+          state: absent
+  with_items:
+          - "{{ clang_source_dir }}"
+          - "{{ clang_base_dir }}"
+
+- name: "mkdir for clang"
+  become: true
+  file:
+          path: "{{ item }}"
+          state: directory
+          owner: "{{ clang_install_user }}"
+          group: "{{ clang_install_group }}"
+          mode: 0755
+  with_items:
+          - "{{ base_dir }}"
+          - "{{ clang_dir }}"
+          - "{{ install_tmpdir }}"
+          - "{{ clang_app_dir }}"
+          - "{{ clang_base_dir }}"
+
+- name: "mkdir {{ clang_source_dir }}"
+  become: true
+  file:
+          path: "{{ item }}"
+          state: directory
+          mode: 0755
+          owner: "{{ clang_install_user }}"
+          group: "{{ clang_install_group }}"
+  with_items:
+          - "{{ base_dir }}"
+          - "{{ clang_source_dir }}"
+  when: clang_deploy_mode == "source"

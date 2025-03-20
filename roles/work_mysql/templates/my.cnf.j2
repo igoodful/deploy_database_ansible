@@ -1,0 +1,147 @@
+[client]
+socket                                                  =  {{ mysql_socket_dir }}/mysql.sock
+[mysqld]
+{% if mysql_version == "8.0.32" %}
+innodb_redo_log_capacity                                =  4294967296
+{% endif %}
+basedir                                                 =  {{ mysql_app_base_dir }}
+datadir                                                 =  {{ mysql_data_dir }}
+port                                                    =  {{ mysql_port }}
+socket                                                  =  {{ mysql_socket_dir }}/mysql.sock
+server-id                                               =  {{ server_id.stdout|int }}
+tmpdir                                                  =  {{ mysql_tmp_dir }}
+general-log-file                                        =  {{ mysql_log_dir }}/general.log
+slow-query-log-file                                     =  {{ mysql_log_dir }}/mysqld-slow.log
+pid-file                                                =  {{ mysql_pid_dir }}/mysqld.pid
+log-error                                               =  {{ mysql_log_dir }}/mysqld.err
+slow_query_log                                          =  on
+long_query_time                                         =  1
+relay_log                                               =  mysql-relay
+relay_log_recovery                                      =  ON
+log_bin                                                 =  greatdb-bin
+binlog_format                                           =  row
+binlog_cache_size                                       =  2097152
+max_binlog_cache_size                                   =  1073741824
+binlog_checksum                                         =  NONE
+binlog_expire_logs_seconds                              =  1296000
+binlog_ignore_db                                        =  dbscale_tmp
+sync_binlog                                             =  1
+innodb_flush_log_at_trx_commit                          =  1
+innodb_file_per_table                                   =  1
+gtid_mode                                               =  on
+enforce_gtid_consistency                                =  on
+log_replica_updates                                     =  1
+binlog_rows_query_log_events                            =  ON
+binlog_transaction_dependency_tracking                  =  WRITESET
+innodb_parallel_read_threads                            =  16
+innodb_buffer_pool_size                                 =  {{ innodb_buffer_pool_size|int }}M
+{% if ansible_processor_vcpus|int <=8 %}
+innodb_buffer_pool_instances                            =  {{ ansible_processor_vcpus * 2 }}
+{% else %}
+innodb_buffer_pool_instances                            =  32
+{% endif %}
+{% if ansible_processor_vcpus|int  <= 4 %}
+innodb_read_io_threads                                  =  8
+innodb_write_io_threads                                 =  8
+{% elif ansible_processor_vcpus|int <= 8 %}
+innodb_read_io_threads                                  =  16
+innodb_write_io_threads                                 =  16
+{% else %}
+innodb_read_io_threads                                  =  32
+innodb_write_io_threads                                 =  32
+{% endif %}
+{% if ansible_processor_vcpus|int  <= 40 %}
+innodb_thread_concurrency                               =  {{ ansible_processor_vcpus * 2 }}
+{% else %}
+innodb_thread_concurrency                               =  80
+{% endif %}
+innodb_change_buffering                                 =  all
+innodb_data_file_path                                   =  ibdata1:1024M:autoextend
+innodb_doublewrite                                      =  1
+innodb_flush_method                                     =  O_DIRECT
+innodb_io_capacity                                      =  20000
+innodb_io_capacity_max                                  =  40000
+innodb_log_buffer_size                                  =  33554432
+innodb_log_file_size                                    =  1073741824
+innodb_log_files_in_group                               =  4
+innodb_max_undo_log_size                                =  2147483648
+innodb_monitor_enable                                   =  all
+innodb_numa_interleave                                  =  ON
+innodb_online_alter_log_max_size                        =  2147483648
+innodb_open_files                                       =  40960
+{% if ansible_processor_vcpus|int  <= 8 %}
+innodb_page_cleaners                                    =  {{ ansible_processor_vcpus * 2 }}
+{% else %}
+innodb_page_cleaners                                    =  16
+{% endif %}
+innodb_print_all_deadlocks                              =  on
+innodb_purge_rseg_truncate_frequency                    =  16
+innodb_rollback_on_timeout                              =  ON
+innodb_temp_data_file_path                              =  ibtmp1:512M:autoextend:max:30720M
+innodb_undo_log_truncate                                =  ON
+innodb_use_native_aio                                   =  ON
+federated                                               =  1
+transaction_isolation                                   =  READ-COMMITTED
+init_connect                                            =  SET NAMES utf8
+character_set_server                                    =  utf8mb4
+collation_server                                        =  utf8mb4_0900_ai_ci
+default_authentication_plugin                           =  mysql_native_password
+default-time-zone                                       =  +08:00
+local_infile                                            =  OFF
+secure_file_priv                                        =  ''
+ssl                                                     =  off
+lower_case_table_names                                  =  1
+skip_replica_start                                      =  1
+innodb_adaptive_hash_index                              =  OFF
+sql_require_primary_key                                 =  ON
+plugin-load                                             =  rpl_semi_sync_master=semisync_master.so;rpl_semi_sync_slave=semisync_slave.so
+plugin-load-add                                         =  mysql_clone.so
+internal_tmp_mem_storage_engine                         =  MEMORY
+max_allowed_packet                                      =  134217728
+max_connect_errors                                      =  18446744073709500000
+{% if ansible_processor_vcpus|int  <= 8 %}
+max_connections                                         =  4000
+{% elif ansible_processor_vcpus|int <= 32 %}
+max_connections                                         =  10240
+{% else %}
+max_connections                                         =  20480
+{% endif %}
+max_heap_table_size                                     =  536870912
+max_prepared_stmt_count                                 =  1048576
+lock_wait_timeout                                       =  5
+innodb_lock_wait_timeout                                =  20
+interactive_timeout                                     =  172800
+wait_timeout                                            =  172800
+mysqlx                                                  =  0
+back_log                                                =  5000
+group_concat_max_len                                    =  102400
+join_buffer_size                                        =  2097152
+key_buffer_size                                         =  2097152
+sort_buffer_size                                        =  8388608
+log_bin_trust_function_creators                         =  1
+log_timestamps                                          =  SYSTEM
+net_read_timeout                                        =  10000
+net_write_timeout                                       =  10000
+open_files_limit                                        =  1024000
+read_rnd_buffer_size                                    =  16777216
+performance-schema-consumer-events_stages_current       =  on
+performance-schema-consumer-events_stages_history       =  on
+performance-schema-consumer-events_statements_current   =  on
+performance-schema-consumer-events_statements_history   =  on
+performance-schema-consumer-events_transactions_current =  on
+performance-schema-consumer-events_transactions_history =  on
+performance-schema-consumer-events_waits_current        =  on
+performance-schema-consumer-events_waits_history        =  on
+performance-schema-instrument                           =  %=ON
+replica_parallel_type                                   =  LOGICAL_CLOCK
+replica_parallel_workers                                =  32
+replica_pending_jobs_size_max                           =  134217728
+replica_preserve_commit_order                           =  1
+skip_external_locking                                   =  1
+skip_name_resolve                                       =  1
+table_definition_cache                                  =  10240
+table_open_cache                                        =  20480
+table_open_cache_instances                              =  16
+thread_cache_size                                       =  3000
+tmp_table_size                                          =  536870912
+log_error_suppression_list                              =  MY-013360

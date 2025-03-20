@@ -11,7 +11,7 @@ texinfo_base_url_remote: "https://ftp.gnu.org/gnu/texinfo"
 
 texinfo_deploy_mode: "source"
 texinfo_package_suffix: ".tar.gz"
-texinfo_package_name_bin: "texinfo-{{ texinfo_version }}"
+texinfo_package_name_binary: "texinfo-{{ texinfo_version }}"
 texinfo_package_name_source: "texinfo-{{ texinfo_version }}"
 
 texinfo_dir: "{{ base_dir }}/texinfo"

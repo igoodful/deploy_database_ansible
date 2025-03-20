@@ -1,2 +1,21 @@
 ---
 # defaults file for jemalloc
+# https://github.com/jemalloc/jemalloc/archive/refs/tags/5.2.1.tar.gz
+jemalloc_install_user: "{{ ansible_user }}"
+jemalloc_install_group: "{{ ansible_user }}"
+jemalloc_version: "5.2.1"
+# binary/source
+jemalloc_deploy_mode: "source"
+jemalloc_base_url: "{{ base_url }}"
+jemalloc_base_url_remote: "https://github.com/jemalloc/jemalloc/archive/refs/tags"
+
+jemalloc_package_suffix: ".tar.gz"
+jemalloc_package_name_binary: "jemalloc-{{ jemalloc_version }}-{{ ansible_architecture }}{{ jemalloc_package_suffix }}"
+jemalloc_package_name_source: "{{ jemalloc_version }}{{ jemalloc_package_suffix }}"
+
+jemalloc_dir: "{{ base_dir }}/jemalloc"
+jemalloc_app_dir: "{{ base_dir }}/jemalloc/app"
+jemalloc_base_dir: "{{ jemalloc_app_dir }}/jemalloc-{{ jemalloc_version }}"
+jemalloc_source_dir: "{{ jemalloc_app_dir }}/source/jemalloc-{{ jemalloc_version }}"
+# 编译程序时加上 -L/xx/xxx/lib -ljemalloc -Wl, -rpath=/xx/xxx/lib -I/xx/xxx/include/jemalloc 程序中的 malloc() 函数就会自动调用 jemalloc 的内存分配了。
+# 还可以在编译 jemalloc 时增加 --with-jemalloc-prefix=je_ 参数，这样 je_malloc 函数才是 jemalloc 的内存分配函数，和原来的 malloc 函数就区分开来了，可以分别调用

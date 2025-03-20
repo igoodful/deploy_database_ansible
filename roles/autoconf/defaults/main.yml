@@ -9,7 +9,7 @@ autoconf_base_url_remote: "https://ftp.gnu.org/gnu/autoconf"
 
 # binary/source
 autoconf_deploy_mode: "source"
-autoconf_package_name_bin: "autoconf-{{ autoconf_version }}"
+autoconf_package_name_binary: "autoconf-{{ autoconf_version }}"
 autoconf_package_name_source: "autoconf-{{ autoconf_version }}"
 
 autoconf_dir: "{{ base_dir }}/autoconf"

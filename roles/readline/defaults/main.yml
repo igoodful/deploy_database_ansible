@@ -9,7 +9,7 @@ readline_base_url_remote: "https://ftp.gnu.org/gnu/readline"
 
 # binary/source
 readline_deploy_mode: "source"
-readline_package_name_bin: "readline-{{ readline_version }}"
+readline_package_name_binary: "readline-{{ readline_version }}"
 readline_package_name_source: "readline-{{ readline_version }}"
 
 readline_dir: "{{ base_dir }}/readline"

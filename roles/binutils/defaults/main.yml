@@ -10,7 +10,7 @@ binutils_base_url: "{{ base_url }}"
 binutils_base_url_remote: "https://ftp.gnu.org/gnu/binutils"
 
 binutils_package_suffix: ".tar.gz"
-binutils_package_name_bin: "binutils-{{ binutils_version }}-{{ ansible_architecture }}{{ binutils_package_suffix }}"
+binutils_package_name_binary: "binutils-{{ binutils_version }}-{{ ansible_architecture }}{{ binutils_package_suffix }}"
 binutils_package_name_source: "binutils-{{ binutils_version }}{{ binutils_package_suffix }}"
 
 binutils_dir: "{{ base_dir }}/binutils"

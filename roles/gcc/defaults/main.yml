@@ -11,7 +11,7 @@ gcc_base_url_remote: "https://ftp.gnu.org/gnu/gcc/gcc-{{ gcc_version }}"
 
 gcc_deploy_mode: "source"
 gcc_package_suffix: ".tar.gz"
-gcc_package_name_bin: "gcc-{{ gcc_version }}"
+gcc_package_name_binary: "gcc-{{ gcc_version }}"
 gcc_package_name_source: "gcc-{{ gcc_version }}"
 
 gcc_dir: "{{ base_dir }}/gcc"

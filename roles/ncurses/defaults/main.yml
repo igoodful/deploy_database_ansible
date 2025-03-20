@@ -11,7 +11,7 @@ ncurses_base_url_remote: "https://ftp.gnu.org/gnu/ncurses"
 
 ncurses_deploy_mode: "source"
 ncurses_package_suffix: ".tar.gz"
-ncurses_package_name_bin: "ncurses-{{ ncurses_version }}"
+ncurses_package_name_binary: "ncurses-{{ ncurses_version }}"
 ncurses_package_name_source: "ncurses-{{ ncurses_version }}"
 
 ncurses_dir: "{{ base_dir }}/ncurses"

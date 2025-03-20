@@ -12,7 +12,7 @@ libtirpc_deploy_mode: "source"
 ######################################
 libtirpc_package_suffix: ".tar.bz2"
 ######################################
-libtirpc_package_name_bin: "libtirpc-{{ libtirpc_version }}"
+libtirpc_package_name_binary: "libtirpc-{{ libtirpc_version }}"
 libtirpc_package_name_source: "libtirpc-{{ libtirpc_version }}"
 
 libtirpc_dir: "{{ base_dir }}/libtirpc"

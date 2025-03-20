@@ -9,7 +9,7 @@ gettext_version: "0.22.4"
 
 # binary/source
 gettext_deploy_mode: "source"
-gettext_package_name_bin: "gettext-{{ gettext_version }}"
+gettext_package_name_binary: "gettext-{{ gettext_version }}"
 gettext_package_name_source: "gettext-{{ gettext_version }}"
 
 gettext_dir: "{{ base_dir }}/gettext"

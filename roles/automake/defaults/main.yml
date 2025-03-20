@@ -9,7 +9,7 @@ automake_base_url_remote: "https://ftp.gnu.org/gnu/automake"
 
 # binary/source
 automake_deploy_mode: "source"
-automake_package_name_bin: "automake-{{ automake_version }}"
+automake_package_name_binary: "automake-{{ automake_version }}"
 automake_package_name_source: "automake-{{ automake_version }}"
 
 automake_dir: "{{ base_dir }}/automake"

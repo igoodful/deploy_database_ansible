@@ -1,0 +1,43 @@
+---
+# tasks file for mysql
+- name: "generate mysql_uuid"
+  become: true
+  shell:
+    cmd: uuidgen |sed 's/^[^-]*/16315fff/'
+  register: mysql_uuid
+
+- name: "generate server_id"
+  become: true
+  shell:
+    cmd: echo $RANDOM |cksum |cut -c 1-8
+  register: server_id
+
+- name: "date"
+  become: true
+  shell:
+    cmd: date '+%Y%m%dT%H%M%S'
+  register: date_output
+
+## check mysql_port
+- name: "lsof -i:{{ mysql_port }}"
+  become: true
+  shell:
+    cmd: "lsof -i:{{ mysql_port }}"
+  register: mysql_port_check_output
+  ignore_errors: true
+
+- name: check mysql port
+  become: true
+  fail:
+    msg: "mysqld端口被占用,可使用: ps aux|grep mysqld"
+  when: mysql_port_check_output.rc == 0
+
+## check mysqldata
+- name: "check {{ base_dir }}/mysqldata"
+  become: true
+  stat:
+    path: "{{ base_dir }}/mysqldata"
+  register: mysqldata_dir_check_output
+  ignore_errors: true
+
+

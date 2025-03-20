@@ -11,7 +11,7 @@ openssl_base_url_remote: "https://github.com/openssl/openssl/archive/refs/tags"
 
 openssl_deploy_mode: "source"
 openssl_package_suffix: ".tar.gz"
-openssl_package_name_bin: "openssl-{{ openssl_version }}"
+openssl_package_name_binary: "openssl-{{ openssl_version }}"
 openssl_package_name_source: "openssl-{{ openssl_version }}"
 
 openssl_dir: "{{ base_dir }}/openssl"

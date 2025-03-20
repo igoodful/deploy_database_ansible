@@ -11,7 +11,7 @@ isl_base_url_remote: "https://gcc.gnu.org/pub/gcc/infrastructure"
 
 isl_deploy_mode: "source"
 isl_package_suffix: ".tar.bz2"
-isl_package_name_bin: "isl-{{ isl_version }}-{{ ansible_architecture }}{{ isl_package_suffix }}"
+isl_package_name_binary: "isl-{{ isl_version }}-{{ ansible_architecture }}{{ isl_package_suffix }}"
 isl_package_name_source: "isl-{{ isl_version }}{{ isl_package_suffix }}"
 
 isl_dir: "{{ base_dir }}/isl"

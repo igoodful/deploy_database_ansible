@@ -11,7 +11,7 @@ gperf_base_url_remote: "https://ftp.gnu.org/gnu/gperf"
 
 gperf_deploy_mode: "source"
 gperf_package_suffix: ".tar.gz"
-gperf_package_name_bin: "gperf-{{ gperf_version }}"
+gperf_package_name_binary: "gperf-{{ gperf_version }}"
 gperf_package_name_source: "gperf-{{ gperf_version }}"
 
 gperf_dir: "{{ base_dir }}/gperf"

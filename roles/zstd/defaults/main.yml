@@ -11,7 +11,7 @@ zstd_base_url_remote: "https://github.com/facebook/zstd/archive/refs/tags"
 
 zstd_deploy_mode: "source"
 zstd_package_suffix: ".tar.gz"
-zstd_package_name_bin: "zstd-{{ zstd_version }}"
+zstd_package_name_binary: "zstd-{{ zstd_version }}"
 zstd_package_name_source: "zstd-{{ zstd_version }}"
 
 zstd_dir: "{{ base_dir }}/zstd"

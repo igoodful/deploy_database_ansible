@@ -1,5 +1,6 @@
 ---
 # tasks file for cmake
+
 - include_tasks: 01-dir.yml
 
 - name: "02-install_binary.yml"

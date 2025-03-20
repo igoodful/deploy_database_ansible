@@ -9,7 +9,7 @@ bison_base_url_remote: "https://ftp.gnu.org/gnu/bison"
 
 # binary/source
 bison_deploy_mode: "source"
-bison_package_name_bin: "bison-{{ bison_version }}"
+bison_package_name_binary: "bison-{{ bison_version }}"
 bison_package_name_source: "bison-{{ bison_version }}"
 
 bison_dir: "{{ base_dir }}/bison"

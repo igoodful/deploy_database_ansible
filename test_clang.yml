@@ -1,0 +1,10 @@
+---
+- name: Apply role clang
+  hosts: all
+  gather_facts: true
+  roles:
+    - {
+        role: clang,
+        tags: clang,
+      }
+

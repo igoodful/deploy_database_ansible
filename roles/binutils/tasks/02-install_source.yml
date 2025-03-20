@@ -3,13 +3,13 @@
 
 # 检查远程主机上的文件是否存在
 # 检查远程主机上的文件是否完整
-- name: "Check file exists first"
+- name: "Check file exists first: {{ install_tmpdir }}/{{ binutils_package_name_source }}"
   stat:
-          path: "{{ install_tmpdir }}/{{ binutils_package_name_source}}"
+          path: "{{ install_tmpdir }}/{{ binutils_package_name_source }}"
   register: check_file_exists_first
 
-- name: "Check file valid first"
-  command: "gzip -t {{ install_tmpdir }}/{{ binutils_package_name_source}}"
+- name: "Check file valid first: {{ install_tmpdir }}/{{ binutils_package_name_source }}"
+  command: "gzip -t {{ install_tmpdir }}/{{ binutils_package_name_source }}"
   register: check_file_valid_first
   ignore_errors: true
   when: check_file_exists_first.stat.exists
@@ -17,20 +17,20 @@
 ############################################
 # 从控制机拷贝
 ############################################
-- name: "Check file exists on ansible host"
+- name: "Check file exists on ansible host: {{ role_path }}/files/{{ binutils_package_name_source }}"
   delegate_to: localhost
   run_once: true
   stat:
-          path: "{{ role_path }}/files/{{ binutils_package_name_source}}"
+          path: "{{ role_path }}/files/{{ binutils_package_name_source }}"
   register: local_file_stat
 
-- name: "Copy file from control machine if remote file is missing or invalid"
+- name: "cp {{ binutils_package_name_source }} {{ install_tmpdir }}/"
   become: true
   copy:
-          src: "{{ binutils_package_name_source}}"
+          src: "{{ binutils_package_name_source }}"
           dest: "{{ install_tmpdir }}/"
-          owner: "{{ ansible_user }}"
-          group: "{{ ansible_user }}"
+          owner: "{{ binutils_install_user }}"
+          group: "{{ binutils_install_group }}"
           mode: 0755
   when:
           - (not check_file_exists_first.stat.exists or check_file_valid_first.rc != 0)
@@ -40,23 +40,23 @@
 # 从 binutils_base_url 下载
 #################################################
 
-- name: "Check file exists second"
+- name: "Check file exists second: {{ install_tmpdir }}/{{ binutils_package_name_source }}"
   stat:
-          path: "{{ install_tmpdir }}/{{ binutils_package_name_source}}"
+          path: "{{ install_tmpdir }}/{{ binutils_package_name_source }}"
   register: check_file_exists_second
 
-- name: "Check file valid second"
-  command: "gzip -t {{ install_tmpdir }}/{{ binutils_package_name_source}}"
+- name: "Check file valid second: {{ install_tmpdir }}/{{ binutils_package_name_source }}"
+  command: "gzip -t {{ install_tmpdir }}/{{ binutils_package_name_source }}"
   register: check_file_valid_second
   ignore_errors: true
   when: check_file_exists_second.stat.exists
 
-- name: "Download file from binutils_base_url if remote file is missing or invalid"
+- name: "Download file from binutils_base_url: from {{ binutils_base_url }}/{{ binutils_package_name_source }} to {{ install_tmpdir }}/{{ binutils_package_name_source }}"
   get_url:
-          url: "{{ binutils_base_url }}/{{ binutils_package_name_source}}"
-          dest: "{{ install_tmpdir }}/{{ binutils_package_name_source}}"
-          owner: "{{ ansible_user }}"
-          group: "{{ ansible_user }}"
+          url: "{{ binutils_base_url }}/{{ binutils_package_name_source }}"
+          dest: "{{ install_tmpdir }}/{{ binutils_package_name_source }}"
+          owner: "{{ binutils_install_user }}"
+          group: "{{ binutils_install_group}}"
           mode: 0755
           timeout: 600
   when:
@@ -67,23 +67,23 @@
 # 尝试从 binutils_base_url_remote 下载
 #################################################
 
-- name: "Check file exists third"
+- name: "Check file exists third: {{ install_tmpdir }}/{{ binutils_package_name_source }}"
   stat:
-          path: "{{ install_tmpdir }}/{{ binutils_package_name_source}}"
+          path: "{{ install_tmpdir }}/{{ binutils_package_name_source }}"
   register: check_file_exists_third
 
-- name: "Check file valid third"
-  command: "gzip -t {{ install_tmpdir }}/{{ binutils_package_name_source}}"
+- name: "Check file valid third: {{ install_tmpdir }}/{{ binutils_package_name_source }}"
+  command: "gzip -t {{ install_tmpdir }}/{{ binutils_package_name_source }}"
   register: check_file_valid_third
   ignore_errors: true
   when: check_file_exists_third.stat.exists
 
-- name: "Download file from binutils_base_url_remote if previous download failed"
+- name: "Download file from binutils_base_url_remote: from {{ binutils_base_url_remote }}/{{ binutils_package_name_source }} to {{ install_tmpdir }}/{{ binutils_package_name_source }}"
   get_url:
-          url: "{{ binutils_base_url_remote }}/{{ binutils_package_name_source}}"
-          dest: "{{ install_tmpdir }}/{{ binutils_package_name_source}}"
-          owner: "{{ ansible_user }}"
-          group: "{{ ansible_user }}"
+          url: "{{ binutils_base_url_remote }}/{{ binutils_package_name_source }}"
+          dest: "{{ install_tmpdir }}/{{ binutils_package_name_source }}"
+          owner: "{{ binutils_install_user }}"
+          group: "{{ binutils_install_group}}"
           mode: 0755
           timeout: 600
   when:
@@ -92,30 +92,30 @@
 #################################################
 # 如果部署模式为源码编译，则解压并安装
 #################################################
-- name: "Extract {{ install_tmpdir }}/{{ binutils_package_name_source}}"
+- name: "Extract {{ install_tmpdir }}/{{ binutils_package_name_source }} to {{ binutils_source_dir }}/"
   become: true
   unarchive:
-          src: "{{ install_tmpdir }}/{{ binutils_package_name_source}}"
+          src: "{{ install_tmpdir }}/{{ binutils_package_name_source }}"
           dest: "{{ binutils_source_dir }}/"
           remote_src: true
-          owner: "{{ ansible_user }}"
-          group: "{{ ansible_user }}"
+          owner: "{{ binutils_install_user }}"
+          group: "{{ binutils_install_group}}"
           extra_opts:
                   - --strip-components=1
 
-- name: "./configure --prefix={{ binutils_base_dir }}"
+- name: "cd {{ binutils_source_dir }};./configure --prefix={{ binutils_base_dir }}"
   become: true
   shell:
           chdir: "{{ binutils_source_dir }}"
           cmd: "./configure --prefix={{ binutils_base_dir }}"
 
-- name: "make"
+- name: "cd {{ binutils_source_dir }};make -j{{ ansible_processor_vcpus }}"
   become: true
   shell:
           chdir: "{{ binutils_source_dir }}"
           cmd: "make -j{{ ansible_processor_vcpus }}"
 
-- name: "make install"
+- name: "cd {{ binutils_source_dir }};make install"
   become: true
   shell:
           chdir: "{{ binutils_source_dir }}"

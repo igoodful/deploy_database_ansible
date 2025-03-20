@@ -1,2 +1,20 @@
 ---
 # defaults file for clang
+# https://github.com/llvm/llvm-project/archive/refs/tags/llvmorg-18.1.2.tar.gz
+# NOT DONE
+clang_install_user: "{{ ansible_user }}"
+clang_install_group: "{{ ansible_user }}"
+clang_version: "18.1.2"
+# binary/source
+clang_deploy_mode: "source"
+clang_base_url: "{{ base_url }}"
+clang_base_url_remote: "https://github.com/llvm/llvm-project/archive/refs/tags"
+
+clang_package_suffix: ".tar.gz"
+clang_package_name_binary: "clang-{{ clang_version }}-{{ ansible_architecture }}{{ clang_package_suffix }}"
+clang_package_name_source: "clang-{{ clang_version }}{{ clang_package_suffix }}"
+
+clang_dir: "{{ base_dir }}/clang"
+clang_app_dir: "{{ base_dir }}/clang/app"
+clang_base_dir: "{{ clang_app_dir }}/clang-{{ clang_version }}"
+clang_source_dir: "{{ clang_app_dir }}/source/clang-{{ clang_version }}"

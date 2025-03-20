@@ -11,7 +11,7 @@ gmp_base_url_remote: "https://ftp.gnu.org/gnu/gmp"
 
 gmp_deploy_mode: "source"
 gmp_package_suffix: ".tar.gz"
-gmp_package_name_bin: "gmp-{{ gmp_version }}"
+gmp_package_name_binary: "gmp-{{ gmp_version }}"
 gmp_package_name_source: "gmp-{{ gmp_version }}"
 
 gmp_dir: "{{ base_dir }}/gmp"
