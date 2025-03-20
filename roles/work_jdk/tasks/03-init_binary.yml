@@ -1,7 +1,7 @@
 ---
 # tasks file for jdk
 
-# delete old JAVA_HOME from  ~/.bash_profile
+# delete old JAVA_HOME from  /etc/profile
 - name: "delete old JAVA_HOME from  /etc/profile"
   become: true
   lineinfile:
