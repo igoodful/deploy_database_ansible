@@ -1,0 +1,26 @@
+---
+# tasks file for m4
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check m4_port
+- name: "lsof -i:{{ m4_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ m4_port }}"
+  register: m4_port_check_output
+  ignore_errors: true
+  when: m4_port is defined
+
+- name: "check m4 port"
+  become: true
+  fail:
+      msg: "m4d端口被占用,可使用: ps aux|grep m4d"
+  when:
+      - m4_port is defined
+      - m4_port_check_output is defined
+      - m4_port_check_output.rc == 0

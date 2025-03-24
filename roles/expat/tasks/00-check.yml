@@ -1,0 +1,26 @@
+---
+# tasks file for expat
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check expat_port
+- name: "lsof -i:{{ expat_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ expat_port }}"
+  register: expat_port_check_output
+  ignore_errors: true
+  when: expat_port is defined
+
+- name: "check expat port"
+  become: true
+  fail:
+      msg: "expatd端口被占用,可使用: ps aux|grep expatd"
+  when:
+      - expat_port is defined
+      - expat_port_check_output is defined
+      - expat_port_check_output.rc == 0

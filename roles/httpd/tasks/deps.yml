@@ -3,27 +3,24 @@
 
 - name: "yum -y install apr"
   ansible.builtin.shell:
-    cmd: yum -y install apr
-    chdir: root/
+      cmd: yum -y install apr
+      chdir: root/
   become: true
 
 - name: "yum -y install apr-devel"
   ansible.builtin.shell:
-    cmd: yum -y install apr-devel
-    chdir: root/
+      cmd: yum -y install apr-devel
+      chdir: root/
   become: true
 
 - name: "yum -y install apr-util"
   ansible.builtin.shell:
-    cmd: yum -y install apr-util
-    chdir: root/
+      cmd: yum -y install apr-util
+      chdir: root/
   become: true
 
 - name: "yum -y install apr-util-devel"
   ansible.builtin.shell:
-    cmd: yum -y install apr-util-devel
-    chdir: root/
+      cmd: yum -y install apr-util-devel
+      chdir: root/
   become: true
-
-
-

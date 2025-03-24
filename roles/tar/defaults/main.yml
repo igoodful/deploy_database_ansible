@@ -1,0 +1,60 @@
+---
+# defaults file for tar
+# https://ftp.gnu.org/gnu/tar/tar-1.35.tar.gz
+# DONE
+
+# user
+tar_install_user: "{{ ansible_user }}"
+tar_install_group: "{{ ansible_user }}"
+tar_version: "1.35"
+# tar_port: "8032"
+
+# standalone/cluster/pseudo_cluster
+tar_deploy_mode: "standalone"
+
+# binary/source/rpm/yum/dnf
+tar_deploy_method: "source"
+
+# url
+tar_base_url: "{{ base_url }}"
+tar_base_url_remote: "https://ftp.gnu.org/gnu/tar"
+
+# package
+tar_package_suffix: ".tar.gz"
+tar_package_name_rpm: "tar-{{ tar_version }}.rpm"
+tar_package_name_binary: "tar-{{ tar_version }}-{{ ansible_architecture }}{{ tar_package_suffix }}"
+tar_package_name_source: "tar-{{ tar_version }}{{ tar_package_suffix }}"
+tar_package_name: "{% if tar_deploy_method == 'rpm' %}{{ tar_package_name_rpm }}{% elif tar_deploy_method == 'binary' %}{{ tar_package_name_binary }}{% elif tar_deploy_method == 'source' %}{{ tar_package_name_source }}{% else %}{{ tar_package_name_source }}{% endif %}"
+
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/tar
+# /data/tar/data
+# /data/tar/conf
+# /data/tar/log
+# /data/tar/tmp
+# /data/tar/source
+# /data/tar/app
+# /data/tar/app/tar-{{ tar_version }}
+# /data/tar/app/tar-{{ tar_version }}/bin
+# /data/tar/app/tar-{{ tar_version }}/lib
+# /data/tar/app/tar-{{ tar_version }}/lib/pkgconfig
+# /data/tar/app/tar-{{ tar_version }}/include
+# /data/tar/app/tar-{{ tar_version }}/share
+# /data/tar/source/tar-{{ tar_version }}
+tar_dir: "{{ base_dir }}/tar"
+tar_data_dir: "{{ tar_dir }}/data"
+tar_conf_dir: "{{ tar_dir }}/conf"
+tar_log_dir: "{{ tar_dir }}/log"
+tar_tmp_dir: "{{ tar_dir }}/tmp"
+tar_app_base_dir: "{{ tar_dir }}/app"
+tar_source_base_dir: "{{ tar_dir }}/source"
+tar_app_dir: "{{ tar_app_base_dir }}/tar-{{ tar_version }}"
+tar_bin_dir: "{{ tar_app_dir }}/bin"
+tar_lib_dir: "{{ tar_app_dir }}/lib"
+tar_include_dir: "{{ tar_app_dir }}/include"
+tar_share_dir: "{{ tar_app_dir }}/share"
+tar_pkgconfig_dir: "{{ tar_lib_dir }}/pkgconfig"
+tar_source_dir: "{{ tar_source_base_dir }}/tar-{{ tar_version }}"
+tar_build_dir: "{{ tar_source_dir }}/build_{{ date_output.stdout }}"

@@ -3,13 +3,13 @@
 
 # 检查远程主机上的文件是否存在
 # 检查远程主机上的文件是否完整
-- name: "Check file exists first: {{ install_tmpdir }}/{{ jdk_package_name_binary }}"
+- name: "Check file exists first: {{install_tmpdir}}/{{jdk_package_name_binary}}"
   stat:
-          path: "{{ install_tmpdir }}/{{ jdk_package_name_binary }}"
+      path: "{{install_tmpdir}}/{{jdk_package_name_binary}}"
   register: check_file_exists_first
 
-- name: "Check file valid first: {{ install_tmpdir }}/{{ jdk_package_name_binary }}"
-  command: "gzip -t {{ install_tmpdir }}/{{ jdk_package_name_binary }}"
+- name: "Check file valid first: {{install_tmpdir}}/{{jdk_package_name_binary}}"
+  command: "gzip -t {{install_tmpdir}}/{{jdk_package_name_binary}}"
   register: check_file_valid_first
   ignore_errors: true
   when: check_file_exists_first.stat.exists
@@ -17,94 +17,94 @@
 ############################################
 # 从控制机拷贝
 ############################################
-- name: "Check file exists on ansible host: {{ role_path }}/files/{{ jdk_package_name_binary }}"
+- name: "Check file exists on ansible host: {{role_path}}/files/{{jdk_package_name_binary}}"
   delegate_to: localhost
   run_once: true
   stat:
-          path: "{{ role_path }}/files/{{ jdk_package_name_binary }}"
+      path: "{{role_path}}/files/{{jdk_package_name_binary}}"
   register: local_file_stat
 
 - name: "Copy file from control machine if remote file is missing or invalid"
   become: true
   copy:
-          src: "{{ jdk_package_name_binary }}"
-          dest: "{{ install_tmpdir }}/"
-          owner: "{{ jdk_install_user}}"
-          group: "{{ jdk_install_group }}"
-          mode: 0755
+      src: "{{jdk_package_name_binary}}"
+      dest: "{{install_tmpdir}}/"
+      owner: "{{jdk_install_user}}"
+      group: "{{jdk_install_group}}"
+      mode: 0755
   when:
-          - (not check_file_exists_first.stat.exists or check_file_valid_first.rc != 0)
-          - local_file_stat.stat.exists
+      - (not check_file_exists_first.stat.exists or check_file_valid_first.rc != 0)
+      - local_file_stat.stat.exists
 
 #################################################
 # 从 jdk_base_url 下载
 #################################################
 
-- name: "Check file exists second: {{ install_tmpdir }}/{{ jdk_package_name_binary }}"
+- name: "Check file exists second: {{install_tmpdir}}/{{jdk_package_name_binary}}"
   stat:
-          path: "{{ install_tmpdir }}/{{ jdk_package_name_binary }}"
+      path: "{{install_tmpdir}}/{{jdk_package_name_binary}}"
   register: check_file_exists_second
 
-- name: "Check file valid second: {{ install_tmpdir }}/{{ jdk_package_name_binary }}"
-  command: "gzip -t {{ install_tmpdir }}/{{ jdk_package_name_binary }}"
+- name: "Check file valid second: {{install_tmpdir}}/{{jdk_package_name_binary}}"
+  command: "gzip -t {{install_tmpdir}}/{{jdk_package_name_binary}}"
   register: check_file_valid_second
   ignore_errors: true
   when: check_file_exists_second.stat.exists
 
-- name: "Download file from jdk_base_url: from {{ jdk_base_url }}/{{ jdk_package_name_binary }} to {{ install_tmpdir }}/{{ jdk_package_name_binary }}"
+- name: "Download file from jdk_base_url: from {{jdk_base_url}}/{{jdk_package_name_binary}} to {{install_tmpdir}}/{{jdk_package_name_binary}}"
   get_url:
-          url: "{{ jdk_base_url }}/{{ jdk_package_name_binary }}"
-          dest: "{{ install_tmpdir }}/"
-          owner: "{{ jdk_install_user}}"
-          group: "{{ jdk_install_group }}"
-          mode: 0755
-          timeout: 600
+      url: "{{jdk_base_url}}/{{jdk_package_name_binary}}"
+      dest: "{{install_tmpdir}}/"
+      owner: "{{jdk_install_user}}"
+      group: "{{jdk_install_group}}"
+      mode: 0755
+      timeout: 600
   when:
-          - (not check_file_exists_second.stat.exists or check_file_valid_second.rc != 0)
+      - (not check_file_exists_second.stat.exists or check_file_valid_second.rc != 0)
   ignore_errors: true
 
 #################################################
 # 尝试从 jdk_base_url_remote 下载
 #################################################
 
-- name: "Check file exists third: {{ install_tmpdir }}/{{ jdk_package_name_binary }}"
+- name: "Check file exists third: {{install_tmpdir}}/{{jdk_package_name_binary}}"
   stat:
-          path: "{{ install_tmpdir }}/{{ jdk_package_name_binary }}"
+      path: "{{install_tmpdir}}/{{jdk_package_name_binary}}"
   register: check_file_exists_third
 
-- name: "Check file valid third: {{ install_tmpdir }}/{{ jdk_package_name_binary }}"
-  command: "gzip -t {{ install_tmpdir }}/{{ jdk_package_name_binary }}"
+- name: "Check file valid third: {{install_tmpdir}}/{{jdk_package_name_binary}}"
+  command: "gzip -t {{install_tmpdir}}/{{jdk_package_name_binary}}"
   register: check_file_valid_third
   ignore_errors: true
   when: check_file_exists_third.stat.exists
 
-- name: "Download file from jdk_base_url_remote: from {{ jdk_base_url_remote }}/{{ jdk_package_name_binary }} to {{ install_tmpdir }}/{{ jdk_package_name_binary }}"
+- name: "Download file from jdk_base_url_remote: from {{jdk_base_url_remote}}/{{jdk_package_name_binary}} to {{install_tmpdir}}/{{jdk_package_name_binary}}"
   get_url:
-          url: "{{ jdk_base_url_remote }}/{{ jdk_package_name_binary }}"
-          dest: "{{ install_tmpdir }}/"
-          owner: "{{ jdk_install_user}}"
-          group: "{{ jdk_install_group }}"
-          mode: 0755
-          timeout: 600
+      url: "{{jdk_base_url_remote}}/{{jdk_package_name_binary}}"
+      dest: "{{install_tmpdir}}/"
+      owner: "{{jdk_install_user}}"
+      group: "{{jdk_install_group}}"
+      mode: 0755
+      timeout: 600
   when:
-          - (not check_file_exists_third.stat.exists or check_file_valid_third.rc != 0)
+      - (not check_file_exists_third.stat.exists or check_file_valid_third.rc != 0)
 
 #################################################
 # 解压
 #################################################
-- name: "Extract {{ install_tmpdir }}/{{ jdk_package_name_binary }} to {{ jdk_base_dir }}/"
+- name: "Extract {{install_tmpdir}}/{{jdk_package_name_binary}} to {{jdk_base_dir}}/"
   become: true
   unarchive:
-          src: "{{ install_tmpdir }}/{{ jdk_package_name_binary }}"
-          dest: "{{ jdk_base_dir }}/"
-          remote_src: true
-          owner: "{{ jdk_install_user}}"
-          group: "{{ jdk_install_group }}"
-          extra_opts:
-                  - --strip-components=1
+      src: "{{install_tmpdir}}/{{jdk_package_name_binary}}"
+      dest: "{{jdk_base_dir}}/"
+      remote_src: true
+      owner: "{{jdk_install_user}}"
+      group: "{{jdk_install_group}}"
+      extra_opts:
+          - --strip-components=1
 
 # chown
-- name: "chown -R {{ jdk_install_user }}.{{ jdk_install_group }} {{ jdk_base_dir }}"
+- name: "chown -R {{jdk_install_user}}.{{jdk_install_group}} {{jdk_base_dir}}"
   become: true
   shell:
-          cmd: "chown -R {{ jdk_install_user }}.{{ jdk_install_group }} {{ jdk_base_dir }}"
+      cmd: "chown -R {{jdk_install_user}}.{{jdk_install_group}} {{jdk_base_dir}}"

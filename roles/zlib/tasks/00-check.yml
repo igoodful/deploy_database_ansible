@@ -1,0 +1,26 @@
+---
+# tasks file for zlib
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check zlib_port
+- name: "lsof -i:{{ zlib_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ zlib_port }}"
+  register: zlib_port_check_output
+  ignore_errors: true
+  when: zlib_port is defined
+
+- name: "check zlib port"
+  become: true
+  fail:
+      msg: "zlibd端口被占用,可使用: ps aux|grep zlibd"
+  when:
+      - zlib_port is defined
+      - zlib_port_check_output is defined
+      - zlib_port_check_output.rc == 0

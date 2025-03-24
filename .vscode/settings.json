@@ -1,0 +1,9 @@
+{
+    "editor.tabSize": 8,
+    "editor.tabCompletion": "on",
+    "prettier.tabWidth": 8,
+    "prettier.printWidth": 120,
+    "editor.formatOnType": true,
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true
+}

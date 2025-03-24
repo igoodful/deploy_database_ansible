@@ -1,0 +1,26 @@
+---
+# tasks file for openssl
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check openssl_port
+- name: "lsof -i:{{ openssl_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ openssl_port }}"
+  register: openssl_port_check_output
+  ignore_errors: true
+  when: openssl_port is defined
+
+- name: "check openssl port"
+  become: true
+  fail:
+      msg: "openssld端口被占用,可使用: ps aux|grep openssld"
+  when:
+      - openssl_port is defined
+      - openssl_port_check_output is defined
+      - openssl_port_check_output.rc == 0

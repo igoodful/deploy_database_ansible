@@ -1,0 +1,57 @@
+---
+# tasks file for tar by source
+- name: "chown -R {{  tar_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ tar_install_user }}.{{ tar_install_group }} {{  tar_dir  }}"
+
+# source
+- name: "tar_deploy_method == 'source'"
+  block:
+# ./configure
+      - name: "cd {{ tar_build_dir }};../configure --prefix={{ tar_app_dir }}"
+        shell:
+            chdir: "{{ tar_build_dir }}"
+            cmd: "../configure --prefix={{ tar_app_dir }}"
+# make
+      - name: "cd {{ tar_build_dir }};make -j{{ ansible_processor_vcpus }}"
+        shell:
+            chdir: "{{ tar_build_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+# make install
+      - name: "cd {{ tar_build_dir }};make install"
+        shell:
+            chdir: "{{ tar_build_dir }}"
+            cmd: make install
+  when: tar_deploy_method == "source"
+
+# tar_port standalone
+- name: tar_port is defined
+  block:
+# ./configure
+      - name: "cd {{ tar_source_dir }};./configure --prefix={{ tar_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ tar_source_dir }}"
+            cmd: "./configure --prefix={{ tar_base_dir }} --enable-shared --enable-static"
+# make
+      - name: "cd {{ tar_source_dir }};make VERBOSE=1 -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ tar_source_dir }}"
+            cmd: "make VERBOSE=1 -j{{ ansible_processor_vcpus }}"
+# make install
+      - name: "cd {{ tar_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ tar_source_dir }}"
+            cmd: make install
+  when:
+      - tar_port is defined
+      - tar_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  tar_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ tar_install_user }}.{{ tar_install_group }} {{  tar_dir  }}"

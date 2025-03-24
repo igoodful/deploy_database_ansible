@@ -1,0 +1,26 @@
+---
+# tasks file for diffutils
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check diffutils_port
+- name: "lsof -i:{{ diffutils_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ diffutils_port }}"
+  register: diffutils_port_check_output
+  ignore_errors: true
+  when: diffutils_port is defined
+
+- name: "check diffutils port"
+  become: true
+  fail:
+      msg: "diffutilsd端口被占用,可使用: ps aux|grep diffutilsd"
+  when:
+      - diffutils_port is defined
+      - diffutils_port_check_output is defined
+      - diffutils_port_check_output.rc == 0

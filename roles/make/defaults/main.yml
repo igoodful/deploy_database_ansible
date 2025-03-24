@@ -1,0 +1,59 @@
+---
+# defaults file for make
+# https://mirrors.tuna.tsinghua.edu.cn/gnu/make/make-4.4.tar.gz
+# https://ftp.gnu.org/gnu/make/make-4.4.tar.gz
+
+# user
+make_install_user: "{{ ansible_user }}"
+make_install_group: "{{ ansible_user }}"
+make_version: "4.4"
+# make_port: "8032"
+
+# standalone/cluster/pseudo_cluster
+make_deploy_mode: "standalone"
+
+# binary/source/rpm/yum/dnf
+make_deploy_method: "source"
+
+# url
+make_base_url: "https://mirrors.tuna.tsinghua.edu.cn/gnu/make"
+make_base_url_remote: "https://ftp.gnu.org/gnu/make"
+
+# package
+make_package_suffix: ".tar.gz"
+make_package_name_rpm: "make-{{ make_version }}.rpm"
+make_package_name_binary: "make-{{ make_version }}-{{ ansible_architecture }}{{ make_package_suffix }}"
+make_package_name_source: "make-{{ make_version }}{{ make_package_suffix }}"
+make_package_name: "{% if make_deploy_method == 'rpm' %}{{ make_package_name_rpm }}{% elif make_deploy_method == 'binary' %}{{ make_package_name_binary }}{% elif make_deploy_method == 'source' %}{{ make_package_name_source }}{% else %}{{ make_package_name_source }}{% endif %}"
+
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/make
+# /data/make/data
+# /data/make/conf
+# /data/make/log
+# /data/make/tmp
+# /data/make/source
+# /data/make/app
+# /data/make/app/make-2.44
+# /data/make/app/make-2.44/bin
+# /data/make/app/make-2.44/lib
+# /data/make/app/make-2.44/lib/pkgconfig
+# /data/make/app/make-2.44/include
+# /data/make/app/make-2.44/share
+# /data/make/source/make-2.44
+make_dir: "{{ base_dir }}/make"
+make_data_dir: "{{ make_dir }}/data"
+make_conf_dir: "{{ make_dir }}/conf"
+make_log_dir: "{{ make_dir }}/log"
+make_tmp_dir: "{{ make_dir }}/tmp"
+make_app_base_dir: "{{ make_dir }}/app"
+make_source_base_dir: "{{ make_dir }}/source"
+make_app_dir: "{{ make_app_base_dir }}/make-{{ make_version }}"
+make_bin_dir: "{{ make_app_dir }}/bin"
+make_lib_dir: "{{ make_app_dir }}/lib"
+make_include_dir: "{{ make_app_dir }}/include"
+make_share_dir: "{{ make_app_dir }}/share"
+make_pkgconfig_dir: "{{ make_lib_dir }}/pkgconfig"
+make_source_dir: "{{ make_source_base_dir }}/make-{{ make_version }}"

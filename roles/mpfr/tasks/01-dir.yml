@@ -1,38 +1,73 @@
 ---
 # tasks file for mpfr
-- name: "remove {{ mpfr_source_dir }} {{ mpfr_base_dir }}"
-  become: true
-  file:
-          path: "{{ item }}"
-          state: absent
-  with_items:
-          - "{{ mpfr_source_dir }}"
-          - "{{ mpfr_base_dir }}"
+# delete mpfr_source_dir mpfr_app_dir
 
-- name: "mkdir for mpfr"
+- name: "delete {{ mpfr_source_dir }} {{ mpfr_app_dir }}"
   become: true
   file:
-          path: "{{ item }}"
-          state: directory
-          owner: "{{ mpfr_install_user }}"
-          group: "{{ mpfr_install_group }}"
-          mode: 0755
+      path: "{{ item }}"
+      state: absent
   with_items:
-          - "{{ base_dir }}"
-          - "{{ mpfr_dir }}"
-          - "{{ install_tmpdir }}"
-          - "{{ mpfr_app_dir }}"
-          - "{{ mpfr_base_dir }}"
+      - "{{ mpfr_source_dir }}"
+      - "{{ mpfr_app_dir }}"
 
-- name: "mkdir {{ mpfr_source_dir }}"
+# basic dir
+- name: "mkdir {{ base_dir }} {{ install_tmpdir }}"
   become: true
   file:
-          path: "{{ item }}"
-          state: directory
-          mode: 0755
-          owner: "{{ mpfr_install_user }}"
-          group: "{{ mpfr_install_group }}"
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ mpfr_install_user }}"
+      group: "{{ mpfr_install_group }}"
+      mode: 0755
   with_items:
-          - "{{ base_dir }}"
-          - "{{ mpfr_source_dir }}"
-  when: mpfr_deploy_method == "source"
+      - "{{ base_dir }}"
+      - "{{ install_tmpdir }}"
+
+# binary and source dir
+- name: "mkdir {{ mpfr_dir }} {{ mpfr_app_base_dir }} {{ mpfr_app_dir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ mpfr_install_user }}"
+      group: "{{ mpfr_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ mpfr_dir }}"
+      - "{{ mpfr_app_base_dir }}"
+      - "{{ mpfr_app_dir }}"
+  when:
+      - mpfr_deploy_method == "binary" or mpfr_deploy_method == "source"
+
+# source dir
+- name: "mkdir {{ mpfr_dir }} {{ mpfr_source_base_dir }}  {{ mpfr_source_dir }} "
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ mpfr_install_user }}"
+      group: "{{ mpfr_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ mpfr_source_base_dir }}"
+      - "{{ mpfr_source_dir }}"
+  when:
+      - mpfr_deploy_method == "source"
+
+# service dir
+- name: "mkdir {{ mpfr_data_dir }} {{ mpfr_conf_dir }} {{ mpfr_log_dir }} {{ mpfr_tmp_dir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ mpfr_install_user }}"
+      group: "{{ mpfr_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ mpfr_data_dir }}"
+      - "{{ mpfr_conf_dir }}"
+      - "{{ mpfr_log_dir }}"
+      - "{{ mpfr_tmp_dir }}"
+  when:
+      - mpfr_port is defined

@@ -1,0 +1,15 @@
+---
+# tasks file for kazoo
+
+- name: "mkdir for kazoo"
+  become: true
+  file:
+      path: "{{item}}"
+      state: directory
+      owner: "{{kazoo_install_user}}"
+      group: "{{kazoo_install_group}}"
+      mode: 0755
+  with_items:
+      - "{{base_dir}}"
+      - "{{install_tmpdir}}"
+  when: kazoo_deploy_method == "rpm"

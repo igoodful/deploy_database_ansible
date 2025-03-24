@@ -1,20 +1,59 @@
 ---
 # defaults file for patch
 # https://ftp.gnu.org/gnu/patch/patch-2.7.tar.gz
+# DONE
+
+# user
 patch_install_user: "{{ ansible_user }}"
 patch_install_group: "{{ ansible_user }}"
 patch_version: "2.7"
+# patch_port: "8032"
+
+# standalone/cluster/pseudo_cluster
+patch_deploy_mode: "standalone"
+
+# binary/source/rpm/yum/dnf
+patch_deploy_method: "source"
+
+# url
 patch_base_url: "{{ base_url }}"
 patch_base_url_remote: "https://ftp.gnu.org/gnu/patch"
 
-# binary/source
-
-patch_deploy_method: "source"
+# package
 patch_package_suffix: ".tar.gz"
-patch_package_name_binary: "patch-{{ patch_version }}"
-patch_package_name_source: "patch-{{ patch_version }}"
+patch_package_name_rpm: "patch-{{ patch_version }}.rpm"
+patch_package_name_binary: "patch-{{ patch_version }}-{{ ansible_architecture }}{{ patch_package_suffix }}"
+patch_package_name_source: "patch-{{ patch_version }}{{ patch_package_suffix }}"
+patch_package_name: "{% if patch_deploy_method == 'rpm' %}{{ patch_package_name_rpm }}{% elif patch_deploy_method == 'binary' %}{{ patch_package_name_binary }}{% elif patch_deploy_method == 'source' %}{{ patch_package_name_source }}{% else %}{{ patch_package_name_source }}{% endif %}"
 
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/patch
+# /data/patch/data
+# /data/patch/conf
+# /data/patch/log
+# /data/patch/tmp
+# /data/patch/source
+# /data/patch/app
+# /data/patch/app/patch-2.44
+# /data/patch/app/patch-2.44/bin
+# /data/patch/app/patch-2.44/lib
+# /data/patch/app/patch-2.44/lib/pkgconfig
+# /data/patch/app/patch-2.44/include
+# /data/patch/app/patch-2.44/share
+# /data/patch/source/patch-2.44
 patch_dir: "{{ base_dir }}/patch"
-patch_app_dir: "{{ base_dir }}/patch/app"
-patch_base_dir: "{{ patch_app_dir }}/patch-{{ patch_version }}"
-patch_source_dir: "{{ patch_app_dir }}/source/patch-{{ patch_version }}"
+patch_data_dir: "{{ patch_dir }}/data"
+patch_conf_dir: "{{ patch_dir }}/conf"
+patch_log_dir: "{{ patch_dir }}/log"
+patch_tmp_dir: "{{ patch_dir }}/tmp"
+patch_app_base_dir: "{{ patch_dir }}/app"
+patch_source_base_dir: "{{ patch_dir }}/source"
+patch_app_dir: "{{ patch_app_base_dir }}/patch-{{ patch_version }}"
+patch_bin_dir: "{{ patch_app_dir }}/bin"
+patch_lib_dir: "{{ patch_app_dir }}/lib"
+patch_include_dir: "{{ patch_app_dir }}/include"
+patch_share_dir: "{{ patch_app_dir }}/share"
+patch_pkgconfig_dir: "{{ patch_lib_dir }}/pkgconfig"
+patch_source_dir: "{{ patch_source_base_dir }}/patch-{{ patch_version }}"

@@ -1,0 +1,54 @@
+---
+# tasks file for glibc by source
+- name: "chown -R {{  glibc_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ glibc_install_user }}.{{ glibc_install_group }} {{  glibc_dir  }}"
+
+# source
+- name: "glibc_deploy_method == 'source'"
+  block:
+      - name: "cd {{ glibc_build_dir }};./configure --prefix={{ glibc_app_dir }}"
+        shell:
+            chdir: "{{ glibc_build_dir }}"
+            cmd: "../configure --prefix={{ glibc_app_dir }}"
+      - name: "cd {{ glibc_build_dir }};make -j{{ ansible_processor_vcpus }}"
+        shell:
+            chdir: "{{ glibc_build_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ glibc_build_dir }};make install"
+        shell:
+            chdir: "{{ glibc_build_dir }}"
+            cmd: "make install  DESTDIR={{ glibc_app_dir }}"
+  when: glibc_deploy_method == "source"
+
+# glibc_port standalone
+- name: glibc_port is defined
+  block:
+# ./configure
+      - name: "cd {{ glibc_source_dir }};./configure --prefix={{ glibc_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ glibc_source_dir }}"
+            cmd: "./configure --prefix={{ glibc_base_dir }} --enable-shared --enable-static"
+# make
+      - name: "cd {{ glibc_source_dir }};make VERBOSE=1 -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ glibc_source_dir }}"
+            cmd: "make VERBOSE=1 -j{{ ansible_processor_vcpus }}"
+# make install
+      - name: "cd {{ glibc_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ glibc_source_dir }}"
+            cmd: make install
+  when:
+      - glibc_port is defined
+      - glibc_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  glibc_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ glibc_install_user }}.{{ glibc_install_group }} {{  glibc_dir  }}"

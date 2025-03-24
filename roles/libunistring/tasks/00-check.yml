@@ -1,0 +1,26 @@
+---
+# tasks file for libunistring
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check libunistring_port
+- name: "lsof -i:{{ libunistring_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ libunistring_port }}"
+  register: libunistring_port_check_output
+  ignore_errors: true
+  when: libunistring_port is defined
+
+- name: "check libunistring port"
+  become: true
+  fail:
+      msg: "libunistringd端口被占用,可使用: ps aux|grep libunistringd"
+  when:
+      - libunistring_port is defined
+      - libunistring_port_check_output is defined
+      - libunistring_port_check_output.rc == 0

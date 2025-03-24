@@ -1,18 +1,18 @@
 ---
 # defaults file for flex
 # https://github.com/westes/flex/releases/download/v2.6.4/flex-2.6.4.tar.gz
-flex_install_user: "{{ ansible_user }}"
-flex_install_group: "{{ ansible_user }}"
+flex_install_user: "{{ansible_user}}"
+flex_install_group: "{{ansible_user}}"
 flex_version: "2.6.4"
-flex_base_url: "{{ base_url }}"
-flex_base_url_remote: "https://github.com/westes/flex/releases/download/v{{ flex_version }}"
+flex_base_url: "{{base_url}}"
+flex_base_url_remote: "https://github.com/westes/flex/releases/download/v{{flex_version}}"
 
 # binary/source
 flex_deploy_method: "source"
-flex_package_name_binary: "flex-{{ flex_version }}"
-flex_package_name_source: "flex-{{ flex_version }}"
+flex_package_name_binary: "flex-{{flex_version}}"
+flex_package_name_source: "flex-{{flex_version}}"
 
-flex_dir: "{{ base_dir }}/flex"
-flex_app_dir: "{{ base_dir }}/flex/app"
-flex_base_dir: "{{ flex_app_dir }}/flex-{{ flex_version }}"
-flex_source_dir: "{{ flex_app_dir }}/source/flex-{{ flex_version }}"
+flex_dir: "{{base_dir}}/flex"
+flex_app_dir: "{{base_dir}}/flex/app"
+flex_base_dir: "{{flex_app_dir}}/flex-{{flex_version}}"
+flex_source_dir: "{{flex_app_dir}}/source/flex-{{flex_version}}"

@@ -1,0 +1,51 @@
+---
+# tasks file for gperf by source
+- name: "chown -R {{  gperf_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ gperf_install_user }}.{{ gperf_install_group }} {{  gperf_dir  }}"
+
+# source
+- name: "gperf_deploy_method == 'source'"
+  block:
+      - name: "cd {{ gperf_source_dir }};./configure --prefix={{ gperf_app_dir }}"
+        shell:
+            chdir: "{{ gperf_source_dir }}"
+            cmd: "./configure --prefix={{ gperf_app_dir }}"
+      - name: "cd {{ gperf_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        shell:
+            chdir: "{{ gperf_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ gperf_source_dir }};make install"
+        shell:
+            chdir: "{{ gperf_source_dir }}"
+            cmd: make install
+  when: gperf_deploy_method == "source"
+
+# gperf_port standalone
+- name: gperf_port is defined
+  block:
+      - name: "cd {{ gperf_source_dir }};./configure --prefix={{ gperf_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ gperf_source_dir }}"
+            cmd: "./configure --prefix={{ gperf_base_dir }}"
+      - name: "cd {{ gperf_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ gperf_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ gperf_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ gperf_source_dir }}"
+            cmd: make install
+  when:
+      - gperf_port is defined
+      - gperf_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  gperf_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ gperf_install_user }}.{{ gperf_install_group }} {{  gperf_dir  }}"

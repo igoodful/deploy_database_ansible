@@ -1,20 +1,59 @@
 ---
 # defaults file for libunistring
+# https://mirrors.tuna.tsinghua.edu.cn/gnu/libunistring/libunistring-1.3.tar.gz
 # https://ftp.gnu.org/gnu/libunistring/libunistring-1.3.tar.gz
+
+# user
 libunistring_install_user: "{{ ansible_user }}"
 libunistring_install_group: "{{ ansible_user }}"
 libunistring_version: "1.3"
-libunistring_base_url: "{{ base_url }}"
+# libunistring_port: "8032"
+
+# standalone/cluster/pseudo_cluster
+libunistring_deploy_mode: "standalone"
+
+# binary/source/rpm/yum/dnf
+libunistring_deploy_method: "source"
+
+# url
+libunistring_base_url: "https://mirrors.tuna.tsinghua.edu.cn/gnu/libunistring"
 libunistring_base_url_remote: "https://ftp.gnu.org/gnu/libunistring"
 
-# binary/source
-
-libunistring_deploy_method: "source"
+# package
 libunistring_package_suffix: ".tar.gz"
-libunistring_package_name_binary: "libunistring-{{ libunistring_version }}"
-libunistring_package_name_source: "libunistring-{{ libunistring_version }}"
+libunistring_package_name_rpm: "libunistring-{{ libunistring_version }}.rpm"
+libunistring_package_name_binary: "libunistring-{{ libunistring_version }}-{{ ansible_architecture }}{{ libunistring_package_suffix }}"
+libunistring_package_name_source: "libunistring-{{ libunistring_version }}{{ libunistring_package_suffix }}"
+libunistring_package_name: "{% if libunistring_deploy_method == 'rpm' %}{{ libunistring_package_name_rpm }}{% elif libunistring_deploy_method == 'binary' %}{{ libunistring_package_name_binary }}{% elif libunistring_deploy_method == 'source' %}{{ libunistring_package_name_source }}{% else %}{{ libunistring_package_name_source }}{% endif %}"
 
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/libunistring
+# /data/libunistring/data
+# /data/libunistring/conf
+# /data/libunistring/log
+# /data/libunistring/tmp
+# /data/libunistring/source
+# /data/libunistring/app
+# /data/libunistring/app/libunistring-2.44
+# /data/libunistring/app/libunistring-2.44/bin
+# /data/libunistring/app/libunistring-2.44/lib
+# /data/libunistring/app/libunistring-2.44/lib/pkgconfig
+# /data/libunistring/app/libunistring-2.44/include
+# /data/libunistring/app/libunistring-2.44/share
+# /data/libunistring/source/libunistring-2.44
 libunistring_dir: "{{ base_dir }}/libunistring"
-libunistring_app_dir: "{{ base_dir }}/libunistring/app"
-libunistring_base_dir: "{{ libunistring_app_dir }}/libunistring-{{ libunistring_version }}"
-libunistring_source_dir: "{{ libunistring_app_dir }}/source/libunistring-{{ libunistring_version }}"
+libunistring_data_dir: "{{ libunistring_dir }}/data"
+libunistring_conf_dir: "{{ libunistring_dir }}/conf"
+libunistring_log_dir: "{{ libunistring_dir }}/log"
+libunistring_tmp_dir: "{{ libunistring_dir }}/tmp"
+libunistring_app_base_dir: "{{ libunistring_dir }}/app"
+libunistring_source_base_dir: "{{ libunistring_dir }}/source"
+libunistring_app_dir: "{{ libunistring_app_base_dir }}/libunistring-{{ libunistring_version }}"
+libunistring_bin_dir: "{{ libunistring_app_dir }}/bin"
+libunistring_lib_dir: "{{ libunistring_app_dir }}/lib"
+libunistring_include_dir: "{{ libunistring_app_dir }}/include"
+libunistring_share_dir: "{{ libunistring_app_dir }}/share"
+libunistring_pkgconfig_dir: "{{ libunistring_lib_dir }}/pkgconfig"
+libunistring_source_dir: "{{ libunistring_source_base_dir }}/libunistring-{{ libunistring_version }}"

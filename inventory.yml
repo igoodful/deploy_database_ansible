@@ -1,12 +1,12 @@
 all:
-        hosts:
-                node1:
-                        ansible_host: 172.17.135.146
-        vars:
-                ansible_user: mysql
-                ansible_password: mysql
-                ansible_port: 22
-                ansible_python_interpreter: /usr/bin/python
-                base_dir: "/glc"
-                install_tmpdir: "{{base_dir}}/tmpdir"
-                base_url: "https://ftp.gnu.org/gnu/binutils"
+    hosts:
+        node1:
+            ansible_host: 172.17.135.146
+    vars:
+        ansible_user: mysql
+        ansible_password: mysql
+        ansible_port: 22
+        ansible_python_interpreter: /usr/bin/python
+        base_dir: "/glc"
+        install_tmpdir: "{{base_dir}}/tmpdir"
+        base_url: "https://ftp.gnu.org/gnu/binutils"

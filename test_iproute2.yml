@@ -1,0 +1,6 @@
+---
+- name: Apply role iproute2
+  hosts: all
+  gather_facts: true
+  roles:
+      - { role: iproute2, tags: iproute2 }

@@ -1,0 +1,26 @@
+---
+# tasks file for bison
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check bison_port
+- name: "lsof -i:{{ bison_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ bison_port }}"
+  register: bison_port_check_output
+  ignore_errors: true
+  when: bison_port is defined
+
+- name: "check bison port"
+  become: true
+  fail:
+      msg: "bisond端口被占用,可使用: ps aux|grep bisond"
+  when:
+      - bison_port is defined
+      - bison_port_check_output is defined
+      - bison_port_check_output.rc == 0

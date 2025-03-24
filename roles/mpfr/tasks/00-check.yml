@@ -1,0 +1,26 @@
+---
+# tasks file for mpfr
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check mpfr_port
+- name: "lsof -i:{{ mpfr_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ mpfr_port }}"
+  register: mpfr_port_check_output
+  ignore_errors: true
+  when: mpfr_port is defined
+
+- name: "check mpfr port"
+  become: true
+  fail:
+      msg: "mpfrd端口被占用,可使用: ps aux|grep mpfrd"
+  when:
+      - mpfr_port is defined
+      - mpfr_port_check_output is defined
+      - mpfr_port_check_output.rc == 0

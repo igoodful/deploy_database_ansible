@@ -1,0 +1,73 @@
+---
+# tasks file for util_linux
+# delete util_linux_source_dir util_linux_app_dir
+
+- name: "delete {{ util_linux_source_dir }} {{ util_linux_app_dir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: absent
+  with_items:
+      - "{{ util_linux_source_dir }}"
+      - "{{ util_linux_app_dir }}"
+
+# basic dir
+- name: "mkdir {{ base_dir }} {{ install_tmpdir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ util_linux_install_user }}"
+      group: "{{ util_linux_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ base_dir }}"
+      - "{{ install_tmpdir }}"
+
+# binary and source dir
+- name: "mkdir {{ util_linux_dir }} {{ util_linux_app_base_dir }} {{ util_linux_app_dir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ util_linux_install_user }}"
+      group: "{{ util_linux_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ util_linux_dir }}"
+      - "{{ util_linux_app_base_dir }}"
+      - "{{ util_linux_app_dir }}"
+  when:
+      - util_linux_deploy_method == "binary" or util_linux_deploy_method == "source"
+
+# source dir
+- name: "mkdir {{ util_linux_dir }} {{ util_linux_source_base_dir }}  {{ util_linux_source_dir }} "
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ util_linux_install_user }}"
+      group: "{{ util_linux_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ util_linux_source_base_dir }}"
+      - "{{ util_linux_source_dir }}"
+  when:
+      - util_linux_deploy_method == "source"
+
+# service dir
+- name: "mkdir {{ util_linux_data_dir }} {{ util_linux_conf_dir }} {{ util_linux_log_dir }} {{ util_linux_tmp_dir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ util_linux_install_user }}"
+      group: "{{ util_linux_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ util_linux_data_dir }}"
+      - "{{ util_linux_conf_dir }}"
+      - "{{ util_linux_log_dir }}"
+      - "{{ util_linux_tmp_dir }}"
+  when:
+      - util_linux_port is defined

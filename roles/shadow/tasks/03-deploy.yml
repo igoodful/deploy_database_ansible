@@ -1,0 +1,55 @@
+---
+# tasks file for shadow by source
+- name: "chown -R {{  shadow_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ shadow_install_user }}.{{ shadow_install_group }} {{  shadow_dir  }}"
+
+# source
+- name: "shadow_deploy_method == 'source'"
+  block:
+      - name: "cd {{ shadow_source_dir }};./autogen.sh"
+        shell:
+            chdir: "{{ shadow_source_dir }}"
+            cmd: "./autogen.sh"
+      - name: "cd {{ shadow_source_dir }};./configure --prefix={{ shadow_app_dir }}"
+        shell:
+            chdir: "{{ shadow_source_dir }}"
+            cmd: "./configure --prefix={{ shadow_app_dir }}"
+      - name: "cd {{ shadow_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        shell:
+            chdir: "{{ shadow_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ shadow_source_dir }};make install"
+        shell:
+            chdir: "{{ shadow_source_dir }}"
+            cmd: make install
+  when: shadow_deploy_method == "source"
+
+# shadow_port standalone
+- name: shadow_port is defined
+  block:
+      - name: "cd {{ shadow_source_dir }};./configure --prefix={{ shadow_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ shadow_source_dir }}"
+            cmd: "./configure --prefix={{ shadow_base_dir }}"
+      - name: "cd {{ shadow_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ shadow_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ shadow_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ shadow_source_dir }}"
+            cmd: make install
+  when:
+      - shadow_port is defined
+      - shadow_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  shadow_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ shadow_install_user }}.{{ shadow_install_group }} {{  shadow_dir  }}"

@@ -1,0 +1,58 @@
+---
+# defaults file for inetutils
+# https://ftp.gnu.org/gnu/inetutils/inetutils-2.6.tar.gz
+
+# user
+inetutils_install_user: "{{ ansible_user }}"
+inetutils_install_group: "{{ ansible_user }}"
+inetutils_version: "2.6"
+# inetutils_port: "8032"
+
+# standalone/cluster/pseudo_cluster
+inetutils_deploy_mode: "standalone"
+
+# binary/source/rpm/yum/dnf
+inetutils_deploy_method: "source"
+
+# url
+inetutils_base_url: "{{ base_url }}"
+inetutils_base_url_remote: "https://ftp.gnu.org/gnu/inetutils"
+
+# package
+inetutils_package_suffix: ".tar.gz"
+inetutils_package_name_rpm: "inetutils-{{ inetutils_version }}.rpm"
+inetutils_package_name_binary: "inetutils-{{ inetutils_version }}-{{ ansible_architecture }}{{ inetutils_package_suffix }}"
+inetutils_package_name_source: "inetutils-{{ inetutils_version }}{{ inetutils_package_suffix }}"
+inetutils_package_name: "{% if inetutils_deploy_method == 'rpm' %}{{ inetutils_package_name_rpm }}{% elif inetutils_deploy_method == 'binary' %}{{ inetutils_package_name_binary }}{% elif inetutils_deploy_method == 'source' %}{{ inetutils_package_name_source }}{% else %}{{ inetutils_package_name_source }}{% endif %}"
+
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/inetutils
+# /data/inetutils/data
+# /data/inetutils/conf
+# /data/inetutils/log
+# /data/inetutils/tmp
+# /data/inetutils/source
+# /data/inetutils/app
+# /data/inetutils/app/inetutils-2.44
+# /data/inetutils/app/inetutils-2.44/bin
+# /data/inetutils/app/inetutils-2.44/lib
+# /data/inetutils/app/inetutils-2.44/lib/pkgconfig
+# /data/inetutils/app/inetutils-2.44/include
+# /data/inetutils/app/inetutils-2.44/share
+# /data/inetutils/source/inetutils-2.44
+inetutils_dir: "{{ base_dir }}/inetutils"
+inetutils_data_dir: "{{ inetutils_dir }}/data"
+inetutils_conf_dir: "{{ inetutils_dir }}/conf"
+inetutils_log_dir: "{{ inetutils_dir }}/log"
+inetutils_tmp_dir: "{{ inetutils_dir }}/tmp"
+inetutils_app_base_dir: "{{ inetutils_dir }}/app"
+inetutils_source_base_dir: "{{ inetutils_dir }}/source"
+inetutils_app_dir: "{{ inetutils_app_base_dir }}/inetutils-{{ inetutils_version }}"
+inetutils_bin_dir: "{{ inetutils_app_dir }}/bin"
+inetutils_lib_dir: "{{ inetutils_app_dir }}/lib"
+inetutils_include_dir: "{{ inetutils_app_dir }}/include"
+inetutils_share_dir: "{{ inetutils_app_dir }}/share"
+inetutils_pkgconfig_dir: "{{ inetutils_lib_dir }}/pkgconfig"
+inetutils_source_dir: "{{ inetutils_source_base_dir }}/inetutils-{{ inetutils_version }}"

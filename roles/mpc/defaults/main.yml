@@ -1,21 +1,59 @@
 ---
 # defaults file for mpc
+# https://gcc.gnu.org/pub/gcc/infrastructure/mpc-1.0.3.tar.gz
 # NOT DONE
-# https://ftp.gnu.org/gnu/mpc/mpc-1.3.0.tar.gz
+
+# user
 mpc_install_user: "{{ ansible_user }}"
 mpc_install_group: "{{ ansible_user }}"
-mpc_version: "1.3.0"
+mpc_version: "1.0.3"
+# mpc_port: "8032"
+
+# standalone/cluster/pseudo_cluster
+mpc_deploy_mode: "standalone"
+
+# binary/source/rpm/yum/dnf
+mpc_deploy_method: "source"
+
+# url
 mpc_base_url: "{{ base_url }}"
 mpc_base_url_remote: "https://ftp.gnu.org/gnu/mpc"
 
-# binary/source
-
-mpc_deploy_method: "source"
+# package
 mpc_package_suffix: ".tar.gz"
-mpc_package_name_binary: "mpc-{{ mpc_version }}"
-mpc_package_name_source: "mpc-{{ mpc_version }}"
+mpc_package_name_rpm: "mpc-{{ mpc_version }}.rpm"
+mpc_package_name_binary: "mpc-{{ mpc_version }}-{{ ansible_architecture }}{{ mpc_package_suffix }}"
+mpc_package_name_source: "mpc-{{ mpc_version }}{{ mpc_package_suffix }}"
+mpc_package_name: "{% if mpc_deploy_method == 'rpm' %}{{ mpc_package_name_rpm }}{% elif mpc_deploy_method == 'binary' %}{{ mpc_package_name_binary }}{% elif mpc_deploy_method == 'source' %}{{ mpc_package_name_source }}{% else %}{{ mpc_package_name_source }}{% endif %}"
 
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/mpc
+# /data/mpc/data
+# /data/mpc/conf
+# /data/mpc/log
+# /data/mpc/tmp
+# /data/mpc/source
+# /data/mpc/app
+# /data/mpc/app/mpc-2.44
+# /data/mpc/app/mpc-2.44/bin
+# /data/mpc/app/mpc-2.44/lib
+# /data/mpc/app/mpc-2.44/lib/pkgconfig
+# /data/mpc/app/mpc-2.44/include
+# /data/mpc/app/mpc-2.44/share
+# /data/mpc/source/mpc-2.44
 mpc_dir: "{{ base_dir }}/mpc"
-mpc_app_dir: "{{ base_dir }}/mpc/app"
-mpc_base_dir: "{{ mpc_app_dir }}/mpc-{{ mpc_version }}"
-mpc_source_dir: "{{ mpc_app_dir }}/source/mpc-{{ mpc_version }}"
+mpc_data_dir: "{{ mpc_dir }}/data"
+mpc_conf_dir: "{{ mpc_dir }}/conf"
+mpc_log_dir: "{{ mpc_dir }}/log"
+mpc_tmp_dir: "{{ mpc_dir }}/tmp"
+mpc_app_base_dir: "{{ mpc_dir }}/app"
+mpc_source_base_dir: "{{ mpc_dir }}/source"
+mpc_app_dir: "{{ mpc_app_base_dir }}/mpc-{{ mpc_version }}"
+mpc_bin_dir: "{{ mpc_app_dir }}/bin"
+mpc_lib_dir: "{{ mpc_app_dir }}/lib"
+mpc_include_dir: "{{ mpc_app_dir }}/include"
+mpc_share_dir: "{{ mpc_app_dir }}/share"
+mpc_pkgconfig_dir: "{{ mpc_lib_dir }}/pkgconfig"
+mpc_source_dir: "{{ mpc_source_base_dir }}/mpc-{{ mpc_version }}"

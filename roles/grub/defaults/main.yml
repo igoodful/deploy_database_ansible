@@ -1,0 +1,60 @@
+---
+# defaults file for grub
+# https://ftp.gnu.org/gnu/grub/grub-2.06.tar.gz
+# https://mirrors.tuna.tsinghua.edu.cn/gnu/grub/grub-2.06.tar.gz
+# NOT DONE
+
+# user
+grub_install_user: "{{ ansible_user }}"
+grub_install_group: "{{ ansible_user }}"
+grub_version: "2.06"
+# grub_port: "8032"
+
+# standalone/cluster/pseudo_cluster
+grub_deploy_mode: "standalone"
+
+# binary/source/rpm/yum/dnf
+grub_deploy_method: "source"
+
+# url
+grub_base_url: "https://mirrors.tuna.tsinghua.edu.cn/gnu/grub"
+grub_base_url_remote: "https://ftp.gnu.org/gnu/grub"
+
+# package
+grub_package_suffix: ".tar.gz"
+grub_package_name_rpm: "grub-{{ grub_version }}.rpm"
+grub_package_name_binary: "grub-{{ grub_version }}-{{ ansible_architecture }}{{ grub_package_suffix }}"
+grub_package_name_source: "grub-{{ grub_version }}{{ grub_package_suffix }}"
+grub_package_name: "{% if grub_deploy_method == 'rpm' %}{{ grub_package_name_rpm }}{% elif grub_deploy_method == 'binary' %}{{ grub_package_name_binary }}{% elif grub_deploy_method == 'source' %}{{ grub_package_name_source }}{% else %}{{ grub_package_name_source }}{% endif %}"
+
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/grub
+# /data/grub/data
+# /data/grub/conf
+# /data/grub/log
+# /data/grub/tmp
+# /data/grub/source
+# /data/grub/app
+# /data/grub/app/grub-2.44
+# /data/grub/app/grub-2.44/bin
+# /data/grub/app/grub-2.44/lib
+# /data/grub/app/grub-2.44/lib/pkgconfig
+# /data/grub/app/grub-2.44/include
+# /data/grub/app/grub-2.44/share
+# /data/grub/source/grub-2.44
+grub_dir: "{{ base_dir }}/grub"
+grub_data_dir: "{{ grub_dir }}/data"
+grub_conf_dir: "{{ grub_dir }}/conf"
+grub_log_dir: "{{ grub_dir }}/log"
+grub_tmp_dir: "{{ grub_dir }}/tmp"
+grub_app_base_dir: "{{ grub_dir }}/app"
+grub_source_base_dir: "{{ grub_dir }}/source"
+grub_app_dir: "{{ grub_app_base_dir }}/grub-{{ grub_version }}"
+grub_bin_dir: "{{ grub_app_dir }}/bin"
+grub_lib_dir: "{{ grub_app_dir }}/lib"
+grub_include_dir: "{{ grub_app_dir }}/include"
+grub_share_dir: "{{ grub_app_dir }}/share"
+grub_pkgconfig_dir: "{{ grub_lib_dir }}/pkgconfig"
+grub_source_dir: "{{ grub_source_base_dir }}/grub-{{ grub_version }}"

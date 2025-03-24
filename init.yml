@@ -3,25 +3,16 @@
   hosts: all
   gather_facts: true
   roles:
-    - {
-        role: os,
-        tags: os,
-      }
+      - { role: os, tags: os }
 
 - name: Apply user role
   hosts: all
   gather_facts: true
   roles:
-    - {
-        role: user,
-        tags: user,
-      }
+      - { role: user, tags: user }
 
 - name: Apply base role
   hosts: all
   gather_facts: true
   roles:
-    - {
-        role: base,
-        tags: base,
-      }
+      - { role: base, tags: base }

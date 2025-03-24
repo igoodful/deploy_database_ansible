@@ -1,0 +1,56 @@
+---
+# tasks file for ncurses by source
+
+# source
+- name: "ncurses_deploy_method == 'source'"
+  block:
+      - name: "cd {{ ncurses_source_dir }};./configure --prefix={{ ncurses_app_dir }}"
+        become: true
+        shell:
+            chdir: "{{ ncurses_source_dir }}"
+            cmd: "./configure --prefix={{ ncurses_app_dir }} --with-shared --with-cxx-shared --without-debug --disable-widec --with-pkg-config --enable-overwrite"
+      - name: "cd {{ ncurses_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ ncurses_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ ncurses_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ ncurses_source_dir }}"
+            cmd: make install
+  when: ncurses_deploy_method == "source"
+
+# ncurses_port standalone
+- name: ncurses_port is defined
+  block:
+      - name: "cd {{ ncurses_source_dir }};./configure --prefix={{ ncurses_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ ncurses_source_dir }}"
+            cmd: "./configure --prefix={{ ncurses_base_dir }}"
+      - name: "cd {{ ncurses_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ ncurses_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ ncurses_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ ncurses_source_dir }}"
+            cmd: make install
+  when:
+      - ncurses_port is defined
+      - ncurses_deploy_mode == "standalone"
+
+#
+- name: "chown -R {{  ncurses_dir  }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ ncurses_install_user }}"
+      group: "{{ ncurses_install_group }}"
+      recurse: true
+  with_items:
+      - "{{ ncurses_dir }}"

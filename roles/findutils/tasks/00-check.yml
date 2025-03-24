@@ -1,0 +1,26 @@
+---
+# tasks file for findutils
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check findutils_port
+- name: "lsof -i:{{ findutils_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ findutils_port }}"
+  register: findutils_port_check_output
+  ignore_errors: true
+  when: findutils_port is defined
+
+- name: "check findutils port"
+  become: true
+  fail:
+      msg: "findutilsd端口被占用,可使用: ps aux|grep findutilsd"
+  when:
+      - findutils_port is defined
+      - findutils_port_check_output is defined
+      - findutils_port_check_output.rc == 0

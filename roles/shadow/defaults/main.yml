@@ -1,0 +1,58 @@
+---
+# defaults file for shadow
+# https://github.com/shadow-maint/shadow/archive/refs/tags/4.17.4.tar.gz
+
+# user
+shadow_install_user: "{{ ansible_user }}"
+shadow_install_group: "{{ ansible_user }}"
+shadow_version: "4.17.4"
+# shadow_port: "8032"
+
+# standalone/cluster/pseudo_cluster
+shadow_deploy_mode: "standalone"
+
+# binary/source/rpm/yum/dnf
+shadow_deploy_method: "source"
+
+# url
+shadow_base_url: "{{ base_url }}"
+shadow_base_url_remote: "https://github.com/shadow-maint/shadow/archive/refs/tags"
+
+# package
+shadow_package_suffix: ".tar.gz"
+shadow_package_name_rpm: "shadow-{{ shadow_version }}.rpm"
+shadow_package_name_binary: "shadow-{{ shadow_version }}-{{ ansible_architecture }}{{ shadow_package_suffix }}"
+shadow_package_name_source: "shadow-{{ shadow_version }}{{ shadow_package_suffix }}"
+shadow_package_name: "{% if shadow_deploy_method == 'rpm' %}{{ shadow_package_name_rpm }}{% elif shadow_deploy_method == 'binary' %}{{ shadow_package_name_binary }}{% elif shadow_deploy_method == 'source' %}{{ shadow_package_name_source }}{% else %}{{ shadow_package_name_source }}{% endif %}"
+
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/shadow
+# /data/shadow/data
+# /data/shadow/conf
+# /data/shadow/log
+# /data/shadow/tmp
+# /data/shadow/source
+# /data/shadow/app
+# /data/shadow/app/shadow-2.44
+# /data/shadow/app/shadow-2.44/bin
+# /data/shadow/app/shadow-2.44/lib
+# /data/shadow/app/shadow-2.44/lib/pkgconfig
+# /data/shadow/app/shadow-2.44/include
+# /data/shadow/app/shadow-2.44/share
+# /data/shadow/source/shadow-2.44
+shadow_dir: "{{ base_dir }}/shadow"
+shadow_data_dir: "{{ shadow_dir }}/data"
+shadow_conf_dir: "{{ shadow_dir }}/conf"
+shadow_log_dir: "{{ shadow_dir }}/log"
+shadow_tmp_dir: "{{ shadow_dir }}/tmp"
+shadow_app_base_dir: "{{ shadow_dir }}/app"
+shadow_source_base_dir: "{{ shadow_dir }}/source"
+shadow_app_dir: "{{ shadow_app_base_dir }}/shadow-{{ shadow_version }}"
+shadow_bin_dir: "{{ shadow_app_dir }}/bin"
+shadow_lib_dir: "{{ shadow_app_dir }}/lib"
+shadow_include_dir: "{{ shadow_app_dir }}/include"
+shadow_share_dir: "{{ shadow_app_dir }}/share"
+shadow_pkgconfig_dir: "{{ shadow_lib_dir }}/pkgconfig"
+shadow_source_dir: "{{ shadow_source_base_dir }}/shadow-{{ shadow_version }}"

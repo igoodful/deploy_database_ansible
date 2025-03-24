@@ -1,0 +1,26 @@
+---
+# tasks file for libgpg_error
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check libgpg_error_port
+- name: "lsof -i:{{ libgpg_error_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ libgpg_error_port }}"
+  register: libgpg_error_port_check_output
+  ignore_errors: true
+  when: libgpg_error_port is defined
+
+- name: "check libgpg_error port"
+  become: true
+  fail:
+      msg: "libgpg_errord端口被占用,可使用: ps aux|grep libgpg_errord"
+  when:
+      - libgpg_error_port is defined
+      - libgpg_error_port_check_output is defined
+      - libgpg_error_port_check_output.rc == 0

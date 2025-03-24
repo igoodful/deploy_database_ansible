@@ -1,0 +1,26 @@
+---
+# tasks file for vim
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check vim_port
+- name: "lsof -i:{{ vim_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ vim_port }}"
+  register: vim_port_check_output
+  ignore_errors: true
+  when: vim_port is defined
+
+- name: "check vim port"
+  become: true
+  fail:
+      msg: "vimd端口被占用,可使用: ps aux|grep vimd"
+  when:
+      - vim_port is defined
+      - vim_port_check_output is defined
+      - vim_port_check_output.rc == 0

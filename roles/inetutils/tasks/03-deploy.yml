@@ -1,0 +1,50 @@
+---
+# tasks file for inetutils by source
+
+# source
+- name: "inetutils_deploy_method == 'source'"
+  block:
+      - name: "cd {{ inetutils_source_dir }};./configure --prefix={{ inetutils_app_dir }}"
+        become: true
+        shell:
+            chdir: "{{ inetutils_source_dir }}"
+            cmd: "./configure --prefix={{ inetutils_app_dir }}"
+      - name: "cd {{ inetutils_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ inetutils_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ inetutils_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ inetutils_source_dir }}"
+            cmd: make install
+  when: inetutils_deploy_method == "source"
+
+# inetutils_port standalone
+- name: inetutils_port is defined
+  block:
+      - name: "cd {{ inetutils_source_dir }};./configure --prefix={{ inetutils_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ inetutils_source_dir }}"
+            cmd: "./configure --prefix={{ inetutils_base_dir }}"
+      - name: "cd {{ inetutils_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ inetutils_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ inetutils_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ inetutils_source_dir }}"
+            cmd: make install
+  when:
+      - inetutils_port is defined
+      - inetutils_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  inetutils_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ inetutils_install_user }}.{{ inetutils_install_group }} {{  inetutils_dir  }}"

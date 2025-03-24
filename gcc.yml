@@ -1,0 +1,10 @@
+---
+- name: Apply role gcc
+  hosts: all
+  gather_facts: true
+  roles:
+      - { role: gmp, tags: gmp }
+      - { role: mpfr, tags: mpfr }
+      - { role: mpc, tags: mpc }
+      - { role: isl, tags: isl }
+      - { role: gcc, tags: gcc }

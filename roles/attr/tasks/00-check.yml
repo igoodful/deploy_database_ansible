@@ -1,0 +1,26 @@
+---
+# tasks file for attr
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check attr_port
+- name: "lsof -i:{{ attr_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ attr_port }}"
+  register: attr_port_check_output
+  ignore_errors: true
+  when: attr_port is defined
+
+- name: "check attr port"
+  become: true
+  fail:
+      msg: "attrd端口被占用,可使用: ps aux|grep attrd"
+  when:
+      - attr_port is defined
+      - attr_port_check_output is defined
+      - attr_port_check_output.rc == 0

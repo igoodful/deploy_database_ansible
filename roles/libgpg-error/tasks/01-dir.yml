@@ -1,0 +1,73 @@
+---
+# tasks file for libgpg_error
+# delete libgpg_error_source_dir libgpg_error_app_dir
+
+- name: "delete {{ libgpg_error_source_dir }} {{ libgpg_error_app_dir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: absent
+  with_items:
+      - "{{ libgpg_error_source_dir }}"
+      - "{{ libgpg_error_app_dir }}"
+
+# basic dir
+- name: "mkdir {{ base_dir }} {{ install_tmpdir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ libgpg_error_install_user }}"
+      group: "{{ libgpg_error_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ base_dir }}"
+      - "{{ install_tmpdir }}"
+
+# binary and source dir
+- name: "mkdir {{ libgpg_error_dir }} {{ libgpg_error_app_base_dir }} {{ libgpg_error_app_dir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ libgpg_error_install_user }}"
+      group: "{{ libgpg_error_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ libgpg_error_dir }}"
+      - "{{ libgpg_error_app_base_dir }}"
+      - "{{ libgpg_error_app_dir }}"
+  when:
+      - libgpg_error_deploy_method == "binary" or libgpg_error_deploy_method == "source"
+
+# source dir
+- name: "mkdir {{ libgpg_error_dir }} {{ libgpg_error_source_base_dir }}  {{ libgpg_error_source_dir }} "
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ libgpg_error_install_user }}"
+      group: "{{ libgpg_error_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ libgpg_error_source_base_dir }}"
+      - "{{ libgpg_error_source_dir }}"
+  when:
+      - libgpg_error_deploy_method == "source"
+
+# service dir
+- name: "mkdir {{ libgpg_error_data_dir }} {{ libgpg_error_conf_dir }} {{ libgpg_error_log_dir }} {{ libgpg_error_tmp_dir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ libgpg_error_install_user }}"
+      group: "{{ libgpg_error_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ libgpg_error_data_dir }}"
+      - "{{ libgpg_error_conf_dir }}"
+      - "{{ libgpg_error_log_dir }}"
+      - "{{ libgpg_error_tmp_dir }}"
+  when:
+      - libgpg_error_port is defined

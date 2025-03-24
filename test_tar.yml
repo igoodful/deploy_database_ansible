@@ -1,0 +1,6 @@
+---
+- name: Apply role tar
+  hosts: all
+  gather_facts: true
+  roles:
+      - { role: tar, tags: tar }

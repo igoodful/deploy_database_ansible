@@ -2,32 +2,27 @@
 # download
 - name: Download node_exporter package for x86 architecture
   get_url:
-    url: "{{ node_exporter_download_url_amd64 }}"
-    dest: "{{ install_tmpdir }}/"
+      url: "{{node_exporter_download_url_amd64}}"
+      dest: "{{install_tmpdir}}/"
   when: ansible_architecture == 'x86_64' and node_exporter_download
 
 - name: Download node_exporter package for ARM architecture
   get_url:
-    url: "{{ node_exporter_download_url_arm64 }}"
-    dest: "{{ install_tmpdir }}/"
+      url: "{{node_exporter_download_url_arm64}}"
+      dest: "{{install_tmpdir}}/"
   when: ansible_architecture == 'aarch64' and node_exporter_download
 
 # copy node_exporter
 - name: copy node_exporter for aarch64
   become: true
   copy:
-    src: "node_exporter-{{ node_exporter_version }}.linux-arm64.tar.gz"
-    dest: "{{ install_tmpdir }}/"
+      src: "node_exporter-{{node_exporter_version}}.linux-arm64.tar.gz"
+      dest: "{{install_tmpdir}}/"
   when: ansible_architecture == 'aarch64' and (not node_exporter_download)
 
 - name: copy node_exporter for x86_64
   become: true
   copy:
-    src: "node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
-    dest: "{{ install_tmpdir }}/"
+      src: "node_exporter-{{node_exporter_version}}.linux-amd64.tar.gz"
+      dest: "{{install_tmpdir}}/"
   when: ansible_architecture == 'x86_64' and (not node_exporter_download)
-
-
-
-
-

@@ -1,20 +1,57 @@
 ---
 # defaults file for openssl
 # https://github.com/openssl/openssl/archive/refs/tags/OpenSSL_1_1_1w.tar.gz
+# DONE
+
+# user
 openssl_install_user: "{{ ansible_user }}"
 openssl_install_group: "{{ ansible_user }}"
 openssl_version: "1.1.1w"
+# openssl_port: "8032"
+
+# standalone/cluster/pseudo_cluster
+openssl_deploy_mode: "standalone"
+
+# binary/source/rpm/yum/dnf
+openssl_deploy_method: "source"
+
+# url
 openssl_base_url: "{{ base_url }}"
 openssl_base_url_remote: "https://github.com/openssl/openssl/archive/refs/tags"
 
-# binary/source
-
-openssl_deploy_method: "source"
+# package
 openssl_package_suffix: ".tar.gz"
-openssl_package_name_binary: "openssl-{{ openssl_version }}"
-openssl_package_name_source: "openssl-{{ openssl_version }}"
+openssl_package_name_rpm: "openssl-{{ openssl_version }}.rpm"
+openssl_package_name_binary: "openssl-{{ openssl_version }}-{{ ansible_architecture }}{{ openssl_package_suffix }}"
+openssl_package_name_source: "openssl-{{ openssl_version }}{{ openssl_package_suffix }}"
+openssl_package_name: "{% if openssl_deploy_method == 'rpm' %}{{ openssl_package_name_rpm }}{% elif openssl_deploy_method == 'binary' %}{{ openssl_package_name_binary }}{% elif openssl_deploy_method == 'source' %}{{ openssl_package_name_source }}{% else %}{{ openssl_package_name_source }}{% endif %}"
 
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/openssl
+# /data/openssl/data
+# /data/openssl/conf
+# /data/openssl/log
+# /data/openssl/tmp
+# /data/openssl/source
+# /data/openssl/app
+# /data/openssl/app/openssl-2.44
+# /data/openssl/app/openssl-2.44/bin
+# /data/openssl/app/openssl-2.44/lib
+# /data/openssl/app/openssl-2.44/include
+# /data/openssl/app/openssl-2.44/share
+# /data/openssl/source/openssl-2.44
 openssl_dir: "{{ base_dir }}/openssl"
-openssl_app_dir: "{{ base_dir }}/openssl/app"
-openssl_base_dir: "{{ openssl_app_dir }}/openssl-{{ openssl_version }}"
-openssl_source_dir: "{{ openssl_app_dir }}/source/openssl-{{ openssl_version }}"
+openssl_data_dir: "{{ openssl_dir }}/data"
+openssl_conf_dir: "{{ openssl_dir }}/conf"
+openssl_log_dir: "{{ openssl_dir }}/log"
+openssl_tmp_dir: "{{ openssl_dir }}/tmp"
+openssl_app_base_dir: "{{ openssl_dir }}/app"
+openssl_source_base_dir: "{{ openssl_dir }}/source"
+openssl_app_dir: "{{ openssl_app_base_dir }}/openssl-{{ openssl_version }}"
+openssl_bin_dir: "{{ openssl_app_dir }}/bin"
+openssl_lib_dir: "{{ openssl_app_dir }}/lib"
+openssl_include_dir: "{{ openssl_app_dir }}/include"
+openssl_share_dir: "{{ openssl_app_dir }}/share"
+openssl_source_dir: "{{ openssl_source_base_dir }}/openssl-{{ openssl_version }}"

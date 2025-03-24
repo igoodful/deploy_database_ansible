@@ -3,8 +3,4 @@
   hosts: all
   gather_facts: true
   roles:
-    - {
-        role: clang,
-        tags: clang,
-      }
-
+      - { role: clang, tags: clang }

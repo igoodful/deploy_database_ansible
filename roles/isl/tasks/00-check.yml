@@ -1,0 +1,26 @@
+---
+# tasks file for isl
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check isl_port
+- name: "lsof -i:{{ isl_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ isl_port }}"
+  register: isl_port_check_output
+  ignore_errors: true
+  when: isl_port is defined
+
+- name: "check isl port"
+  become: true
+  fail:
+      msg: "isld端口被占用,可使用: ps aux|grep isld"
+  when:
+      - isl_port is defined
+      - isl_port_check_output is defined
+      - isl_port_check_output.rc == 0

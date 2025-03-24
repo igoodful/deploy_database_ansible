@@ -1,0 +1,51 @@
+---
+# tasks file for mpfr by source
+- name: "chown -R {{  mpfr_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ mpfr_install_user }}.{{ mpfr_install_group }} {{  mpfr_dir  }}"
+
+# source
+- name: "mpfr_deploy_method == 'source'"
+  block:
+      - name: "cd {{ mpfr_source_dir }};./configure --prefix={{ mpfr_app_dir }}"
+        shell:
+            chdir: "{{ mpfr_source_dir }}"
+            cmd: "./configure --prefix={{ mpfr_app_dir }}"
+      - name: "cd {{ mpfr_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        shell:
+            chdir: "{{ mpfr_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ mpfr_source_dir }};make install"
+        shell:
+            chdir: "{{ mpfr_source_dir }}"
+            cmd: make install
+  when: mpfr_deploy_method == "source"
+
+# mpfr_port standalone
+- name: mpfr_port is defined
+  block:
+      - name: "cd {{ mpfr_source_dir }};./configure --prefix={{ mpfr_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ mpfr_source_dir }}"
+            cmd: "./configure --prefix={{ mpfr_base_dir }}"
+      - name: "cd {{ mpfr_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ mpfr_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ mpfr_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ mpfr_source_dir }}"
+            cmd: make install
+  when:
+      - mpfr_port is defined
+      - mpfr_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  mpfr_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ mpfr_install_user }}.{{ mpfr_install_group }} {{  mpfr_dir  }}"

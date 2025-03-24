@@ -1,38 +1,73 @@
 ---
 # tasks file for bison
-- name: "remove {{ bison_source_dir }} {{ bison_base_dir }}"
-  become: true
-  file:
-          path: "{{ item }}"
-          state: absent
-  with_items:
-          - "{{ bison_source_dir }}"
-          - "{{ bison_base_dir }}"
+# delete bison_source_dir bison_app_dir
 
-- name: "mkdir for bison"
+- name: "delete {{ bison_source_dir }} {{ bison_app_dir }}"
   become: true
   file:
-          path: "{{ item }}"
-          state: directory
-          owner: "{{ bison_install_user }}"
-          group: "{{ bison_install_group }}"
-          mode: 0755
+      path: "{{ item }}"
+      state: absent
   with_items:
-          - "{{ base_dir }}"
-          - "{{ bison_dir }}"
-          - "{{ install_tmpdir }}"
-          - "{{ bison_app_dir }}"
-          - "{{ bison_base_dir }}"
+      - "{{ bison_source_dir }}"
+      - "{{ bison_app_dir }}"
 
-- name: "mkdir {{ bison_source_dir }}"
+# basic dir
+- name: "mkdir {{ base_dir }} {{ install_tmpdir }}"
   become: true
   file:
-          path: "{{ item }}"
-          state: directory
-          mode: 0755
-          owner: "{{ bison_install_user }}"
-          group: "{{ bison_install_group }}"
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ bison_install_user }}"
+      group: "{{ bison_install_group }}"
+      mode: 0755
   with_items:
-          - "{{ base_dir }}"
-          - "{{ bison_source_dir }}"
-  when: bison_deploy_method == "source"
+      - "{{ base_dir }}"
+      - "{{ install_tmpdir }}"
+
+# binary and source dir
+- name: "mkdir {{ bison_dir }} {{ bison_app_base_dir }} {{ bison_app_dir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ bison_install_user }}"
+      group: "{{ bison_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ bison_dir }}"
+      - "{{ bison_app_base_dir }}"
+      - "{{ bison_app_dir }}"
+  when:
+      - bison_deploy_method == "binary" or bison_deploy_method == "source"
+
+# source dir
+- name: "mkdir {{ bison_dir }} {{ bison_source_base_dir }}  {{ bison_source_dir }} "
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ bison_install_user }}"
+      group: "{{ bison_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ bison_source_base_dir }}"
+      - "{{ bison_source_dir }}"
+  when:
+      - bison_deploy_method == "source"
+
+# service dir
+- name: "mkdir {{ bison_data_dir }} {{ bison_conf_dir }} {{ bison_log_dir }} {{ bison_tmp_dir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ bison_install_user }}"
+      group: "{{ bison_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ bison_data_dir }}"
+      - "{{ bison_conf_dir }}"
+      - "{{ bison_log_dir }}"
+      - "{{ bison_tmp_dir }}"
+  when:
+      - bison_port is defined

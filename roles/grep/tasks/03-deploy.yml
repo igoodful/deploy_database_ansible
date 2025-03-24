@@ -1,0 +1,50 @@
+---
+# tasks file for grep by source
+
+# source
+- name: "grep_deploy_method == 'source'"
+  block:
+      - name: "cd {{ grep_source_dir }};./configure --prefix={{ grep_app_dir }}"
+        become: true
+        shell:
+            chdir: "{{ grep_source_dir }}"
+            cmd: "./configure --prefix={{ grep_app_dir }}"
+      - name: "cd {{ grep_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ grep_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ grep_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ grep_source_dir }}"
+            cmd: make install
+  when: grep_deploy_method == "source"
+
+# grep_port standalone
+- name: grep_port is defined
+  block:
+      - name: "cd {{ grep_source_dir }};./configure --prefix={{ grep_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ grep_source_dir }}"
+            cmd: "./configure --prefix={{ grep_base_dir }}"
+      - name: "cd {{ grep_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ grep_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ grep_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ grep_source_dir }}"
+            cmd: make install
+  when:
+      - grep_port is defined
+      - grep_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  grep_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ grep_install_user }}.{{ grep_install_group }} {{  grep_dir  }}"

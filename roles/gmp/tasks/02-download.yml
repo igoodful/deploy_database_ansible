@@ -1,0 +1,128 @@
+---
+# tasks file for gmp by binary
+
+# 检查远程主机上的文件是否存在
+# 检查远程主机上的文件是否完整
+- name: "Check file exists first: {{ install_tmpdir }}/{{ gmp_package_name }}"
+  stat:
+      path: "{{ install_tmpdir }}/{{ gmp_package_name }}"
+  register: check_file_exists_first
+
+- name: "Check file valid first: {{ install_tmpdir }}/{{ gmp_package_name }}"
+  command: "gzip -t {{ install_tmpdir }}/{{ gmp_package_name }}"
+  register: check_file_valid_first
+  ignore_errors: true
+  when: check_file_exists_first.stat.exists
+
+############################################
+# 从控制机拷贝
+############################################
+- name: "Check file exists on ansible host: {{ role_path }}/files/{{ gmp_package_name }}"
+  delegate_to: localhost
+  run_once: true
+  stat:
+      path: "{{ role_path }}/files/{{ gmp_package_name }}"
+  register: local_file_stat
+
+- name: "Copy file from control machine if remote file is missing or invalid"
+  become: true
+  copy:
+      src: "{{ gmp_package_name }}"
+      dest: "{{ install_tmpdir }}/{{ gmp_package_name }}"
+      owner: "{{ gmp_install_user }}"
+      group: "{{ gmp_install_group }}"
+      mode: "0755"
+  when:
+      - (not check_file_exists_first.stat.exists or check_file_valid_first.rc != 0)
+      - local_file_stat.stat.exists
+
+#################################################
+# 从 gmp_base_url 下载
+#################################################
+
+- name: "Check file exists second: {{ install_tmpdir }}/{{ gmp_package_name }}"
+  stat:
+      path: "{{ install_tmpdir }}/{{ gmp_package_name }}"
+  register: check_file_exists_second
+
+- name: "Check file valid second: {{ install_tmpdir }}/{{ gmp_package_name }}"
+  command: "gzip -t {{ install_tmpdir }}/{{ gmp_package_name }}"
+  register: check_file_valid_second
+  ignore_errors: true
+  when: check_file_exists_second.stat.exists
+
+- name: "Download file from gmp_base_url: from {{ gmp_base_url }}/{{ gmp_package_name }} to {{ install_tmpdir }}/{{ gmp_package_name }}"
+  get_url:
+      url: "{{ gmp_base_url }}/{{ gmp_package_name }}"
+      dest: "{{ install_tmpdir }}/{{ gmp_package_name }}"
+      owner: "{{ gmp_install_user }}"
+      group: "{{ gmp_install_group }}"
+      mode: "0755"
+      timeout: 600
+  when:
+      - (not check_file_exists_second.stat.exists or check_file_valid_second.rc != 0)
+  ignore_errors: true
+
+#################################################
+# 尝试从 gmp_base_url_remote 下载
+#################################################
+
+- name: "Check file exists third: {{ install_tmpdir }}/{{ gmp_package_name }}"
+  stat:
+      path: "{{ install_tmpdir }}/{{ gmp_package_name }}"
+  register: check_file_exists_third
+
+- name: "Check file valid third: {{ install_tmpdir }}/{{ gmp_package_name }}"
+  command: "gzip -t {{ install_tmpdir }}/{{ gmp_package_name }}"
+  register: check_file_valid_third
+  ignore_errors: true
+  when: check_file_exists_third.stat.exists
+
+- name: "Download file from gmp_base_url_remote: from {{ gmp_base_url_remote }}/{{ gmp_package_name }} to {{ install_tmpdir }}/{{ gmp_package_name }}"
+  get_url:
+      url: "{{ gmp_base_url_remote }}/{{ gmp_package_name }}"
+      dest: "{{ install_tmpdir }}/{{ gmp_package_name }}"
+      owner: "{{ gmp_install_user }}"
+      group: "{{ gmp_install_group }}"
+      mode: "0755"
+      timeout: 600
+  when:
+      - (not check_file_exists_third.stat.exists or check_file_valid_third.rc != 0)
+
+#################################################
+# 解压
+#################################################
+- name: "cd {{ install_tmpdir }}/;rpm -ivh {{ gmp_package_name }}"
+  become: true
+  shell:
+      chdir: "{{ install_tmpdir }}/"
+      cmd: "rpm -ivh {{ gmp_package_name }}"
+      remote_src: true
+  when:
+      - gmp_deploy_method == "rpm"
+
+- name: "Extract {{ install_tmpdir }}/{{ gmp_package_name }} to {{ gmp_app_dir }}/"
+  become: true
+  unarchive:
+      src: "{{ install_tmpdir }}/{{ gmp_package_name }}"
+      dest: "{{ gmp_app_dir }}/"
+      remote_src: true
+      owner: "{{ gmp_install_user }}"
+      group: "{{ gmp_install_group }}"
+      extra_opts:
+          - --strip-components=1
+  when:
+      - gmp_deploy_method == "binary"
+
+- name: "Extract {{ install_tmpdir }}/{{ gmp_package_name }} to {{ gmp_source_dir }}/"
+  become: true
+  unarchive:
+      src: "{{ install_tmpdir }}/{{ gmp_package_name }}"
+      dest: "{{ gmp_source_dir }}/"
+      remote_src: true
+      owner: "{{ gmp_install_user }}"
+      group: "{{ gmp_install_group }}"
+      extra_opts:
+          - --strip-components=1
+  when:
+      - gmp_deploy_method == "source"

@@ -4,23 +4,12 @@ node_exporter_port: "9100"
 node_exporter_version: "1.7.0"
 
 node_exporter_download: false
-node_exporter_download_url_amd64: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
-node_exporter_download_url_arm64: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-arm64.tar.gz"
+node_exporter_download_url_amd64: "https://github.com/prometheus/node_exporter/releases/download/v{{node_exporter_version}}/node_exporter-{{node_exporter_version}}.linux-amd64.tar.gz"
+node_exporter_download_url_arm64: "https://github.com/prometheus/node_exporter/releases/download/v{{node_exporter_version}}/node_exporter-{{node_exporter_version}}.linux-arm64.tar.gz"
 
-node_exporter_base_dir: "{{ base_dir }}/node_exporter"
-node_exporter_bin_dir: "{{ base_dir }}/node_exporter/bin"
-node_exporter_conf_dir: "{{ base_dir }}/node_exporter/conf"
-node_exporter_data_dir: "{{ base_dir }}/node_exporter/data"
-node_exporter_log_dir: "{{ base_dir }}/node_exporter/log"
-node_exporter_prom_dir: "{{ base_dir }}/node_exporter/prom"
-
-
-
-
-
-
-
-
-
-
-
+node_exporter_base_dir: "{{base_dir}}/node_exporter"
+node_exporter_bin_dir: "{{base_dir}}/node_exporter/bin"
+node_exporter_conf_dir: "{{base_dir}}/node_exporter/conf"
+node_exporter_data_dir: "{{base_dir}}/node_exporter/data"
+node_exporter_log_dir: "{{base_dir}}/node_exporter/log"
+node_exporter_prom_dir: "{{base_dir}}/node_exporter/prom"

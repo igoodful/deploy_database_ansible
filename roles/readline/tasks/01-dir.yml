@@ -1,38 +1,73 @@
 ---
 # tasks file for readline
-- name: "remove {{ readline_source_dir }} {{ readline_base_dir }}"
-  become: true
-  file:
-          path: "{{ item }}"
-          state: absent
-  with_items:
-          - "{{ readline_source_dir }}"
-          - "{{ readline_base_dir }}"
+# delete readline_source_dir readline_app_dir
 
-- name: "mkdir for readline"
+- name: "delete {{ readline_source_dir }} {{ readline_app_dir }}"
   become: true
   file:
-          path: "{{ item }}"
-          state: directory
-          owner: "{{ readline_install_user }}"
-          group: "{{ readline_install_group }}"
-          mode: 0755
+      path: "{{ item }}"
+      state: absent
   with_items:
-          - "{{ base_dir }}"
-          - "{{ readline_dir }}"
-          - "{{ install_tmpdir }}"
-          - "{{ readline_app_dir }}"
-          - "{{ readline_base_dir }}"
+      - "{{ readline_source_dir }}"
+      - "{{ readline_app_dir }}"
 
-- name: "mkdir {{ readline_source_dir }}"
+# basic dir
+- name: "mkdir {{ base_dir }} {{ install_tmpdir }}"
   become: true
   file:
-          path: "{{ item }}"
-          state: directory
-          mode: 0755
-          owner: "{{ readline_install_user }}"
-          group: "{{ readline_install_group }}"
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ readline_install_user }}"
+      group: "{{ readline_install_group }}"
+      mode: 0755
   with_items:
-          - "{{ base_dir }}"
-          - "{{ readline_source_dir }}"
-  when: readline_deploy_method == "source"
+      - "{{ base_dir }}"
+      - "{{ install_tmpdir }}"
+
+# binary and source dir
+- name: "mkdir {{ readline_dir }} {{ readline_app_base_dir }} {{ readline_app_dir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ readline_install_user }}"
+      group: "{{ readline_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ readline_dir }}"
+      - "{{ readline_app_base_dir }}"
+      - "{{ readline_app_dir }}"
+  when:
+      - readline_deploy_method == "binary" or readline_deploy_method == "source"
+
+# source dir
+- name: "mkdir {{ readline_dir }} {{ readline_source_base_dir }}  {{ readline_source_dir }} "
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ readline_install_user }}"
+      group: "{{ readline_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ readline_source_base_dir }}"
+      - "{{ readline_source_dir }}"
+  when:
+      - readline_deploy_method == "source"
+
+# service dir
+- name: "mkdir {{ readline_data_dir }} {{ readline_conf_dir }} {{ readline_log_dir }} {{ readline_tmp_dir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ readline_install_user }}"
+      group: "{{ readline_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ readline_data_dir }}"
+      - "{{ readline_conf_dir }}"
+      - "{{ readline_log_dir }}"
+      - "{{ readline_tmp_dir }}"
+  when:
+      - readline_port is defined

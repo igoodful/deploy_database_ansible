@@ -1,38 +1,73 @@
 ---
 # tasks file for mpc
-- name: "remove {{ mpc_source_dir }} {{ mpc_base_dir }}"
-  become: true
-  file:
-          path: "{{ item }}"
-          state: absent
-  with_items:
-          - "{{ mpc_source_dir }}"
-          - "{{ mpc_base_dir }}"
+# delete mpc_source_dir mpc_app_dir
 
-- name: "mkdir for mpc"
+- name: "delete {{ mpc_source_dir }} {{ mpc_app_dir }}"
   become: true
   file:
-          path: "{{ item }}"
-          state: directory
-          owner: "{{ mpc_install_user }}"
-          group: "{{ mpc_install_group }}"
-          mode: 0755
+      path: "{{ item }}"
+      state: absent
   with_items:
-          - "{{ base_dir }}"
-          - "{{ mpc_dir }}"
-          - "{{ install_tmpdir }}"
-          - "{{ mpc_app_dir }}"
-          - "{{ mpc_base_dir }}"
+      - "{{ mpc_source_dir }}"
+      - "{{ mpc_app_dir }}"
 
-- name: "mkdir {{ mpc_source_dir }}"
+# basic dir
+- name: "mkdir {{ base_dir }} {{ install_tmpdir }}"
   become: true
   file:
-          path: "{{ item }}"
-          state: directory
-          mode: 0755
-          owner: "{{ mpc_install_user }}"
-          group: "{{ mpc_install_group }}"
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ mpc_install_user }}"
+      group: "{{ mpc_install_group }}"
+      mode: 0755
   with_items:
-          - "{{ base_dir }}"
-          - "{{ mpc_source_dir }}"
-  when: mpc_deploy_method == "source"
+      - "{{ base_dir }}"
+      - "{{ install_tmpdir }}"
+
+# binary and source dir
+- name: "mkdir {{ mpc_dir }} {{ mpc_app_base_dir }} {{ mpc_app_dir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ mpc_install_user }}"
+      group: "{{ mpc_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ mpc_dir }}"
+      - "{{ mpc_app_base_dir }}"
+      - "{{ mpc_app_dir }}"
+  when:
+      - mpc_deploy_method == "binary" or mpc_deploy_method == "source"
+
+# source dir
+- name: "mkdir {{ mpc_dir }} {{ mpc_source_base_dir }}  {{ mpc_source_dir }} "
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ mpc_install_user }}"
+      group: "{{ mpc_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ mpc_source_base_dir }}"
+      - "{{ mpc_source_dir }}"
+  when:
+      - mpc_deploy_method == "source"
+
+# service dir
+- name: "mkdir {{ mpc_data_dir }} {{ mpc_conf_dir }} {{ mpc_log_dir }} {{ mpc_tmp_dir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ mpc_install_user }}"
+      group: "{{ mpc_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ mpc_data_dir }}"
+      - "{{ mpc_conf_dir }}"
+      - "{{ mpc_log_dir }}"
+      - "{{ mpc_tmp_dir }}"
+  when:
+      - mpc_port is defined

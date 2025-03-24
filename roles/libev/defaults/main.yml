@@ -1,19 +1,19 @@
 ---
 # defaults file for libev
 # https://dist.schmorp.de/libev/libev-4.33.tar.gz
-libev_install_user: "{{ ansible_user }}"
-libev_install_group: "{{ ansible_user }}"
+libev_install_user: "{{ansible_user}}"
+libev_install_group: "{{ansible_user}}"
 libev_version: "4.33"
 # binary/source
 libev_deploy_method: "source"
-libev_base_url: "{{ base_url }}"
+libev_base_url: "{{base_url}}"
 libev_base_url_remote: "https://ftp.gnu.org/gnu/libev"
 
 libev_package_suffix: ".tar.gz"
-libev_package_name_binary: "libev-{{ libev_version }}-{{ ansible_architecture }}{{ libev_package_suffix }}"
-libev_package_name_source: "libev-{{ libev_version }}{{ libev_package_suffix }}"
+libev_package_name_binary: "libev-{{libev_version}}-{{ansible_architecture}}{{libev_package_suffix}}"
+libev_package_name_source: "libev-{{libev_version}}{{libev_package_suffix}}"
 
-libev_dir: "{{ base_dir }}/libev"
-libev_app_dir: "{{ base_dir }}/libev/app"
-libev_base_dir: "{{ libev_app_dir }}/libev-{{ libev_version }}"
-libev_source_dir: "{{ libev_app_dir }}/source/libev-{{ libev_version }}"
+libev_dir: "{{base_dir}}/libev"
+libev_app_dir: "{{base_dir}}/libev/app"
+libev_base_dir: "{{libev_app_dir}}/libev-{{libev_version}}"
+libev_source_dir: "{{libev_app_dir}}/source/libev-{{libev_version}}"

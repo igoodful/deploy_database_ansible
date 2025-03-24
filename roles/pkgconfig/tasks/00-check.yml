@@ -1,0 +1,26 @@
+---
+# tasks file for pkgconfig
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check pkgconfig_port
+- name: "lsof -i:{{ pkgconfig_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ pkgconfig_port }}"
+  register: pkgconfig_port_check_output
+  ignore_errors: true
+  when: pkgconfig_port is defined
+
+- name: "check pkgconfig port"
+  become: true
+  fail:
+      msg: "pkgconfigd端口被占用,可使用: ps aux|grep pkgconfigd"
+  when:
+      - pkgconfig_port is defined
+      - pkgconfig_port_check_output is defined
+      - pkgconfig_port_check_output.rc == 0

@@ -1,0 +1,51 @@
+---
+# tasks file for libtool by source
+- name: "chown -R {{  libtool_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ libtool_install_user }}.{{ libtool_install_group }} {{  libtool_dir  }}"
+
+# source
+- name: "libtool_deploy_method == 'source'"
+  block:
+      - name: "cd {{ libtool_source_dir }};./configure --prefix={{ libtool_app_dir }}"
+        shell:
+            chdir: "{{ libtool_source_dir }}"
+            cmd: "./configure --prefix={{ libtool_app_dir }}"
+      - name: "cd {{ libtool_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        shell:
+            chdir: "{{ libtool_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ libtool_source_dir }};make install"
+        shell:
+            chdir: "{{ libtool_source_dir }}"
+            cmd: make install
+  when: libtool_deploy_method == "source"
+
+# libtool_port standalone
+- name: libtool_port is defined
+  block:
+      - name: "cd {{ libtool_source_dir }};./configure --prefix={{ libtool_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ libtool_source_dir }}"
+            cmd: "./configure --prefix={{ libtool_base_dir }}"
+      - name: "cd {{ libtool_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ libtool_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ libtool_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ libtool_source_dir }}"
+            cmd: make install
+  when:
+      - libtool_port is defined
+      - libtool_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  libtool_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ libtool_install_user }}.{{ libtool_install_group }} {{  libtool_dir  }}"

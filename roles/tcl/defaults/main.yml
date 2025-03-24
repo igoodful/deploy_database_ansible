@@ -1,0 +1,63 @@
+---
+# defaults file for tcl
+# https://zenlayer.dl.sourceforge.net/project/tcl/Tcl/8.6.10/tcl8.6.10-src.tar.gz?viasf=1
+# http://prdownloads.sourceforge.net/tcl/tcl8.6.16-src.tar.gz
+# https://sourceforge.net/projects/tcl/files/Tcl/
+# DONE
+
+# user
+tcl_install_user: "{{ ansible_user }}"
+tcl_install_group: "{{ ansible_user }}"
+tcl_version: "8.6.16"
+# tcl_port: "8032"
+
+# standalone/cluster/pseudo_cluster
+tcl_deploy_mode: "standalone"
+
+# binary/source/rpm/yum/dnf
+tcl_deploy_method: "source"
+
+# url
+tcl_base_url: "{{ base_url }}"
+tcl_base_url_remote: "http://prdownloads.sourceforge.net/tcl"
+
+# package
+tcl_package_suffix: ".tar.gz"
+tcl_package_name_rpm: "tcl-{{ tcl_version }}.rpm"
+tcl_package_name_binary: "tcl-{{ tcl_version }}-{{ ansible_architecture }}{{ tcl_package_suffix }}"
+tcl_package_name_source: "tcl-{{ tcl_version }}{{ tcl_package_suffix }}"
+tcl_package_name: "{% if tcl_deploy_method == 'rpm' %}{{ tcl_package_name_rpm }}{% elif tcl_deploy_method == 'binary' %}{{ tcl_package_name_binary }}{% elif tcl_deploy_method == 'source' %}{{ tcl_package_name_source }}{% else %}{{ tcl_package_name_source }}{% endif %}"
+
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/tcl
+# /data/tcl/data
+# /data/tcl/conf
+# /data/tcl/log
+# /data/tcl/tmp
+# /data/tcl/source
+# /data/tcl/app
+# /data/tcl/app/tcl-{{ tcl_version }}
+# /data/tcl/app/tcl-{{ tcl_version }}/bin
+# /data/tcl/app/tcl-{{ tcl_version }}/lib
+# /data/tcl/app/tcl-{{ tcl_version }}/lib/pkgconfig
+# /data/tcl/app/tcl-{{ tcl_version }}/include
+# /data/tcl/app/tcl-{{ tcl_version }}/share
+# /data/tcl/source/tcl-{{ tcl_version }}
+tcl_dir: "{{ base_dir }}/tcl"
+tcl_data_dir: "{{ tcl_dir }}/data"
+tcl_conf_dir: "{{ tcl_dir }}/conf"
+tcl_log_dir: "{{ tcl_dir }}/log"
+tcl_tmp_dir: "{{ tcl_dir }}/tmp"
+tcl_app_base_dir: "{{ tcl_dir }}/app"
+tcl_source_base_dir: "{{ tcl_dir }}/source"
+tcl_app_dir: "{{ tcl_app_base_dir }}/tcl-{{ tcl_version }}"
+tcl_bin_dir: "{{ tcl_app_dir }}/bin"
+tcl_lib_dir: "{{ tcl_app_dir }}/lib"
+tcl_include_dir: "{{ tcl_app_dir }}/include"
+tcl_share_dir: "{{ tcl_app_dir }}/share"
+tcl_pkgconfig_dir: "{{ tcl_lib_dir }}/pkgconfig"
+tcl_source_dir: "{{ tcl_source_base_dir }}/tcl-{{ tcl_version }}"
+tcl_build_dir: "{{ tcl_source_dir }}/build_{{ date_output.stdout }}"
+

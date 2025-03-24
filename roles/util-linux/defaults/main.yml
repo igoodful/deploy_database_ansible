@@ -1,0 +1,59 @@
+---
+# defaults file for util-linux
+# https://github.com/util-linux/util-linux/archive/refs/tags/v2.40.4.tar.gz
+# NOT DONE
+
+# user
+util_linux_install_user: "{{ ansible_user }}"
+util_linux_install_group: "{{ ansible_user }}"
+util_linux_version: "2.41"
+# util_linux_port: "8032"
+
+# standalone/cluster/pseudo_cluster
+util_linux_deploy_mode: "standalone"
+
+# binary/source/rpm/yum/dnf
+util_linux_deploy_method: "source"
+
+# url
+util_linux_base_url: "{{ base_url }}"
+util_linux_base_url_remote: "https://github.com/util-linux/util-linux/archive/refs/tags"
+
+# package
+util_linux_package_suffix: ".tar.gz"
+util_linux_package_name_rpm: "util-linux-{{ util_linux_version }}.rpm"
+util_linux_package_name_binary: "util-linux-{{ util_linux_version }}-{{ ansible_architecture }}{{ util_linux_package_suffix }}"
+util_linux_package_name_source: "util-linux-{{ util_linux_version }}{{ util_linux_package_suffix }}"
+util_linux_package_name: "{% if util_linux_deploy_method == 'rpm' %}{{ util_linux_package_name_rpm }}{% elif util_linux_deploy_method == 'binary' %}{{ util_linux_package_name_binary }}{% elif util_linux_deploy_method == 'source' %}{{ util_linux_package_name_source }}{% else %}{{ util_linux_package_name_source }}{% endif %}"
+
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/util_linux
+# /data/util_linux/data
+# /data/util_linux/conf
+# /data/util_linux/log
+# /data/util_linux/tmp
+# /data/util_linux/source
+# /data/util_linux/app
+# /data/util_linux/app/util_linux-2.44
+# /data/util_linux/app/util_linux-2.44/bin
+# /data/util_linux/app/util_linux-2.44/lib
+# /data/util_linux/app/util_linux-2.44/lib/pkgconfig
+# /data/util_linux/app/util_linux-2.44/include
+# /data/util_linux/app/util_linux-2.44/share
+# /data/util_linux/source/util_linux-2.44
+util_linux_dir: "{{ base_dir }}/util-linux"
+util_linux_data_dir: "{{ util_linux_dir }}/data"
+util_linux_conf_dir: "{{ util_linux_dir }}/conf"
+util_linux_log_dir: "{{ util_linux_dir }}/log"
+util_linux_tmp_dir: "{{ util_linux_dir }}/tmp"
+util_linux_app_base_dir: "{{ util_linux_dir }}/app"
+util_linux_source_base_dir: "{{ util_linux_dir }}/source"
+util_linux_app_dir: "{{ util_linux_app_base_dir }}/util-linux-{{ util_linux_version }}"
+util_linux_bin_dir: "{{ util_linux_app_dir }}/bin"
+util_linux_lib_dir: "{{ util_linux_app_dir }}/lib"
+util_linux_include_dir: "{{ util_linux_app_dir }}/include"
+util_linux_share_dir: "{{ util_linux_app_dir }}/share"
+util_linux_pkgconfig_dir: "{{ util_linux_lib_dir }}/pkgconfig"
+util_linux_source_dir: "{{ util_linux_source_base_dir }}/util-linux-{{ util_linux_version }}"

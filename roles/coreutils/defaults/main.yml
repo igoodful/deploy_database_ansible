@@ -1,0 +1,59 @@
+---
+# defaults file for coreutils
+# https://mirror.ossplanet.net/gnu/coreutils/coreutils-9.5.tar.gz
+# https://mirrors.tuna.tsinghua.edu.cn/gnu/coreutils/coreutils-9.0.tar.gz
+
+# user
+coreutils_install_user: "{{ ansible_user }}"
+coreutils_install_group: "{{ ansible_user }}"
+coreutils_version: "9.0"
+# coreutils_port: "8032"
+
+# standalone/cluster/pseudo_cluster
+coreutils_deploy_mode: "standalone"
+
+# binary/source/rpm/yum/dnf
+coreutils_deploy_method: "source"
+
+# url
+coreutils_base_url: "{{ base_url }}"
+coreutils_base_url_remote: "https://mirrors.tuna.tsinghua.edu.cn/gnu/coreutils"
+
+# package
+coreutils_package_suffix: ".tar.gz"
+coreutils_package_name_rpm: "coreutils-{{ coreutils_version }}.rpm"
+coreutils_package_name_binary: "coreutils-{{ coreutils_version }}-{{ ansible_architecture }}{{ coreutils_package_suffix }}"
+coreutils_package_name_source: "coreutils-{{ coreutils_version }}{{ coreutils_package_suffix }}"
+coreutils_package_name: "{% if coreutils_deploy_method == 'rpm' %}{{ coreutils_package_name_rpm }}{% elif coreutils_deploy_method == 'binary' %}{{ coreutils_package_name_binary }}{% elif coreutils_deploy_method == 'source' %}{{ coreutils_package_name_source }}{% else %}{{ coreutils_package_name_source }}{% endif %}"
+
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/coreutils
+# /data/coreutils/data
+# /data/coreutils/conf
+# /data/coreutils/log
+# /data/coreutils/tmp
+# /data/coreutils/source
+# /data/coreutils/app
+# /data/coreutils/app/coreutils-2.44
+# /data/coreutils/app/coreutils-2.44/bin
+# /data/coreutils/app/coreutils-2.44/lib
+# /data/coreutils/app/coreutils-2.44/lib/pkgconfig
+# /data/coreutils/app/coreutils-2.44/include
+# /data/coreutils/app/coreutils-2.44/share
+# /data/coreutils/source/coreutils-2.44
+coreutils_dir: "{{ base_dir }}/coreutils"
+coreutils_data_dir: "{{ coreutils_dir }}/data"
+coreutils_conf_dir: "{{ coreutils_dir }}/conf"
+coreutils_log_dir: "{{ coreutils_dir }}/log"
+coreutils_tmp_dir: "{{ coreutils_dir }}/tmp"
+coreutils_app_base_dir: "{{ coreutils_dir }}/app"
+coreutils_source_base_dir: "{{ coreutils_dir }}/source"
+coreutils_app_dir: "{{ coreutils_app_base_dir }}/coreutils-{{ coreutils_version }}"
+coreutils_bin_dir: "{{ coreutils_app_dir }}/bin"
+coreutils_lib_dir: "{{ coreutils_app_dir }}/lib"
+coreutils_include_dir: "{{ coreutils_app_dir }}/include"
+coreutils_share_dir: "{{ coreutils_app_dir }}/share"
+coreutils_pkgconfig_dir: "{{ coreutils_lib_dir }}/pkgconfig"
+coreutils_source_dir: "{{ coreutils_source_base_dir }}/coreutils-{{ coreutils_version }}"

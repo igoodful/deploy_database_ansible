@@ -1,80 +1,62 @@
 ---
 #
 # PATH
-- name: "remove PATH from /etc/profile"
-  become: true
+- name: "remove PATH from ~/.bashrc"
   lineinfile:
-          path: /etc/profile
-          regexp: "export PATH={{ jemalloc_base_dir }}/bin"
-          state: absent
+      path: ~/.bashrc
+      regexp: "export PATH={{jemalloc_base_dir}}/bin"
+      state: absent
 
-- name: "Add PATH to /etc/profile"
-  become: true
+- name: "Add PATH to ~/.bashrc"
   lineinfile:
-          path: /etc/profile
-          line: "export PATH={{ jemalloc_base_dir }}/bin:$PATH"
-          insertafter: EOF
-          state: present
+      path: ~/.bashrc
+      line: "export PATH={{jemalloc_base_dir}}/bin:$PATH"
+      insertafter: EOF
+      state: present
 
 # CPATH
-- name: "remove CPATH from /etc/profile"
+- name: "remove CPATH from ~/.bashrc"
   become: true
   lineinfile:
-          path: /etc/profile
-          regexp: "export CPATH={{ jemalloc_base_dir }}/include"
-          state: absent
+      path: ~/.bashrc
+      regexp: "export CPATH={{jemalloc_base_dir}}/include"
+      state: absent
 
-- name: "Add CPATH to /etc/profile"
+- name: "Add CPATH to ~/.bashrc"
   become: true
   lineinfile:
-          path: /etc/profile
-          line: "export CPATH={{ jemalloc_base_dir }}/include:$CPATH"
-          insertafter: EOF
-          state: present
+      path: ~/.bashrc
+      line: "export CPATH={{jemalloc_base_dir}}/include:$CPATH"
+      insertafter: EOF
+      state: present
 
 # LIBRARY_PATH
-- name: "remove LIBRARY_PATH from /etc/profile"
-  become: true
+- name: "remove LIBRARY_PATH from ~/.bashrc"
   lineinfile:
-          path: /etc/profile
-          regexp: "export LIBRARY_PATH={{ jemalloc_base_dir }}/lib"
-          state: absent
+      path: ~/.bashrc
+      regexp: export LIBRARY_PATH="{{jemalloc_base_dir}}/lib"
+      state: absent
 
-- name: "Add LIBRARY_PATH to /etc/profile"
-  become: true
+- name: "Add LIBRARY_PATH to ~/.bashrc"
   lineinfile:
-          path: /etc/profile
-          line: "export LIBRARY_PATH={{ jemalloc_base_dir }}/lib:$LIBRARY_PATH"
-          insertafter: EOF
-          state: present
+      path: ~/.bashrc
+      line: export LIBRARY_PATH="{{jemalloc_base_dir}}/lib:$LIBRARY_PATH"
+      insertafter: EOF
+      state: present
 
 # LD_LIBRARY_PATH
-- name: "remove LD_LIBRARY_PATH from /etc/profile"
-  become: true
+- name: "remove LD_LIBRARY_PATH from ~/.bashrc"
   lineinfile:
-          path: /etc/profile
-          regexp: "export LD_LIBRARY_PATH={{ jemalloc_base_dir }}/lib"
-          state: absent
+      path: ~/.bashrc
+      regexp: export LD_LIBRARY_PATH="{{jemalloc_base_dir}}/lib"
+      state: absent
 
-- name: "Add LD_LIBRARY_PATH to /etc/profile"
-  become: true
+- name: "Add LD_LIBRARY_PATH to ~/.bashrc"
   lineinfile:
-          path: /etc/profile
-          line: "export LD_LIBRARY_PATH={{ jemalloc_base_dir }}/lib:$LD_LIBRARY_PATH"
-          insertafter: EOF
-          state: present
-
-# source /etc/profile
-- name: "source /etc/profile"
-  become: true
-  shell:
-          cmd: source /etc/profile
-
-# ldconfig
-- name: "ldconfig"
-  become: true
-  shell:
-          cmd: ldconfig
+      path: ~/.bashrc
+      line: export LD_LIBRARY_PATH="{{jemalloc_base_dir}}/lib:$LD_LIBRARY_PATH"
+      insertafter: EOF
+      state: present
 ####################################################
 
 # cd jemalloc-2.40.90

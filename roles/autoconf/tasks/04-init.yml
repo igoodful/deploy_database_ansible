@@ -1,0 +1,94 @@
+---
+# tasks file for autoconf
+########################################################################################
+# PATH CPATH C_INCLUDE_PATH CPLUS_INCLUDE_PATH LIBRARY_PATH LD_LIBRARY_PATH LD_RUN_PATH
+# CC CXX CFLAGS CXXFLAGS LDFLAGS PKG_CONFIG_PATH CMAKE_INCLUDE_PATH CMAKE_LIBRARY_PATH
+########################################################################################
+
+# PATH
+
+- name: "remove PATH from .bash_profile"
+  lineinfile:
+      path: ~/.bashrc
+      regexp: export PATH="{{ autoconf_bin_dir }}"
+      state: absent
+
+- name: "Add PATH to .bash_profile"
+  lineinfile:
+      path: ~/.bashrc
+      line: export PATH="{{ autoconf_bin_dir }}:$PATH"
+      insertafter: EOF
+      state: present
+
+# C_INCLUDE_PATH
+- name: "remove C_INCLUDE_PATH from ~/.bashrc"
+  lineinfile:
+      path: ~/.bashrc
+      regexp: export C_INCLUDE_PATH="{{ autoconf_include_dir }}"
+      state: absent
+
+- name: "Add C_INCLUDE_PATH to ~/.bashrc"
+  lineinfile:
+      path: ~/.bashrc
+      line: export C_INCLUDE_PATH="{{ autoconf_include_dir }}:$C_INCLUDE_PATH"
+      insertafter: EOF
+      state: present
+
+# CPLUS_INCLUDE_PATH
+- name: "remove CPLUS_INCLUDE_PATH from ~/.bashrc"
+  lineinfile:
+      path: ~/.bashrc
+      regexp: export CPLUS_INCLUDE_PATH="{{ autoconf_include_dir }}"
+      state: absent
+
+- name: "Add CPLUS_INCLUDE_PATH to ~/.bashrc"
+  lineinfile:
+      path: ~/.bashrc
+      line: export CPLUS_INCLUDE_PATH="{{ autoconf_include_dir }}:$CPLUS_INCLUDE_PATH"
+      insertafter: EOF
+      state: present
+
+# LIBRARY_PATH
+- name: "remove LIBRARY_PATH from ~/.bashrc"
+  lineinfile:
+      path: ~/.bashrc
+      regexp: export LIBRARY_PATH="{{ autoconf_lib_dir }}"
+      state: absent
+
+- name: "Add LIBRARY_PATH to ~/.bashrc"
+  lineinfile:
+      path: ~/.bashrc
+      line: export LIBRARY_PATH="{{ autoconf_lib_dir }}:$LIBRARY_PATH"
+      insertafter: EOF
+      state: present
+
+# LD_LIBRARY_PATH
+- name: "remove LD_LIBRARY_PATH from ~/.bashrc"
+  lineinfile:
+      path: ~/.bashrc
+      regexp: export LD_LIBRARY_PATH="{{ autoconf_lib_dir }}"
+      state: absent
+
+- name: "Add LD_LIBRARY_PATH to ~/.bashrc"
+  lineinfile:
+      path: ~/.bashrc
+      line: export LD_LIBRARY_PATH="{{ autoconf_lib_dir }}:$LD_LIBRARY_PATH"
+      insertafter: EOF
+      state: present
+
+# PKG_CONFIG_PATH
+- name: "remove PKG_CONFIG_PATH from ~/.bashrc"
+  lineinfile:
+      path: ~/.bashrc
+      regexp: export PKG_CONFIG_PATH="{{ autoconf_pkgconfig_dir }}"
+      state: absent
+
+- name: "Add PKG_CONFIG_PATH to ~/.bashrc"
+  lineinfile:
+      path: ~/.bashrc
+      line: export PKG_CONFIG_PATH="{{ autoconf_pkgconfig_dir }}:$PKG_CONFIG_PATH"
+      insertafter: EOF
+      state: present
+########################################################################################
+#
+########################################################################################

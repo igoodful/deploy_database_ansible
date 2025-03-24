@@ -5,143 +5,142 @@
 - name: "Copy my.cnf.j2 template"
   become: true
   template:
-    src: my.cnf.j2
-    dest: "{{ mysql_conf_dir }}/my{{ mysql_port }}.conf"
-    owner: "{{ mysql_install_user }}"
-    group: "{{ mysql_install_group }}"
-    mode: "0644"
-
+      src: my.cnf.j2
+      dest: "{{mysql_conf_dir}}/my{{mysql_port}}.conf"
+      owner: "{{mysql_install_user}}"
+      group: "{{mysql_install_group}}"
+      mode: "0644"
 
 # copy mysql.service.j2
 
-- name: "rm -rf /etc/systemd/system/multi-user.target.wants/mysql_{{ mysql_port }}.service"
+- name: "rm -rf /etc/systemd/system/multi-user.target.wants/mysql_{{mysql_port}}.service"
   become: true
   file:
-    path: /etc/systemd/system/multi-user.target.wants/mysql_{{ mysql_port }}.service
-    state: absent
+      path: /etc/systemd/system/multi-user.target.wants/mysql_{{mysql_port}}.service
+      state: absent
   ignore_errors: true
 
-- name: "rm -rf /usr/lib/systemd/system/mysql_{{ mysql_port }}.service"
+- name: "rm -rf /usr/lib/systemd/system/mysql_{{mysql_port}}.service"
   become: true
   file:
-    path: /usr/lib/systemd/system/mysql_{{ mysql_port }}.service
-    state: absent
+      path: /usr/lib/systemd/system/mysql_{{mysql_port}}.service
+      state: absent
   ignore_errors: true
 
 - name: "Copy mysql.service.j2 template"
   become: true
   template:
-    src: mysql.service.j2
-    dest: "/usr/lib/systemd/system/mysql_{{ mysql_port }}.service"
-    mode: "0644"
+      src: mysql.service.j2
+      dest: "/usr/lib/systemd/system/mysql_{{mysql_port}}.service"
+      mode: "0644"
 
 # 初始化
-- name: "{{ mysql_bin_dir }}/mysqld --defaults-file={{ mysql_conf_dir }}/my{{ mysql_port }}.conf --initialize --user={{ mysql_install_user }}"
+- name: "{{mysql_bin_dir}}/mysqld --defaults-file={{mysql_conf_dir}}/my{{mysql_port}}.conf --initialize --user={{mysql_install_user}}"
   become: true
   shell:
-    cmd: "{{ mysql_bin_dir }}/mysqld --defaults-file={{ mysql_conf_dir }}/my{{ mysql_port }}.conf --initialize --user={{ mysql_install_user }}"
+      cmd: "{{mysql_bin_dir}}/mysqld --defaults-file={{mysql_conf_dir}}/my{{mysql_port}}.conf --initialize --user={{mysql_install_user}}"
 
 - name: "systemctl daemon-reload"
   become: true
   shell:
-    cmd: systemctl daemon-reload
+      cmd: systemctl daemon-reload
 
 # enable and start
-- name: "enabled mysql_{{ mysql_port }}"
+- name: "enabled mysql_{{mysql_port}}"
   become: true
   service:
-    name: mysql_{{ mysql_port }}
-    enabled: true
+      name: mysql_{{mysql_port}}
+      enabled: true
 
-- name: "started mysql_{{ mysql_port }}"
+- name: "started mysql_{{mysql_port}}"
   become: true
   service:
-    name: mysql_{{ mysql_port }}
-    state: started
+      name: mysql_{{mysql_port}}
+      state: started
 
 - name: "ps aux|grep mysqld"
   become: true
   shell:
-    cmd: ps aux|grep mysqld
+      cmd: ps aux|grep mysqld
 
 # get mysql password and update root@localhost password
 - name: get mysql password
   become: true
   shell:
-    chdir: "{{ mysql_log_dir }}"
-    cmd: cat mysqld.err |grep localhost |grep 'temporary password' |tail -1 |awk '{print $NF}'
+      chdir: "{{mysql_log_dir}}"
+      cmd: cat mysqld.err |grep localhost |grep 'temporary password' |tail -1 |awk '{print $NF}'
   register: mysql_temporary_password
 
 # slepp 30
 - name: pause 30
   pause:
-    seconds: 30
+      seconds: 30
 
 - name: alter root@localhost password for mysqld
   become: true
   shell:
-    chdir: "{{ mysql_bin_dir }}"
-    cmd: ./mysqladmin -u root -p'{{ mysql_temporary_password.stdout }}' -S{{ mysql_socket_dir }}/mysql.sock password '{{ mysql_root_loacl_init_password }}'
+      chdir: "{{mysql_bin_dir}}"
+      cmd: ./mysqladmin -u root -p'{{mysql_temporary_password.stdout}}' -S{{mysql_socket_dir}}/mysql.sock password '{{mysql_root_loacl_init_password}}'
   when: mysql_root_loacl_init_password is defined
 
 # create user
 - name: create user for root@'%'
   shell:
-    chdir: "{{ mysql_bin_dir }}"
-    cmd: ./mysql -uroot -p'{{ mysql_root_loacl_init_password }}' -S{{ mysql_socket_dir }}/mysql.sock -e "{{ item }}"
+      chdir: "{{mysql_bin_dir}}"
+      cmd: ./mysql -uroot -p'{{mysql_root_loacl_init_password}}' -S{{mysql_socket_dir}}/mysql.sock -e "{{item}}"
   loop:
-    - create user root@'%' identified with mysql_native_password by '{{ mysql_root_init_password }}';
-    - grant all privileges on *.* to root@'%'  with grant option;
-    - create user {{ mysql_admin_init_user }}@'%' identified with mysql_native_password by '{{ mysql_admin_init_password }}';
-    - grant all privileges on *.* to {{ mysql_admin_init_user }}@'%'  with grant option;
-    - create user {{ mysql_rep_init_user }}@'%' identified with mysql_native_password by '{{ mysql_rep_init_password }}';
-    - grant all privileges on *.* to {{ mysql_rep_init_user }}@'%' with grant option;
-    - reset master;
-    - reset slave all;
+      - create user root@'%' identified with mysql_native_password by '{{mysql_root_init_password}}';
+      - grant all privileges on *.* to root@'%'  with grant option;
+      - create user {{mysql_admin_init_user}}@'%' identified with mysql_native_password by '{{mysql_admin_init_password}}';
+      - grant all privileges on *.* to {{mysql_admin_init_user}}@'%'  with grant option;
+      - create user {{mysql_rep_init_user}}@'%' identified with mysql_native_password by '{{mysql_rep_init_password}}';
+      - grant all privileges on *.* to {{mysql_rep_init_user}}@'%' with grant option;
+      - reset master;
+      - reset slave all;
   when:
-    - mysql_root_init_password is defined
-    - mysql_admin_init_password is defined
-    - mysql_rep_init_password is defined
+      - mysql_root_init_password is defined
+      - mysql_admin_init_password is defined
+      - mysql_rep_init_password is defined
 
 # PATH
-- name: "remove {{ mysql_bin_dir }} from /etc/profile"
+- name: "remove {{mysql_bin_dir}} from ~/.bashrc"
   become: true
   lineinfile:
-    path: /etc/profile
-    regexp: '{{ mysql_bin_dir }}'
-    state: absent
+      path: ~/.bashrc
+      regexp: "{{mysql_bin_dir}}"
+      state: absent
 
-- name: "Add {{ mysql_bin_dir }} to /etc/profile"
+- name: "Add {{mysql_bin_dir}} to ~/.bashrc"
   become: true
   lineinfile:
-    path: /etc/profile
-    line: 'export PATH="{{ mysql_bin_dir }}:$PATH"'
-    insertafter: EOF
-    state: present
+      path: ~/.bashrc
+      line: 'export PATH="{{mysql_bin_dir}}:$PATH"'
+      insertafter: EOF
+      state: present
 
 # MYSQL_HOME
-- name: remove {{ mysql_app_base_dir }} from /etc/profile
+- name: remove {{mysql_app_base_dir}} from ~/.bashrc
   become: true
   lineinfile:
-    path: /etc/profile
-    regexp: '.*MYSQL_HOME.*'
-    state: absent
+      path: ~/.bashrc
+      regexp: ".*MYSQL_HOME.*"
+      state: absent
 
-- name: "Add MYSQL_HOME={{ mysql_app_base_dir }} to /etc/profile"
+- name: "Add MYSQL_HOME={{mysql_app_base_dir}} to ~/.bashrc"
   become: true
   lineinfile:
-    path: /etc/profile
-    line: 'export MYSQL_HOME={{ mysql_app_base_dir }}'
-    insertafter: EOF
-    state: present
+      path: ~/.bashrc
+      line: "export MYSQL_HOME={{mysql_app_base_dir}}"
+      insertafter: EOF
+      state: present
 
 # mysqld.err and mysqld-slow.log
-- name: "chmod 0644 {{ mysql_log_dir }}/mysqld.err"
+- name: "chmod 0644 {{mysql_log_dir}}/mysqld.err"
   become: true
   shell:
-    cmd: "chmod 0644 {{ mysql_log_dir }}/mysqld.err"
+      cmd: "chmod 0644 {{mysql_log_dir}}/mysqld.err"
 
-- name: "chmod 0644 {{ mysql_log_dir }}/mysqld-slow.log"
+- name: "chmod 0644 {{mysql_log_dir}}/mysqld-slow.log"
   become: true
   shell:
-    cmd: "chmod 0644 {{ mysql_log_dir }}/mysqld-slow.log"
+      cmd: "chmod 0644 {{mysql_log_dir}}/mysqld-slow.log"

@@ -3,10 +3,6 @@
 - name: Copy node_exporter.service.j2 template
   become: true
   template:
-    src: node_exporter.service.j2
-    dest: "/lib/systemd/system/node_exporter_{{ node_exporter_port }}.service"
-    mode: "644"
-
-
-
-
+      src: node_exporter.service.j2
+      dest: "/lib/systemd/system/node_exporter_{{node_exporter_port}}.service"
+      mode: "644"

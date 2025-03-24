@@ -1,0 +1,50 @@
+---
+# tasks file for diffutils by source
+
+# source
+- name: "diffutils_deploy_method == 'source'"
+  block:
+      - name: "cd {{ diffutils_source_dir }};./configure --prefix={{ diffutils_app_dir }}"
+        become: true
+        shell:
+            chdir: "{{ diffutils_source_dir }}"
+            cmd: "./configure --prefix={{ diffutils_app_dir }}"
+      - name: "cd {{ diffutils_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ diffutils_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ diffutils_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ diffutils_source_dir }}"
+            cmd: make install
+  when: diffutils_deploy_method == "source"
+
+# diffutils_port standalone
+- name: diffutils_port is defined
+  block:
+      - name: "cd {{ diffutils_source_dir }};./configure --prefix={{ diffutils_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ diffutils_source_dir }}"
+            cmd: "./configure --prefix={{ diffutils_base_dir }}"
+      - name: "cd {{ diffutils_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ diffutils_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ diffutils_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ diffutils_source_dir }}"
+            cmd: make install
+  when:
+      - diffutils_port is defined
+      - diffutils_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  diffutils_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ diffutils_install_user }}.{{ diffutils_install_group }} {{  diffutils_dir  }}"

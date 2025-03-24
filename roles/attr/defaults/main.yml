@@ -1,0 +1,59 @@
+---
+# defaults file for attr
+# https://download.savannah.nongnu.org/releases/attr/attr-2.5.2.tar.gz
+# DONE
+
+# user
+attr_install_user: "{{ ansible_user }}"
+attr_install_group: "{{ ansible_user }}"
+attr_version: "2.5.2"
+# attr_port: "8032"
+
+# standalone/cluster/pseudo_cluster
+attr_deploy_mode: "standalone"
+
+# binary/source/rpm/yum/dnf
+attr_deploy_method: "source"
+
+# url
+attr_base_url: "{{ base_url }}"
+attr_base_url_remote: "https://download.savannah.nongnu.org/releases/attr"
+
+# package
+attr_package_suffix: ".tar.gz"
+attr_package_name_rpm: "attr-{{ attr_version }}.rpm"
+attr_package_name_binary: "attr-{{ attr_version }}-{{ ansible_architecture }}{{ attr_package_suffix }}"
+attr_package_name_source: "attr-{{ attr_version }}{{ attr_package_suffix }}"
+attr_package_name: "{% if attr_deploy_method == 'rpm' %}{{ attr_package_name_rpm }}{% elif attr_deploy_method == 'binary' %}{{ attr_package_name_binary }}{% elif attr_deploy_method == 'source' %}{{ attr_package_name_source }}{% else %}{{ attr_package_name_source }}{% endif %}"
+
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/attr
+# /data/attr/data
+# /data/attr/conf
+# /data/attr/log
+# /data/attr/tmp
+# /data/attr/source
+# /data/attr/app
+# /data/attr/app/attr-2.44
+# /data/attr/app/attr-2.44/bin
+# /data/attr/app/attr-2.44/lib
+# /data/attr/app/attr-2.44/lib/pkgconfig
+# /data/attr/app/attr-2.44/include
+# /data/attr/app/attr-2.44/share
+# /data/attr/source/attr-2.44
+attr_dir: "{{ base_dir }}/attr"
+attr_data_dir: "{{ attr_dir }}/data"
+attr_conf_dir: "{{ attr_dir }}/conf"
+attr_log_dir: "{{ attr_dir }}/log"
+attr_tmp_dir: "{{ attr_dir }}/tmp"
+attr_app_base_dir: "{{ attr_dir }}/app"
+attr_source_base_dir: "{{ attr_dir }}/source"
+attr_app_dir: "{{ attr_app_base_dir }}/attr-{{ attr_version }}"
+attr_bin_dir: "{{ attr_app_dir }}/bin"
+attr_lib_dir: "{{ attr_app_dir }}/lib"
+attr_include_dir: "{{ attr_app_dir }}/include"
+attr_share_dir: "{{ attr_app_dir }}/share"
+attr_pkgconfig_dir: "{{ attr_lib_dir }}/pkgconfig"
+attr_source_dir: "{{ attr_source_base_dir }}/attr-{{ attr_version }}"

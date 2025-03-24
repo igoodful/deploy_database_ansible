@@ -1,0 +1,26 @@
+---
+# tasks file for readline
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check readline_port
+- name: "lsof -i:{{ readline_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ readline_port }}"
+  register: readline_port_check_output
+  ignore_errors: true
+  when: readline_port is defined
+
+- name: "check readline port"
+  become: true
+  fail:
+      msg: "readlined端口被占用,可使用: ps aux|grep readlined"
+  when:
+      - readline_port is defined
+      - readline_port_check_output is defined
+      - readline_port_check_output.rc == 0

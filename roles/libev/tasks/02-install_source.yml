@@ -5,11 +5,11 @@
 # 检查远程主机上的文件是否完整
 - name: "Check file exists first"
   stat:
-          path: "{{ install_tmpdir }}/{{ libev_package_name_source}}"
+      path: "{{install_tmpdir}}/{{libev_package_name_source}}"
   register: check_file_exists_first
 
 - name: "Check file valid first"
-  command: "gzip -t {{ install_tmpdir }}/{{ libev_package_name_source}}"
+  command: "gzip -t {{install_tmpdir}}/{{libev_package_name_source}}"
   register: check_file_valid_first
   ignore_errors: true
   when: check_file_exists_first.stat.exists
@@ -21,20 +21,20 @@
   delegate_to: localhost
   run_once: true
   stat:
-          path: "{{ role_path }}/files/{{ libev_package_name_source}}"
+      path: "{{role_path}}/files/{{libev_package_name_source}}"
   register: local_file_stat
 
 - name: "Copy file from control machine if remote file is missing or invalid"
   become: true
   copy:
-          src: "{{ libev_package_name_source}}"
-          dest: "{{ install_tmpdir }}/"
-          owner: "{{ ansible_user }}"
-          group: "{{ ansible_user }}"
-          mode: 0755
+      src: "{{libev_package_name_source}}"
+      dest: "{{install_tmpdir}}/"
+      owner: "{{ansible_user}}"
+      group: "{{ansible_user}}"
+      mode: 0755
   when:
-          - (not check_file_exists_first.stat.exists or check_file_valid_first.rc != 0)
-          - local_file_stat.stat.exists
+      - (not check_file_exists_first.stat.exists or check_file_valid_first.rc != 0)
+      - local_file_stat.stat.exists
 
 #################################################
 # 从 libev_base_url 下载
@@ -42,25 +42,25 @@
 
 - name: "Check file exists second"
   stat:
-          path: "{{ install_tmpdir }}/{{ libev_package_name_source}}"
+      path: "{{install_tmpdir}}/{{libev_package_name_source}}"
   register: check_file_exists_second
 
 - name: "Check file valid second"
-  command: "gzip -t {{ install_tmpdir }}/{{ libev_package_name_source}}"
+  command: "gzip -t {{install_tmpdir}}/{{libev_package_name_source}}"
   register: check_file_valid_second
   ignore_errors: true
   when: check_file_exists_second.stat.exists
 
 - name: "Download file from libev_base_url if remote file is missing or invalid"
   get_url:
-          url: "{{ libev_base_url }}/{{ libev_package_name_source}}"
-          dest: "{{ install_tmpdir }}/{{ libev_package_name_source}}"
-          owner: "{{ ansible_user }}"
-          group: "{{ ansible_user }}"
-          mode: 0755
-          timeout: 600
+      url: "{{libev_base_url}}/{{libev_package_name_source}}"
+      dest: "{{install_tmpdir}}/{{libev_package_name_source}}"
+      owner: "{{ansible_user}}"
+      group: "{{ansible_user}}"
+      mode: 0755
+      timeout: 600
   when:
-          - (not check_file_exists_second.stat.exists or check_file_valid_second.rc != 0)
+      - (not check_file_exists_second.stat.exists or check_file_valid_second.rc != 0)
   ignore_errors: true
 
 #################################################
@@ -69,54 +69,54 @@
 
 - name: "Check file exists third"
   stat:
-          path: "{{ install_tmpdir }}/{{ libev_package_name_source}}"
+      path: "{{install_tmpdir}}/{{libev_package_name_source}}"
   register: check_file_exists_third
 
 - name: "Check file valid third"
-  command: "gzip -t {{ install_tmpdir }}/{{ libev_package_name_source}}"
+  command: "gzip -t {{install_tmpdir}}/{{libev_package_name_source}}"
   register: check_file_valid_third
   ignore_errors: true
   when: check_file_exists_third.stat.exists
 
 - name: "Download file from libev_base_url_remote if previous download failed"
   get_url:
-          url: "{{ libev_base_url_remote }}/{{ libev_package_name_source}}"
-          dest: "{{ install_tmpdir }}/{{ libev_package_name_source}}"
-          owner: "{{ ansible_user }}"
-          group: "{{ ansible_user }}"
-          mode: 0755
-          timeout: 600
+      url: "{{libev_base_url_remote}}/{{libev_package_name_source}}"
+      dest: "{{install_tmpdir}}/{{libev_package_name_source}}"
+      owner: "{{ansible_user}}"
+      group: "{{ansible_user}}"
+      mode: 0755
+      timeout: 600
   when:
-          - (not check_file_exists_third.stat.exists or check_file_valid_third.rc != 0)
+      - (not check_file_exists_third.stat.exists or check_file_valid_third.rc != 0)
 
 #################################################
 # 如果部署模式为源码编译，则解压并安装
 #################################################
-- name: "Extract {{ install_tmpdir }}/{{ libev_package_name_source}}"
+- name: "Extract {{install_tmpdir}}/{{libev_package_name_source}}"
   become: true
   unarchive:
-          src: "{{ install_tmpdir }}/{{ libev_package_name_source}}"
-          dest: "{{ libev_source_dir }}/"
-          remote_src: true
-          owner: "{{ ansible_user }}"
-          group: "{{ ansible_user }}"
-          extra_opts:
-                  - --strip-components=1
+      src: "{{install_tmpdir}}/{{libev_package_name_source}}"
+      dest: "{{libev_source_dir}}/"
+      remote_src: true
+      owner: "{{ansible_user}}"
+      group: "{{ansible_user}}"
+      extra_opts:
+          - --strip-components=1
 
-- name: "./configure --prefix={{ libev_base_dir }}"
+- name: "./configure --prefix={{libev_base_dir}}"
   become: true
   shell:
-          chdir: "{{ libev_source_dir }}"
-          cmd: "./configure --prefix={{ libev_base_dir }}"
+      chdir: "{{libev_source_dir}}"
+      cmd: "./configure --prefix={{libev_base_dir}}"
 
 - name: "make"
   become: true
   shell:
-          chdir: "{{ libev_source_dir }}"
-          cmd: "make -j{{ ansible_processor_vcpus }}"
+      chdir: "{{libev_source_dir}}"
+      cmd: "make -j{{ansible_processor_vcpus}}"
 
 - name: "make install"
   become: true
   shell:
-          chdir: "{{ libev_source_dir }}"
-          cmd: make install
+      chdir: "{{libev_source_dir}}"
+      cmd: make install

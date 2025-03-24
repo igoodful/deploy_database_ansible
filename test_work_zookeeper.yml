@@ -3,8 +3,4 @@
   hosts: all
   gather_facts: true
   roles:
-    - {
-        role: work_zookeeper,
-        tags: work_zookeeper,
-      }
-
+      - { role: work_zookeeper, tags: work_zookeeper }

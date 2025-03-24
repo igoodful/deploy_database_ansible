@@ -1,0 +1,51 @@
+---
+# tasks file for m4 by source
+- name: "chown -R {{  m4_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ m4_install_user }}.{{ m4_install_group }} {{  m4_dir  }}"
+
+# source
+- name: "m4_deploy_method == 'source'"
+  block:
+      - name: "cd {{ m4_source_dir }};./configure --prefix={{ m4_app_dir }}"
+        shell:
+            chdir: "{{ m4_source_dir }}"
+            cmd: "./configure --prefix={{ m4_app_dir }}"
+      - name: "cd {{ m4_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        shell:
+            chdir: "{{ m4_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ m4_source_dir }};make install"
+        shell:
+            chdir: "{{ m4_source_dir }}"
+            cmd: make install
+  when: m4_deploy_method == "source"
+
+# m4_port standalone
+- name: m4_port is defined
+  block:
+      - name: "cd {{ m4_source_dir }};./configure --prefix={{ m4_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ m4_source_dir }}"
+            cmd: "./configure --prefix={{ m4_base_dir }}"
+      - name: "cd {{ m4_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ m4_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ m4_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ m4_source_dir }}"
+            cmd: make install
+  when:
+      - m4_port is defined
+      - m4_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  m4_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ m4_install_user }}.{{ m4_install_group }} {{  m4_dir  }}"

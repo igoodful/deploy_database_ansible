@@ -1,0 +1,26 @@
+---
+# tasks file for libtirpc
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check libtirpc_port
+- name: "lsof -i:{{ libtirpc_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ libtirpc_port }}"
+  register: libtirpc_port_check_output
+  ignore_errors: true
+  when: libtirpc_port is defined
+
+- name: "check libtirpc port"
+  become: true
+  fail:
+      msg: "libtirpcd端口被占用,可使用: ps aux|grep libtirpcd"
+  when:
+      - libtirpc_port is defined
+      - libtirpc_port_check_output is defined
+      - libtirpc_port_check_output.rc == 0

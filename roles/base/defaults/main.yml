@@ -1,11 +1,11 @@
 ---
 # defaults file for base
 software_packages:
-  - git
-  - make
-  - curl
-  - sysstat
-  - iotop
-  - tree
-  - go
-  - sshpass
+    - git
+    - make
+    - curl
+    - sysstat
+    - iotop
+    - tree
+    - go
+    - sshpass

@@ -3,8 +3,4 @@
   hosts: all
   gather_facts: true
   roles:
-    - {
-        role: texinfo,
-        tags: texinfo,
-      }
-
+      - { role: texinfo, tags: texinfo }

@@ -1,0 +1,58 @@
+---
+# defaults file for iproute2
+# https://github.com/iproute2/iproute2/archive/refs/tags/v6.12.0.tar.gz
+
+# user
+iproute2_install_user: "{{ ansible_user }}"
+iproute2_install_group: "{{ ansible_user }}"
+iproute2_version: "6.12.0"
+# iproute2_port: "8032"
+
+# standalone/cluster/pseudo_cluster
+iproute2_deploy_mode: "standalone"
+
+# binary/source/rpm/yum/dnf
+iproute2_deploy_method: "source"
+
+# url
+iproute2_base_url: "{{ base_url }}"
+iproute2_base_url_remote: "https://github.com/iproute2/iproute2/archive/refs/tags"
+
+# package
+iproute2_package_suffix: ".tar.gz"
+iproute2_package_name_rpm: "iproute2-{{ iproute2_version }}.rpm"
+iproute2_package_name_binary: "iproute2-{{ iproute2_version }}-{{ ansible_architecture }}{{ iproute2_package_suffix }}"
+iproute2_package_name_source: "iproute2-{{ iproute2_version }}{{ iproute2_package_suffix }}"
+iproute2_package_name: "{% if iproute2_deploy_method == 'rpm' %}{{ iproute2_package_name_rpm }}{% elif iproute2_deploy_method == 'binary' %}{{ iproute2_package_name_binary }}{% elif iproute2_deploy_method == 'source' %}{{ iproute2_package_name_source }}{% else %}{{ iproute2_package_name_source }}{% endif %}"
+
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/iproute2
+# /data/iproute2/data
+# /data/iproute2/conf
+# /data/iproute2/log
+# /data/iproute2/tmp
+# /data/iproute2/source
+# /data/iproute2/app
+# /data/iproute2/app/iproute2-2.44
+# /data/iproute2/app/iproute2-2.44/bin
+# /data/iproute2/app/iproute2-2.44/lib
+# /data/iproute2/app/iproute2-2.44/lib/pkgconfig
+# /data/iproute2/app/iproute2-2.44/include
+# /data/iproute2/app/iproute2-2.44/share
+# /data/iproute2/source/iproute2-2.44
+iproute2_dir: "{{ base_dir }}/iproute2"
+iproute2_data_dir: "{{ iproute2_dir }}/data"
+iproute2_conf_dir: "{{ iproute2_dir }}/conf"
+iproute2_log_dir: "{{ iproute2_dir }}/log"
+iproute2_tmp_dir: "{{ iproute2_dir }}/tmp"
+iproute2_app_base_dir: "{{ iproute2_dir }}/app"
+iproute2_source_base_dir: "{{ iproute2_dir }}/source"
+iproute2_app_dir: "{{ iproute2_app_base_dir }}/iproute2-{{ iproute2_version }}"
+iproute2_bin_dir: "{{ iproute2_app_dir }}/bin"
+iproute2_lib_dir: "{{ iproute2_app_dir }}/lib"
+iproute2_include_dir: "{{ iproute2_app_dir }}/include"
+iproute2_share_dir: "{{ iproute2_app_dir }}/share"
+iproute2_pkgconfig_dir: "{{ iproute2_lib_dir }}/pkgconfig"
+iproute2_source_dir: "{{ iproute2_source_base_dir }}/iproute2-{{ iproute2_version }}"

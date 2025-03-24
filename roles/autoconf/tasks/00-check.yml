@@ -1,0 +1,26 @@
+---
+# tasks file for autoconf
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check autoconf_port
+- name: "lsof -i:{{ autoconf_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ autoconf_port }}"
+  register: autoconf_port_check_output
+  ignore_errors: true
+  when: autoconf_port is defined
+
+- name: "check autoconf port"
+  become: true
+  fail:
+      msg: "autoconfd端口被占用,可使用: ps aux|grep autoconfd"
+  when:
+      - autoconf_port is defined
+      - autoconf_port_check_output is defined
+      - autoconf_port_check_output.rc == 0

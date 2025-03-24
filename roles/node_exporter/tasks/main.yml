@@ -5,9 +5,7 @@
 - import_tasks: install.yml
 - import_tasks: configure.yml
 - import_tasks: service.yml
-
 # systemctl stop node_exporter_9100.service
 # systemctl disable node_exporter_9100.service
 # rm -rf /usr/lib/systemd/system/node_exporter_9100.service
-
 

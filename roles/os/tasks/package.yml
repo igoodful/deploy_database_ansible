@@ -1,28 +1,28 @@
 ---
 #
-- name: "uninstall {{ os_packages_remove }}"
+- name: "uninstall {{os_packages_remove}}"
   become: true
   yum:
-          name: "{{ os_packages_remove }}"
-          state: absent
+      name: "{{os_packages_remove}}"
+      state: absent
   when: ansible_os_family == "RedHat" or ansible_os_family == "Kylin"
 
-- name: "install {{ os_packages }}"
+- name: "install {{os_packages}}"
   become: true
   yum:
-          name: "{{ os_packages }}"
-          state: present
+      name: "{{os_packages}}"
+      state: present
   when: ansible_os_family == "RedHat" or ansible_os_family == "Kylin"
 
 - name: "验证安装结果"
   become: true
-  command: rpm -q {{ item }}
-  loop: "{{ os_packages }}"
+  command: rpm -q {{item}}
+  loop: "{{os_packages}}"
   register: rpm_check
   ignore_errors: true
 
 - name: "显示安装结果"
   become: true
   debug:
-          msg: "{{ item.stdout }}"
-  loop: "{{ rpm_check.results }}"
+      msg: "{{item.stdout}}"
+  loop: "{{rpm_check.results}}"

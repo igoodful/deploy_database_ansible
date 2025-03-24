@@ -1,0 +1,73 @@
+---
+# tasks file for shadow
+# delete shadow_source_dir shadow_app_dir
+
+- name: "delete {{ shadow_source_dir }} {{ shadow_app_dir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: absent
+  with_items:
+      - "{{ shadow_source_dir }}"
+      - "{{ shadow_app_dir }}"
+
+# basic dir
+- name: "mkdir {{ base_dir }} {{ install_tmpdir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ shadow_install_user }}"
+      group: "{{ shadow_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ base_dir }}"
+      - "{{ install_tmpdir }}"
+
+# binary and source dir
+- name: "mkdir {{ shadow_dir }} {{ shadow_app_base_dir }} {{ shadow_app_dir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ shadow_install_user }}"
+      group: "{{ shadow_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ shadow_dir }}"
+      - "{{ shadow_app_base_dir }}"
+      - "{{ shadow_app_dir }}"
+  when:
+      - shadow_deploy_method == "binary" or shadow_deploy_method == "source"
+
+# source dir
+- name: "mkdir {{ shadow_dir }} {{ shadow_source_base_dir }}  {{ shadow_source_dir }} "
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ shadow_install_user }}"
+      group: "{{ shadow_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ shadow_source_base_dir }}"
+      - "{{ shadow_source_dir }}"
+  when:
+      - shadow_deploy_method == "source"
+
+# service dir
+- name: "mkdir {{ shadow_data_dir }} {{ shadow_conf_dir }} {{ shadow_log_dir }} {{ shadow_tmp_dir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ shadow_install_user }}"
+      group: "{{ shadow_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ shadow_data_dir }}"
+      - "{{ shadow_conf_dir }}"
+      - "{{ shadow_log_dir }}"
+      - "{{ shadow_tmp_dir }}"
+  when:
+      - shadow_port is defined

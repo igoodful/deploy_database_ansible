@@ -1,21 +1,61 @@
 ---
 # defaults file for libtirpc
 # https://downloads.sourceforge.net/libtirpc/libtirpc-1.3.4.tar.bz2
+# libtirpc_package_suffix: ".tar.bz2"
+
+
+# user
 libtirpc_install_user: "{{ ansible_user }}"
 libtirpc_install_group: "{{ ansible_user }}"
 libtirpc_version: "1.3.4"
-libtirpc_base_url: "{{ base_url }}"
-libtirpc_base_url_remote: "https://ftp.gnu.org/gnu/libtirpc"
+# libtirpc_port: "8032"
 
-# binary/source
+# standalone/cluster/pseudo_cluster
+libtirpc_deploy_mode: "standalone"
+
+# binary/source/rpm/yum/dnf
 libtirpc_deploy_method: "source"
-######################################
-libtirpc_package_suffix: ".tar.bz2"
-######################################
-libtirpc_package_name_binary: "libtirpc-{{ libtirpc_version }}"
-libtirpc_package_name_source: "libtirpc-{{ libtirpc_version }}"
 
+# url
+libtirpc_base_url: "{{ base_url }}"
+libtirpc_base_url_remote: "https://downloads.sourceforge.net/libtirpc"
+
+# package
+libtirpc_package_suffix: ".tar.bz2"
+libtirpc_package_name_rpm: "libtirpc-{{ libtirpc_version }}.rpm"
+libtirpc_package_name_binary: "libtirpc-{{ libtirpc_version }}-{{ ansible_architecture }}{{ libtirpc_package_suffix }}"
+libtirpc_package_name_source: "libtirpc-{{ libtirpc_version }}{{ libtirpc_package_suffix }}"
+libtirpc_package_name: "{% if libtirpc_deploy_method == 'rpm' %}{{ libtirpc_package_name_rpm }}{% elif libtirpc_deploy_method == 'binary' %}{{ libtirpc_package_name_binary }}{% elif libtirpc_deploy_method == 'source' %}{{ libtirpc_package_name_source }}{% else %}{{ libtirpc_package_name_source }}{% endif %}"
+
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/libtirpc
+# /data/libtirpc/data
+# /data/libtirpc/conf
+# /data/libtirpc/log
+# /data/libtirpc/tmp
+# /data/libtirpc/source
+# /data/libtirpc/app
+# /data/libtirpc/app/libtirpc-{{ libtirpc_version }}
+# /data/libtirpc/app/libtirpc-{{ libtirpc_version }}/bin
+# /data/libtirpc/app/libtirpc-{{ libtirpc_version }}/lib
+# /data/libtirpc/app/libtirpc-{{ libtirpc_version }}/lib/pkgconfig
+# /data/libtirpc/app/libtirpc-{{ libtirpc_version }}/include
+# /data/libtirpc/app/libtirpc-{{ libtirpc_version }}/share
+# /data/libtirpc/source/libtirpc-{{ libtirpc_version }}
 libtirpc_dir: "{{ base_dir }}/libtirpc"
-libtirpc_app_dir: "{{ base_dir }}/libtirpc/app"
-libtirpc_base_dir: "{{ libtirpc_app_dir }}/libtirpc-{{ libtirpc_version }}"
-libtirpc_source_dir: "{{ libtirpc_app_dir }}/source/libtirpc-{{ libtirpc_version }}"
+libtirpc_data_dir: "{{ libtirpc_dir }}/data"
+libtirpc_conf_dir: "{{ libtirpc_dir }}/conf"
+libtirpc_log_dir: "{{ libtirpc_dir }}/log"
+libtirpc_tmp_dir: "{{ libtirpc_dir }}/tmp"
+libtirpc_app_base_dir: "{{ libtirpc_dir }}/app"
+libtirpc_source_base_dir: "{{ libtirpc_dir }}/source"
+libtirpc_app_dir: "{{ libtirpc_app_base_dir }}/libtirpc-{{ libtirpc_version }}"
+libtirpc_bin_dir: "{{ libtirpc_app_dir }}/bin"
+libtirpc_lib_dir: "{{ libtirpc_app_dir }}/lib"
+libtirpc_include_dir: "{{ libtirpc_app_dir }}/include"
+libtirpc_share_dir: "{{ libtirpc_app_dir }}/share"
+libtirpc_pkgconfig_dir: "{{ libtirpc_lib_dir }}/pkgconfig"
+libtirpc_source_dir: "{{ libtirpc_source_base_dir }}/libtirpc-{{ libtirpc_version }}"
+libtirpc_build_dir: "{{ libtirpc_source_dir }}/build_{{ date_output.stdout }}"

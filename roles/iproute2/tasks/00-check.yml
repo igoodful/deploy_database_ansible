@@ -1,0 +1,26 @@
+---
+# tasks file for iproute2
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check iproute2_port
+- name: "lsof -i:{{ iproute2_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ iproute2_port }}"
+  register: iproute2_port_check_output
+  ignore_errors: true
+  when: iproute2_port is defined
+
+- name: "check iproute2 port"
+  become: true
+  fail:
+      msg: "iproute2d端口被占用,可使用: ps aux|grep iproute2d"
+  when:
+      - iproute2_port is defined
+      - iproute2_port_check_output is defined
+      - iproute2_port_check_output.rc == 0

@@ -1,0 +1,51 @@
+---
+# tasks file for libunistring by source
+- name: "chown -R {{  libunistring_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ libunistring_install_user }}.{{ libunistring_install_group }} {{  libunistring_dir  }}"
+
+# source
+- name: "libunistring_deploy_method == 'source'"
+  block:
+      - name: "cd {{ libunistring_source_dir }};./configure --prefix={{ libunistring_app_dir }}"
+        shell:
+            chdir: "{{ libunistring_source_dir }}"
+            cmd: "./configure --prefix={{ libunistring_app_dir }}"
+      - name: "cd {{ libunistring_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        shell:
+            chdir: "{{ libunistring_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ libunistring_source_dir }};make install"
+        shell:
+            chdir: "{{ libunistring_source_dir }}"
+            cmd: make install
+  when: libunistring_deploy_method == "source"
+
+# libunistring_port standalone
+- name: libunistring_port is defined
+  block:
+      - name: "cd {{ libunistring_source_dir }};./configure --prefix={{ libunistring_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ libunistring_source_dir }}"
+            cmd: "./configure --prefix={{ libunistring_base_dir }}"
+      - name: "cd {{ libunistring_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ libunistring_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ libunistring_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ libunistring_source_dir }}"
+            cmd: make install
+  when:
+      - libunistring_port is defined
+      - libunistring_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  libunistring_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ libunistring_install_user }}.{{ libunistring_install_group }} {{  libunistring_dir  }}"

@@ -1,20 +1,59 @@
 ---
 # defaults file for diffutils
 # https://ftp.gnu.org/gnu/diffutils/diffutils-3.11.tar.gz
+# DONE
+
+# user
 diffutils_install_user: "{{ ansible_user }}"
 diffutils_install_group: "{{ ansible_user }}"
 diffutils_version: "3.11"
+# diffutils_port: "8032"
+
+# standalone/cluster/pseudo_cluster
+diffutils_deploy_mode: "standalone"
+
+# binary/source/rpm/yum/dnf
+diffutils_deploy_method: "source"
+
+# url
 diffutils_base_url: "{{ base_url }}"
 diffutils_base_url_remote: "https://ftp.gnu.org/gnu/diffutils"
 
-# binary/source
-
-diffutils_deploy_method: "source"
+# package
 diffutils_package_suffix: ".tar.gz"
-diffutils_package_name_binary: "diffutils-{{ diffutils_version }}"
-diffutils_package_name_source: "diffutils-{{ diffutils_version }}"
+diffutils_package_name_rpm: "diffutils-{{ diffutils_version }}.rpm"
+diffutils_package_name_binary: "diffutils-{{ diffutils_version }}-{{ ansible_architecture }}{{ diffutils_package_suffix }}"
+diffutils_package_name_source: "diffutils-{{ diffutils_version }}{{ diffutils_package_suffix }}"
+diffutils_package_name: "{% if diffutils_deploy_method == 'rpm' %}{{ diffutils_package_name_rpm }}{% elif diffutils_deploy_method == 'binary' %}{{ diffutils_package_name_binary }}{% elif diffutils_deploy_method == 'source' %}{{ diffutils_package_name_source }}{% else %}{{ diffutils_package_name_source }}{% endif %}"
 
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/diffutils
+# /data/diffutils/data
+# /data/diffutils/conf
+# /data/diffutils/log
+# /data/diffutils/tmp
+# /data/diffutils/source
+# /data/diffutils/app
+# /data/diffutils/app/diffutils-2.44
+# /data/diffutils/app/diffutils-2.44/bin
+# /data/diffutils/app/diffutils-2.44/lib
+# /data/diffutils/app/diffutils-2.44/lib/pkgconfig
+# /data/diffutils/app/diffutils-2.44/include
+# /data/diffutils/app/diffutils-2.44/share
+# /data/diffutils/source/diffutils-2.44
 diffutils_dir: "{{ base_dir }}/diffutils"
-diffutils_app_dir: "{{ base_dir }}/diffutils/app"
-diffutils_base_dir: "{{ diffutils_app_dir }}/diffutils-{{ diffutils_version }}"
-diffutils_source_dir: "{{ diffutils_app_dir }}/source/diffutils-{{ diffutils_version }}"
+diffutils_data_dir: "{{ diffutils_dir }}/data"
+diffutils_conf_dir: "{{ diffutils_dir }}/conf"
+diffutils_log_dir: "{{ diffutils_dir }}/log"
+diffutils_tmp_dir: "{{ diffutils_dir }}/tmp"
+diffutils_app_base_dir: "{{ diffutils_dir }}/app"
+diffutils_source_base_dir: "{{ diffutils_dir }}/source"
+diffutils_app_dir: "{{ diffutils_app_base_dir }}/diffutils-{{ diffutils_version }}"
+diffutils_bin_dir: "{{ diffutils_app_dir }}/bin"
+diffutils_lib_dir: "{{ diffutils_app_dir }}/lib"
+diffutils_include_dir: "{{ diffutils_app_dir }}/include"
+diffutils_share_dir: "{{ diffutils_app_dir }}/share"
+diffutils_pkgconfig_dir: "{{ diffutils_lib_dir }}/pkgconfig"
+diffutils_source_dir: "{{ diffutils_source_base_dir }}/diffutils-{{ diffutils_version }}"

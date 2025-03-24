@@ -1,2 +1,58 @@
 ---
 # defaults file for libgpg-error
+# https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-1.50.tar.gz
+
+# user
+libgpg_error_install_user: "{{ ansible_user }}"
+libgpg_error_install_group: "{{ ansible_user }}"
+libgpg_error_version: "1.50"
+# libgpg_error_port: "8032"
+
+# standalone/cluster/pseudo_cluster
+libgpg_error_deploy_mode: "standalone"
+
+# binary/source/rpm/yum/dnf
+libgpg_error_deploy_method: "source"
+
+# url
+libgpg_error_base_url: "{{ base_url }}"
+libgpg_error_base_url_remote: "https://www.gnupg.org/ftp/gcrypt/libgpg-error"
+
+# package
+libgpg_error_package_suffix: ".tar.gz"
+libgpg_error_package_name_rpm: "libgpg-error-{{ libgpg_error_version }}.rpm"
+libgpg_error_package_name_binary: "libgpg-error-{{ libgpg_error_version }}-{{ ansible_architecture }}{{ libgpg_error_package_suffix }}"
+libgpg_error_package_name_source: "libgpg-error-{{ libgpg_error_version }}{{ libgpg_error_package_suffix }}"
+libgpg_error_package_name: "{% if libgpg_error_deploy_method == 'rpm' %}{{ libgpg_error_package_name_rpm }}{% elif libgpg_error_deploy_method == 'binary' %}{{ libgpg_error_package_name_binary }}{% elif libgpg_error_deploy_method == 'source' %}{{ libgpg_error_package_name_source }}{% else %}{{ libgpg_error_package_name_source }}{% endif %}"
+
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/libgpg_error
+# /data/libgpg_error/data
+# /data/libgpg_error/conf
+# /data/libgpg_error/log
+# /data/libgpg_error/tmp
+# /data/libgpg_error/source
+# /data/libgpg_error/app
+# /data/libgpg_error/app/libgpg_error-2.44
+# /data/libgpg_error/app/libgpg_error-2.44/bin
+# /data/libgpg_error/app/libgpg_error-2.44/lib
+# /data/libgpg_error/app/libgpg_error-2.44/lib/pkgconfig
+# /data/libgpg_error/app/libgpg_error-2.44/include
+# /data/libgpg_error/app/libgpg_error-2.44/share
+# /data/libgpg_error/source/libgpg_error-2.44
+libgpg_error_dir: "{{ base_dir }}/libgpg-error"
+libgpg_error_data_dir: "{{ libgpg_error_dir }}/data"
+libgpg_error_conf_dir: "{{ libgpg_error_dir }}/conf"
+libgpg_error_log_dir: "{{ libgpg_error_dir }}/log"
+libgpg_error_tmp_dir: "{{ libgpg_error_dir }}/tmp"
+libgpg_error_app_base_dir: "{{ libgpg_error_dir }}/app"
+libgpg_error_source_base_dir: "{{ libgpg_error_dir }}/source"
+libgpg_error_app_dir: "{{ libgpg_error_app_base_dir }}/libgpg-error-{{ libgpg_error_version }}"
+libgpg_error_bin_dir: "{{ libgpg_error_app_dir }}/bin"
+libgpg_error_lib_dir: "{{ libgpg_error_app_dir }}/lib"
+libgpg_error_include_dir: "{{ libgpg_error_app_dir }}/include"
+libgpg_error_share_dir: "{{ libgpg_error_app_dir }}/share"
+libgpg_error_pkgconfig_dir: "{{ libgpg_error_lib_dir }}/pkgconfig"
+libgpg_error_source_dir: "{{ libgpg_error_source_base_dir }}/libgpg-error-{{ libgpg_error_version }}"

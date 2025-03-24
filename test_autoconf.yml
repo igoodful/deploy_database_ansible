@@ -3,8 +3,4 @@
   hosts: all
   gather_facts: true
   roles:
-    - {
-        role: autoconf,
-        tags: autoconf,
-      }
-
+      - { role: autoconf, tags: autoconf }

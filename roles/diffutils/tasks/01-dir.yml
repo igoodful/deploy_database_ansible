@@ -1,38 +1,73 @@
 ---
 # tasks file for diffutils
-- name: "remove {{ diffutils_source_dir }} {{ diffutils_base_dir }}"
-  become: true
-  file:
-          path: "{{ item }}"
-          state: absent
-  with_items:
-          - "{{ diffutils_source_dir }}"
-          - "{{ diffutils_base_dir }}"
+# delete diffutils_source_dir diffutils_app_dir
 
-- name: "mkdir for diffutils"
+- name: "delete {{ diffutils_source_dir }} {{ diffutils_app_dir }}"
   become: true
   file:
-          path: "{{ item }}"
-          state: directory
-          owner: "{{ diffutils_install_user }}"
-          group: "{{ diffutils_install_group }}"
-          mode: 0755
+      path: "{{ item }}"
+      state: absent
   with_items:
-          - "{{ base_dir }}"
-          - "{{ diffutils_dir }}"
-          - "{{ install_tmpdir }}"
-          - "{{ diffutils_app_dir }}"
-          - "{{ diffutils_base_dir }}"
+      - "{{ diffutils_source_dir }}"
+      - "{{ diffutils_app_dir }}"
 
-- name: "mkdir {{ diffutils_source_dir }}"
+# basic dir
+- name: "mkdir {{ base_dir }} {{ install_tmpdir }}"
   become: true
   file:
-          path: "{{ item }}"
-          state: directory
-          mode: 0755
-          owner: "{{ diffutils_install_user }}"
-          group: "{{ diffutils_install_group }}"
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ diffutils_install_user }}"
+      group: "{{ diffutils_install_group }}"
+      mode: 0755
   with_items:
-          - "{{ base_dir }}"
-          - "{{ diffutils_source_dir }}"
-  when: diffutils_deploy_method == "source"
+      - "{{ base_dir }}"
+      - "{{ install_tmpdir }}"
+
+# binary and source dir
+- name: "mkdir {{ diffutils_dir }} {{ diffutils_app_base_dir }} {{ diffutils_app_dir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ diffutils_install_user }}"
+      group: "{{ diffutils_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ diffutils_dir }}"
+      - "{{ diffutils_app_base_dir }}"
+      - "{{ diffutils_app_dir }}"
+  when:
+      - diffutils_deploy_method == "binary" or diffutils_deploy_method == "source"
+
+# source dir
+- name: "mkdir {{ diffutils_dir }} {{ diffutils_source_base_dir }}  {{ diffutils_source_dir }} "
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ diffutils_install_user }}"
+      group: "{{ diffutils_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ diffutils_source_base_dir }}"
+      - "{{ diffutils_source_dir }}"
+  when:
+      - diffutils_deploy_method == "source"
+
+# service dir
+- name: "mkdir {{ diffutils_data_dir }} {{ diffutils_conf_dir }} {{ diffutils_log_dir }} {{ diffutils_tmp_dir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ diffutils_install_user }}"
+      group: "{{ diffutils_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ diffutils_data_dir }}"
+      - "{{ diffutils_conf_dir }}"
+      - "{{ diffutils_log_dir }}"
+      - "{{ diffutils_tmp_dir }}"
+  when:
+      - diffutils_port is defined

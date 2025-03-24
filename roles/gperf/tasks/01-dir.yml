@@ -1,38 +1,73 @@
 ---
 # tasks file for gperf
-- name: "remove {{ gperf_source_dir }} {{ gperf_base_dir }}"
-  become: true
-  file:
-          path: "{{ item }}"
-          state: absent
-  with_items:
-          - "{{ gperf_source_dir }}"
-          - "{{ gperf_base_dir }}"
+# delete gperf_source_dir gperf_app_dir
 
-- name: "mkdir for gperf"
+- name: "delete {{ gperf_source_dir }} {{ gperf_app_dir }}"
   become: true
   file:
-          path: "{{ item }}"
-          state: directory
-          owner: "{{ gperf_install_user }}"
-          group: "{{ gperf_install_group }}"
-          mode: 0755
+      path: "{{ item }}"
+      state: absent
   with_items:
-          - "{{ base_dir }}"
-          - "{{ gperf_dir }}"
-          - "{{ install_tmpdir }}"
-          - "{{ gperf_app_dir }}"
-          - "{{ gperf_base_dir }}"
+      - "{{ gperf_source_dir }}"
+      - "{{ gperf_app_dir }}"
 
-- name: "mkdir {{ gperf_source_dir }}"
+# basic dir
+- name: "mkdir {{ base_dir }} {{ install_tmpdir }}"
   become: true
   file:
-          path: "{{ item }}"
-          state: directory
-          mode: 0755
-          owner: "{{ gperf_install_user }}"
-          group: "{{ gperf_install_group }}"
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ gperf_install_user }}"
+      group: "{{ gperf_install_group }}"
+      mode: 0755
   with_items:
-          - "{{ base_dir }}"
-          - "{{ gperf_source_dir }}"
-  when: gperf_deploy_method == "source"
+      - "{{ base_dir }}"
+      - "{{ install_tmpdir }}"
+
+# binary and source dir
+- name: "mkdir {{ gperf_dir }} {{ gperf_app_base_dir }} {{ gperf_app_dir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ gperf_install_user }}"
+      group: "{{ gperf_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ gperf_dir }}"
+      - "{{ gperf_app_base_dir }}"
+      - "{{ gperf_app_dir }}"
+  when:
+      - gperf_deploy_method == "binary" or gperf_deploy_method == "source"
+
+# source dir
+- name: "mkdir {{ gperf_dir }} {{ gperf_source_base_dir }}  {{ gperf_source_dir }} "
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ gperf_install_user }}"
+      group: "{{ gperf_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ gperf_source_base_dir }}"
+      - "{{ gperf_source_dir }}"
+  when:
+      - gperf_deploy_method == "source"
+
+# service dir
+- name: "mkdir {{ gperf_data_dir }} {{ gperf_conf_dir }} {{ gperf_log_dir }} {{ gperf_tmp_dir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ gperf_install_user }}"
+      group: "{{ gperf_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ gperf_data_dir }}"
+      - "{{ gperf_conf_dir }}"
+      - "{{ gperf_log_dir }}"
+      - "{{ gperf_tmp_dir }}"
+  when:
+      - gperf_port is defined

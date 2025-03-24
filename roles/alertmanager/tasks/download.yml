@@ -2,32 +2,27 @@
 # download
 - name: Download alertmanager package for x86 architecture
   get_url:
-    url: "{{ alertmanager_download_url_amd64 }}"
-    dest: "{{ install_tmpdir }}/"
+      url: "{{alertmanager_download_url_amd64}}"
+      dest: "{{install_tmpdir}}/"
   when: ansible_architecture == 'x86_64' and alertmanager_download
 
 - name: Download alertmanager package for ARM architecture
   get_url:
-    url: "{{ alertmanager_download_url_arm64 }}"
-    dest: "{{ install_tmpdir }}/"
+      url: "{{alertmanager_download_url_arm64}}"
+      dest: "{{install_tmpdir}}/"
   when: ansible_architecture == 'aarch64' and alertmanager_download
 
 # copy alertmanager
 - name: copy alertmanager for aarch64
   become: yes
   copy:
-    src: "alertmanager-{{ alertmanager_version }}.linux-arm64.tar.gz"
-    dest: "{{ install_tmpdir }}/"
+      src: "alertmanager-{{alertmanager_version}}.linux-arm64.tar.gz"
+      dest: "{{install_tmpdir}}/"
   when: ansible_architecture == 'aarch64' and (not alertmanager_download)
 
 - name: copy alertmanager for x86_64
   become: yes
   copy:
-    src: "alertmanager-{{ alertmanager_version }}.linux-amd64.tar.gz"
-    dest: "{{ install_tmpdir }}/"
+      src: "alertmanager-{{alertmanager_version}}.linux-amd64.tar.gz"
+      dest: "{{install_tmpdir}}/"
   when: ansible_architecture == 'x86_64' and (not alertmanager_download)
-
-
-
-
-

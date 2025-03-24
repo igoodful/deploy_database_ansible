@@ -1,0 +1,6 @@
+---
+- name: Apply role gawk
+  hosts: all
+  gather_facts: true
+  roles:
+      - { role: gawk, tags: gawk }

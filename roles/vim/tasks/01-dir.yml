@@ -1,0 +1,73 @@
+---
+# tasks file for vim
+# delete vim_source_dir vim_app_dir
+
+- name: "delete {{ vim_source_dir }} {{ vim_app_dir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: absent
+  with_items:
+      - "{{ vim_source_dir }}"
+      - "{{ vim_app_dir }}"
+
+# basic dir
+- name: "mkdir {{ base_dir }} {{ install_tmpdir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ vim_install_user }}"
+      group: "{{ vim_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ base_dir }}"
+      - "{{ install_tmpdir }}"
+
+# binary and source dir
+- name: "mkdir {{ vim_dir }} {{ vim_app_base_dir }} {{ vim_app_dir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ vim_install_user }}"
+      group: "{{ vim_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ vim_dir }}"
+      - "{{ vim_app_base_dir }}"
+      - "{{ vim_app_dir }}"
+  when:
+      - vim_deploy_method == "binary" or vim_deploy_method == "source"
+
+# source dir
+- name: "mkdir {{ vim_dir }} {{ vim_source_base_dir }}  {{ vim_source_dir }} "
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ vim_install_user }}"
+      group: "{{ vim_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ vim_source_base_dir }}"
+      - "{{ vim_source_dir }}"
+  when:
+      - vim_deploy_method == "source"
+
+# service dir
+- name: "mkdir {{ vim_data_dir }} {{ vim_conf_dir }} {{ vim_log_dir }} {{ vim_tmp_dir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ vim_install_user }}"
+      group: "{{ vim_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ vim_data_dir }}"
+      - "{{ vim_conf_dir }}"
+      - "{{ vim_log_dir }}"
+      - "{{ vim_tmp_dir }}"
+  when:
+      - vim_port is defined

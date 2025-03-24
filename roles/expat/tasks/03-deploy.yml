@@ -1,0 +1,51 @@
+---
+# tasks file for expat by source
+- name: "chown -R {{  expat_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ expat_install_user }}.{{ expat_install_group }} {{  expat_dir  }}"
+
+# source
+- name: "expat_deploy_method == 'source'"
+  block:
+      - name: "cd {{ expat_source_dir }};./configure --prefix={{ expat_app_dir }}"
+        shell:
+            chdir: "{{ expat_source_dir }}"
+            cmd: "./configure --prefix={{ expat_app_dir }}"
+      - name: "cd {{ expat_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        shell:
+            chdir: "{{ expat_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ expat_source_dir }};make install"
+        shell:
+            chdir: "{{ expat_source_dir }}"
+            cmd: make install
+  when: expat_deploy_method == "source"
+
+# expat_port standalone
+- name: expat_port is defined
+  block:
+      - name: "cd {{ expat_source_dir }};./configure --prefix={{ expat_base_dir }}  --disable-static"
+        become: true
+        shell:
+            chdir: "{{ expat_source_dir }}"
+            cmd: "./configure --prefix={{ expat_base_dir }}  --disable-static"
+      - name: "cd {{ expat_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ expat_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ expat_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ expat_source_dir }}"
+            cmd: make install
+  when:
+      - expat_port is defined
+      - expat_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  expat_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ expat_install_user }}.{{ expat_install_group }} {{  expat_dir  }}"

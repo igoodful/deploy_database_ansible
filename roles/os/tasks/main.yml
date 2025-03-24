@@ -1,6 +1,6 @@
 ---
 #- name: Check VIP status
-#  ping: "{{ g_vip_address }}"
+#  ping: "{{g_vip_address}}"
 #  when: deploy_method != "all-in-one"
 #  register: ping_result
 #  ignore_errors: yes
@@ -13,7 +13,7 @@
 
 - name: Check the running environment
   fail:
-          msg: "CPU数量不能小于2, 当前{{ ansible_processor_vcpus }}"
+      msg: "CPU数量不能小于2, 当前{{ansible_processor_vcpus}}"
   when: ansible_processor_vcpus < 2
 
 - include_tasks: dns.yml

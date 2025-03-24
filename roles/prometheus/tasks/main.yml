@@ -5,10 +5,7 @@
 - import_tasks: install.yml
 - import_tasks: configure.yml
 - import_tasks: service.yml
-
 # systemctl stop prometheus_9100.service
 # systemctl disable prometheus_9100.service
 # rm -rf /usr/lib/systemd/system/prometheus_9100.service
-
-
 

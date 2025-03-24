@@ -1,0 +1,26 @@
+---
+# tasks file for less
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check less_port
+- name: "lsof -i:{{ less_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ less_port }}"
+  register: less_port_check_output
+  ignore_errors: true
+  when: less_port is defined
+
+- name: "check less port"
+  become: true
+  fail:
+      msg: "lessd端口被占用,可使用: ps aux|grep lessd"
+  when:
+      - less_port is defined
+      - less_port_check_output is defined
+      - less_port_check_output.rc == 0

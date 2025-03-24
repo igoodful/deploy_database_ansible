@@ -8,7 +8,7 @@ Type=simple
 
 ExecReload=/bin/sh -c "/bin/kill -1 `/usr/bin/pgrep prometheus`"
 ExecStop=/bin/sh -c "/bin/kill -9 `/usr/bin/pgrep prometheus`"
-ExecStart={{ prometheus_bin_dir }}/prometheus --config.file {{ prometheus_conf_dir }}/prometheus.yml --web.listen-address=:{{ prometheus_port }}
+ExecStart={{prometheus_bin_dir}}/prometheus --config.file {{prometheus_conf_dir}}/prometheus.yml --web.listen-address=:{{prometheus_port}}
 
 Restart=on-failure
 KillMode=process

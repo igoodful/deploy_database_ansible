@@ -1,0 +1,54 @@
+---
+# tasks file for bison by source
+- name: "chown -R {{  bison_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ bison_install_user }}.{{ bison_install_group }} {{  bison_dir  }}"
+
+# source
+- name: "bison_deploy_method == 'source'"
+  block:
+      - name: "cd {{ bison_source_dir }};./configure --prefix={{ bison_app_dir }}"
+        become: true
+        shell:
+            chdir: "{{ bison_source_dir }}"
+            cmd: "./configure --prefix={{ bison_app_dir }}"
+      - name: "cd {{ bison_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ bison_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ bison_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ bison_source_dir }}"
+            cmd: make install
+  when: bison_deploy_method == "source"
+
+# bison_port standalone
+- name: bison_port is defined
+  block:
+      - name: "cd {{ bison_source_dir }};./configure --prefix={{ bison_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ bison_source_dir }}"
+            cmd: "./configure --prefix={{ bison_base_dir }}"
+      - name: "cd {{ bison_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ bison_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ bison_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ bison_source_dir }}"
+            cmd: make install
+  when:
+      - bison_port is defined
+      - bison_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  bison_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ bison_install_user }}.{{ bison_install_group }} {{  bison_dir  }}"

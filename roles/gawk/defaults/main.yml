@@ -1,0 +1,59 @@
+---
+# defaults file for gawk
+# https://ftp.gnu.org/gnu/gawk/gawk-5.3.1.tar.gz
+# DONE
+
+# user
+gawk_install_user: "{{ ansible_user }}"
+gawk_install_group: "{{ ansible_user }}"
+gawk_version: "5.3.1"
+# gawk_port: "8032"
+
+# standalone/cluster/pseudo_cluster
+gawk_deploy_mode: "standalone"
+
+# binary/source/rpm/yum/dnf
+gawk_deploy_method: "source"
+
+# url
+gawk_base_url: "{{ base_url }}"
+gawk_base_url_remote: "https://ftp.gnu.org/gnu/gawk"
+
+# package
+gawk_package_suffix: ".tar.gz"
+gawk_package_name_rpm: "gawk-{{ gawk_version }}.rpm"
+gawk_package_name_binary: "gawk-{{ gawk_version }}-{{ ansible_architecture }}{{ gawk_package_suffix }}"
+gawk_package_name_source: "gawk-{{ gawk_version }}{{ gawk_package_suffix }}"
+gawk_package_name: "{% if gawk_deploy_method == 'rpm' %}{{ gawk_package_name_rpm }}{% elif gawk_deploy_method == 'binary' %}{{ gawk_package_name_binary }}{% elif gawk_deploy_method == 'source' %}{{ gawk_package_name_source }}{% else %}{{ gawk_package_name_source }}{% endif %}"
+
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/gawk
+# /data/gawk/data
+# /data/gawk/conf
+# /data/gawk/log
+# /data/gawk/tmp
+# /data/gawk/source
+# /data/gawk/app
+# /data/gawk/app/gawk-2.44
+# /data/gawk/app/gawk-2.44/bin
+# /data/gawk/app/gawk-2.44/lib
+# /data/gawk/app/gawk-2.44/lib/pkgconfig
+# /data/gawk/app/gawk-2.44/include
+# /data/gawk/app/gawk-2.44/share
+# /data/gawk/source/gawk-2.44
+gawk_dir: "{{ base_dir }}/gawk"
+gawk_data_dir: "{{ gawk_dir }}/data"
+gawk_conf_dir: "{{ gawk_dir }}/conf"
+gawk_log_dir: "{{ gawk_dir }}/log"
+gawk_tmp_dir: "{{ gawk_dir }}/tmp"
+gawk_app_base_dir: "{{ gawk_dir }}/app"
+gawk_source_base_dir: "{{ gawk_dir }}/source"
+gawk_app_dir: "{{ gawk_app_base_dir }}/gawk-{{ gawk_version }}"
+gawk_bin_dir: "{{ gawk_app_dir }}/bin"
+gawk_lib_dir: "{{ gawk_app_dir }}/lib"
+gawk_include_dir: "{{ gawk_app_dir }}/include"
+gawk_share_dir: "{{ gawk_app_dir }}/share"
+gawk_pkgconfig_dir: "{{ gawk_lib_dir }}/pkgconfig"
+gawk_source_dir: "{{ gawk_source_base_dir }}/gawk-{{ gawk_version }}"

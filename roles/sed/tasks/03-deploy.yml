@@ -1,0 +1,50 @@
+---
+# tasks file for sed by source
+
+# source
+- name: "sed_deploy_method == 'source'"
+  block:
+      - name: "cd {{ sed_source_dir }};./configure --prefix={{ sed_app_dir }}"
+        become: true
+        shell:
+            chdir: "{{ sed_source_dir }}"
+            cmd: "./configure --prefix={{ sed_app_dir }}"
+      - name: "cd {{ sed_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ sed_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ sed_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ sed_source_dir }}"
+            cmd: make install
+  when: sed_deploy_method == "source"
+
+# sed_port standalone
+- name: sed_port is defined
+  block:
+      - name: "cd {{ sed_source_dir }};./configure --prefix={{ sed_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ sed_source_dir }}"
+            cmd: "./configure --prefix={{ sed_base_dir }}"
+      - name: "cd {{ sed_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ sed_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ sed_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ sed_source_dir }}"
+            cmd: make install
+  when:
+      - sed_port is defined
+      - sed_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  sed_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ sed_install_user }}.{{ sed_install_group }} {{  sed_dir  }}"

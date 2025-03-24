@@ -1,0 +1,26 @@
+---
+# tasks file for util_linux
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check util_linux_port
+- name: "lsof -i:{{ util_linux_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ util_linux_port }}"
+  register: util_linux_port_check_output
+  ignore_errors: true
+  when: util_linux_port is defined
+
+- name: "check util_linux port"
+  become: true
+  fail:
+      msg: "util_linuxd端口被占用,可使用: ps aux|grep util_linuxd"
+  when:
+      - util_linux_port is defined
+      - util_linux_port_check_output is defined
+      - util_linux_port_check_output.rc == 0

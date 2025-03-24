@@ -1,0 +1,26 @@
+---
+# tasks file for mpc
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check mpc_port
+- name: "lsof -i:{{ mpc_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ mpc_port }}"
+  register: mpc_port_check_output
+  ignore_errors: true
+  when: mpc_port is defined
+
+- name: "check mpc port"
+  become: true
+  fail:
+      msg: "mpcd端口被占用,可使用: ps aux|grep mpcd"
+  when:
+      - mpc_port is defined
+      - mpc_port_check_output is defined
+      - mpc_port_check_output.rc == 0

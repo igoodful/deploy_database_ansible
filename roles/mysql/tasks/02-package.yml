@@ -1,30 +1,30 @@
 ---
 # bin url
-- name: "download {{ mysql_base_url }}/mysql-{{ mysql_version }}-{{ ansible_architecture }}.tar.gz"
+- name: "download {{mysql_base_url}}/mysql-{{mysql_version}}-{{ansible_architecture}}.tar.gz"
   get_url:
-          url: "{{ mysql_base_url }}/mysql-{{ mysql_version }}-{{ ansible_architecture }}.tar.gz"
-          dest: "{{ install_tmpdir }}/"
+      url: "{{mysql_base_url}}/mysql-{{mysql_version}}-{{ansible_architecture}}.tar.gz"
+      dest: "{{install_tmpdir}}/"
   when: mysql_deploy_method == "bin" and mysql_url == "url"
 
 # bin local
-- name: "copy mysql-{{ mysql_version }}-{{ ansible_architecture }}.tar.gz"
+- name: "copy mysql-{{mysql_version}}-{{ansible_architecture}}.tar.gz"
   become: true
   copy:
-          src: "mysql-{{ mysql_version }}-{{ ansible_architecture }}.tar.gz"
-          dest: "{{ install_tmpdir }}/"
+      src: "mysql-{{mysql_version}}-{{ansible_architecture}}.tar.gz"
+      dest: "{{install_tmpdir}}/"
   when: mysql_deploy_method == "bin" and mysql_url == "local"
 
 # source url
-- name: "download {{ mysql_base_url }}/mysql-{{ mysql_version }}.tar.gz"
+- name: "download {{mysql_base_url}}/mysql-{{mysql_version}}.tar.gz"
   get_url:
-          url: "{{ mysql_base_url }}/mysql-{{ mysql_version }}.tar.gz"
-          dest: "{{ install_tmpdir }}/"
+      url: "{{mysql_base_url}}/mysql-{{mysql_version}}.tar.gz"
+      dest: "{{install_tmpdir}}/"
   when: mysql_deploy_method == "source" and mysql_url == "url"
 
 # source local
-- name: "copy mysql-{{ mysql_version }}.tar.gz"
+- name: "copy mysql-{{mysql_version}}.tar.gz"
   become: true
   copy:
-          src: "mysql-{{ mysql_version }}.tar.gz"
-          dest: "{{ install_tmpdir }}/"
+      src: "mysql-{{mysql_version}}.tar.gz"
+      dest: "{{install_tmpdir}}/"
   when: mysql_deploy_method == "source" and mysql_url == "local"

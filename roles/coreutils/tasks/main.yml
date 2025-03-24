@@ -1,0 +1,8 @@
+---
+# tasks file for coreutils
+
+- include_tasks: 00-check.yml
+- include_tasks: 01-dir.yml
+- include_tasks: 02-download.yml
+- include_tasks: 03-deploy.yml
+- include_tasks: 04-init.yml

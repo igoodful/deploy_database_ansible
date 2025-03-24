@@ -1,0 +1,50 @@
+---
+# tasks file for vim by source
+
+# source
+- name: "vim_deploy_method == 'source'"
+  block:
+      - name: "cd {{ vim_source_dir }};./configure --prefix={{ vim_app_dir }}"
+        become: true
+        shell:
+            chdir: "{{ vim_source_dir }}"
+            cmd: "./configure --prefix={{ vim_app_dir }}"
+      - name: "cd {{ vim_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ vim_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ vim_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ vim_source_dir }}"
+            cmd: make install
+  when: vim_deploy_method == "source"
+
+# vim_port standalone
+- name: vim_port is defined
+  block:
+      - name: "cd {{ vim_source_dir }};./configure --prefix={{ vim_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ vim_source_dir }}"
+            cmd: "./configure --prefix={{ vim_base_dir }}"
+      - name: "cd {{ vim_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ vim_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ vim_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ vim_source_dir }}"
+            cmd: make install
+  when:
+      - vim_port is defined
+      - vim_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  vim_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ vim_install_user }}.{{ vim_install_group }} {{  vim_dir  }}"

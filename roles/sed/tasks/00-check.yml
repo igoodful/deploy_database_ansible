@@ -1,0 +1,26 @@
+---
+# tasks file for sed
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check sed_port
+- name: "lsof -i:{{ sed_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ sed_port }}"
+  register: sed_port_check_output
+  ignore_errors: true
+  when: sed_port is defined
+
+- name: "check sed port"
+  become: true
+  fail:
+      msg: "sedd端口被占用,可使用: ps aux|grep sedd"
+  when:
+      - sed_port is defined
+      - sed_port_check_output is defined
+      - sed_port_check_output.rc == 0

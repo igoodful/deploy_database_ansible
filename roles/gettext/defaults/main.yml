@@ -1,18 +1,58 @@
 ---
 # defaults file for gettext
-# gettext-0.22.4.tar.gz
-gettext_base_url: "{{ base_url }}"
-gettext_base_url_remote: "https://ftp.gnu.org/pub/gnu/gettext"
+# https://ftp.gnu.org/gnu/gettext/gettext-0.21.tar.gz
+
+# user
 gettext_install_user: "{{ ansible_user }}"
 gettext_install_group: "{{ ansible_user }}"
-gettext_version: "0.22.4"
+gettext_version: "0.21"
+# gettext_port: "8032"
 
-# binary/source
+# standalone/cluster/pseudo_cluster
+gettext_deploy_mode: "standalone"
+
+# binary/source/rpm/yum/dnf
 gettext_deploy_method: "source"
-gettext_package_name_binary: "gettext-{{ gettext_version }}"
-gettext_package_name_source: "gettext-{{ gettext_version }}"
 
+# url
+gettext_base_url: "{{ base_url }}"
+gettext_base_url_remote: "https://ftp.gnu.org/gnu/gettext"
+
+# package
+gettext_package_suffix: ".tar.gz"
+gettext_package_name_rpm: "gettext-{{ gettext_version }}.rpm"
+gettext_package_name_binary: "gettext-{{ gettext_version }}-{{ ansible_architecture }}{{ gettext_package_suffix }}"
+gettext_package_name_source: "gettext-{{ gettext_version }}{{ gettext_package_suffix }}"
+gettext_package_name: "{% if gettext_deploy_method == 'rpm' %}{{ gettext_package_name_rpm }}{% elif gettext_deploy_method == 'binary' %}{{ gettext_package_name_binary }}{% elif gettext_deploy_method == 'source' %}{{ gettext_package_name_source }}{% else %}{{ gettext_package_name_source }}{% endif %}"
+
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/gettext
+# /data/gettext/data
+# /data/gettext/conf
+# /data/gettext/log
+# /data/gettext/tmp
+# /data/gettext/source
+# /data/gettext/app
+# /data/gettext/app/gettext-2.44
+# /data/gettext/app/gettext-2.44/bin
+# /data/gettext/app/gettext-2.44/lib
+# /data/gettext/app/gettext-2.44/lib/pkgconfig
+# /data/gettext/app/gettext-2.44/include
+# /data/gettext/app/gettext-2.44/share
+# /data/gettext/source/gettext-2.44
 gettext_dir: "{{ base_dir }}/gettext"
-gettext_app_dir: "{{ base_dir }}/gettext/app"
-gettext_base_dir: "{{ gettext_app_dir }}/gettext-{{ gettext_version }}"
-gettext_source_dir: "{{ gettext_app_dir }}/source/gettext-{{ gettext_version }}"
+gettext_data_dir: "{{ gettext_dir }}/data"
+gettext_conf_dir: "{{ gettext_dir }}/conf"
+gettext_log_dir: "{{ gettext_dir }}/log"
+gettext_tmp_dir: "{{ gettext_dir }}/tmp"
+gettext_app_base_dir: "{{ gettext_dir }}/app"
+gettext_source_base_dir: "{{ gettext_dir }}/source"
+gettext_app_dir: "{{ gettext_app_base_dir }}/gettext-{{ gettext_version }}"
+gettext_bin_dir: "{{ gettext_app_dir }}/bin"
+gettext_lib_dir: "{{ gettext_app_dir }}/lib"
+gettext_include_dir: "{{ gettext_app_dir }}/include"
+gettext_share_dir: "{{ gettext_app_dir }}/share"
+gettext_pkgconfig_dir: "{{ gettext_lib_dir }}/pkgconfig"
+gettext_source_dir: "{{ gettext_source_base_dir }}/gettext-{{ gettext_version }}"

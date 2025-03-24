@@ -1,38 +1,73 @@
 ---
 # tasks file for gcc
-- name: "remove {{ gcc_source_dir }} {{ gcc_base_dir }}"
-  become: true
-  file:
-          path: "{{ item }}"
-          state: absent
-  with_items:
-          - "{{ gcc_source_dir }}"
-          - "{{ gcc_base_dir }}"
+# delete gcc_source_dir gcc_app_dir
 
-- name: "mkdir for gcc"
+- name: "delete {{ gcc_source_dir }} {{ gcc_app_dir }}"
   become: true
   file:
-          path: "{{ item }}"
-          state: directory
-          owner: "{{ gcc_install_user }}"
-          group: "{{ gcc_install_group }}"
-          mode: 0755
+      path: "{{ item }}"
+      state: absent
   with_items:
-          - "{{ base_dir }}"
-          - "{{ gcc_dir }}"
-          - "{{ install_tmpdir }}"
-          - "{{ gcc_app_dir }}"
-          - "{{ gcc_base_dir }}"
+      - "{{ gcc_source_dir }}"
+      - "{{ gcc_app_dir }}"
 
-- name: "mkdir {{ gcc_source_dir }}"
+# basic dir
+- name: "mkdir {{ base_dir }} {{ install_tmpdir }}"
   become: true
   file:
-          path: "{{ item }}"
-          state: directory
-          mode: 0755
-          owner: "{{ gcc_install_user }}"
-          group: "{{ gcc_install_group }}"
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ gcc_install_user }}"
+      group: "{{ gcc_install_group }}"
+      mode: 0755
   with_items:
-          - "{{ base_dir }}"
-          - "{{ gcc_source_dir }}"
-  when: gcc_deploy_method == "source"
+      - "{{ base_dir }}"
+      - "{{ install_tmpdir }}"
+
+# binary and source dir
+- name: "mkdir {{ gcc_dir }} {{ gcc_app_base_dir }} {{ gcc_app_dir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ gcc_install_user }}"
+      group: "{{ gcc_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ gcc_dir }}"
+      - "{{ gcc_app_base_dir }}"
+      - "{{ gcc_app_dir }}"
+  when:
+      - gcc_deploy_method == "binary" or gcc_deploy_method == "source"
+
+# source dir
+- name: "mkdir {{ gcc_dir }} {{ gcc_source_base_dir }}  {{ gcc_source_dir }} "
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ gcc_install_user }}"
+      group: "{{ gcc_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ gcc_source_base_dir }}"
+      - "{{ gcc_source_dir }}"
+  when:
+      - gcc_deploy_method == "source"
+
+# service dir
+- name: "mkdir {{ gcc_data_dir }} {{ gcc_conf_dir }} {{ gcc_log_dir }} {{ gcc_tmp_dir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ gcc_install_user }}"
+      group: "{{ gcc_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ gcc_data_dir }}"
+      - "{{ gcc_conf_dir }}"
+      - "{{ gcc_log_dir }}"
+      - "{{ gcc_tmp_dir }}"
+  when:
+      - gcc_port is defined

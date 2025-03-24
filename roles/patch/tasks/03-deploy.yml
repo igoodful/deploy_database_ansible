@@ -1,0 +1,50 @@
+---
+# tasks file for patch by source
+
+# source
+- name: "patch_deploy_method == 'source'"
+  block:
+      - name: "cd {{ patch_source_dir }};./configure --prefix={{ patch_app_dir }}"
+        become: true
+        shell:
+            chdir: "{{ patch_source_dir }}"
+            cmd: "./configure --prefix={{ patch_app_dir }}"
+      - name: "cd {{ patch_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ patch_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ patch_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ patch_source_dir }}"
+            cmd: make install
+  when: patch_deploy_method == "source"
+
+# patch_port standalone
+- name: patch_port is defined
+  block:
+      - name: "cd {{ patch_source_dir }};./configure --prefix={{ patch_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ patch_source_dir }}"
+            cmd: "./configure --prefix={{ patch_base_dir }}"
+      - name: "cd {{ patch_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ patch_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ patch_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ patch_source_dir }}"
+            cmd: make install
+  when:
+      - patch_port is defined
+      - patch_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  patch_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ patch_install_user }}.{{ patch_install_group }} {{  patch_dir  }}"

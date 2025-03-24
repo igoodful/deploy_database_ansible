@@ -1,0 +1,8 @@
+---
+# tasks file for kazoo
+
+- name: "rpm -qa | grep kazoo"
+  become: true
+  shell:
+      chdir: "{{install_tmpdir}}/"
+      cmd: "rpm -qa | grep kazoo"

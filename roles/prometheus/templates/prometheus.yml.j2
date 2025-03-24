@@ -5,12 +5,12 @@ alerting:
   alertmanagers:
     - static_configs:
         - targets:
-            - "localhost:{{ alertmanager_port }}"
+            - "localhost:{{alertmanager_port}}"
 
 rule_files:
-- "{{ prometheus_rules_dir }}/*"
+- "{{prometheus_rules_dir}}/*"
 
 scrape_configs:
   - job_name: "prometheus"
     static_configs:
-      - targets: ["localhost:{{ prometheus_port }}"]
+      - targets: ["localhost:{{prometheus_port}}"]

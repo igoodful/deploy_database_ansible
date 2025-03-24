@@ -1,0 +1,26 @@
+---
+# tasks file for inetutils
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check inetutils_port
+- name: "lsof -i:{{ inetutils_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ inetutils_port }}"
+  register: inetutils_port_check_output
+  ignore_errors: true
+  when: inetutils_port is defined
+
+- name: "check inetutils port"
+  become: true
+  fail:
+      msg: "inetutilsd端口被占用,可使用: ps aux|grep inetutilsd"
+  when:
+      - inetutils_port is defined
+      - inetutils_port_check_output is defined
+      - inetutils_port_check_output.rc == 0

@@ -2,4 +2,4 @@
 - hosts: localhost
   remote_user: root
   roles:
-    - work_dbscale
+      - work_dbscale

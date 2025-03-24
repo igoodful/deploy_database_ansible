@@ -1,0 +1,26 @@
+---
+# tasks file for coreutils
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check coreutils_port
+- name: "lsof -i:{{ coreutils_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ coreutils_port }}"
+  register: coreutils_port_check_output
+  ignore_errors: true
+  when: coreutils_port is defined
+
+- name: "check coreutils port"
+  become: true
+  fail:
+      msg: "coreutilsd端口被占用,可使用: ps aux|grep coreutilsd"
+  when:
+      - coreutils_port is defined
+      - coreutils_port_check_output is defined
+      - coreutils_port_check_output.rc == 0

@@ -1,0 +1,59 @@
+---
+# defaults file for vim
+# https://github.com/vim/vim/archive/refs/tags/v9.1.1230.tar.gz
+# DONE
+
+# user
+vim_install_user: "{{ ansible_user }}"
+vim_install_group: "{{ ansible_user }}"
+vim_version: "9.1.1230"
+# vim_port: "8032"
+
+# standalone/cluster/pseudo_cluster
+vim_deploy_mode: "standalone"
+
+# binary/source/rpm/yum/dnf
+vim_deploy_method: "source"
+
+# url
+vim_base_url: "{{ base_url }}"
+vim_base_url_remote: "https://github.com/vim/vim/archive/refs/tags"
+
+# package
+vim_package_suffix: ".tar.gz"
+vim_package_name_rpm: "vim-{{ vim_version }}.rpm"
+vim_package_name_binary: "vim-{{ vim_version }}-{{ ansible_architecture }}{{ vim_package_suffix }}"
+vim_package_name_source: "vim-{{ vim_version }}{{ vim_package_suffix }}"
+vim_package_name: "{% if vim_deploy_method == 'rpm' %}{{ vim_package_name_rpm }}{% elif vim_deploy_method == 'binary' %}{{ vim_package_name_binary }}{% elif vim_deploy_method == 'source' %}{{ vim_package_name_source }}{% else %}{{ vim_package_name_source }}{% endif %}"
+
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/vim
+# /data/vim/data
+# /data/vim/conf
+# /data/vim/log
+# /data/vim/tmp
+# /data/vim/source
+# /data/vim/app
+# /data/vim/app/vim-2.44
+# /data/vim/app/vim-2.44/bin
+# /data/vim/app/vim-2.44/lib
+# /data/vim/app/vim-2.44/lib/pkgconfig
+# /data/vim/app/vim-2.44/include
+# /data/vim/app/vim-2.44/share
+# /data/vim/source/vim-2.44
+vim_dir: "{{ base_dir }}/vim"
+vim_data_dir: "{{ vim_dir }}/data"
+vim_conf_dir: "{{ vim_dir }}/conf"
+vim_log_dir: "{{ vim_dir }}/log"
+vim_tmp_dir: "{{ vim_dir }}/tmp"
+vim_app_base_dir: "{{ vim_dir }}/app"
+vim_source_base_dir: "{{ vim_dir }}/source"
+vim_app_dir: "{{ vim_app_base_dir }}/vim-{{ vim_version }}"
+vim_bin_dir: "{{ vim_app_dir }}/bin"
+vim_lib_dir: "{{ vim_app_dir }}/lib"
+vim_include_dir: "{{ vim_app_dir }}/include"
+vim_share_dir: "{{ vim_app_dir }}/share"
+vim_pkgconfig_dir: "{{ vim_lib_dir }}/pkgconfig"
+vim_source_dir: "{{ vim_source_base_dir }}/vim-{{ vim_version }}"

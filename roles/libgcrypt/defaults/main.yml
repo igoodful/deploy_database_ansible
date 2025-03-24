@@ -1,19 +1,58 @@
 ---
 # defaults file for libgcrypt
-# https://gnupg.org/ftp/gcrypt/libgcrypt/libgcrypt-1.8.11.tar.bz2
+# https://www.gnupg.org/ftp/gcrypt/libgcrypt/libgcrypt-1.11.0.tar.gz
+
+# user
 libgcrypt_install_user: "{{ ansible_user }}"
 libgcrypt_install_group: "{{ ansible_user }}"
-libgcrypt_version: "1.8.11"
-# binary/source
-libgcrypt_deploy_method: "source"
-libgcrypt_base_url: "{{ base_url }}"
-libgcrypt_base_url_remote: "https://gnupg.org/ftp/gcrypt/libgcrypt"
+libgcrypt_version: "1.11.0"
+# libgcrypt_port: "8032"
 
+# standalone/cluster/pseudo_cluster
+libgcrypt_deploy_mode: "standalone"
+
+# binary/source/rpm/yum/dnf
+libgcrypt_deploy_method: "source"
+
+# url
+libgcrypt_base_url: "{{ base_url }}"
+libgcrypt_base_url_remote: "https://www.gnupg.org/ftp/gcrypt/libgcrypt"
+
+# package
 libgcrypt_package_suffix: ".tar.gz"
+libgcrypt_package_name_rpm: "libgcrypt-{{ libgcrypt_version }}.rpm"
 libgcrypt_package_name_binary: "libgcrypt-{{ libgcrypt_version }}-{{ ansible_architecture }}{{ libgcrypt_package_suffix }}"
 libgcrypt_package_name_source: "libgcrypt-{{ libgcrypt_version }}{{ libgcrypt_package_suffix }}"
+libgcrypt_package_name: "{% if libgcrypt_deploy_method == 'rpm' %}{{ libgcrypt_package_name_rpm }}{% elif libgcrypt_deploy_method == 'binary' %}{{ libgcrypt_package_name_binary }}{% elif libgcrypt_deploy_method == 'source' %}{{ libgcrypt_package_name_source }}{% else %}{{ libgcrypt_package_name_source }}{% endif %}"
 
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/libgcrypt
+# /data/libgcrypt/data
+# /data/libgcrypt/conf
+# /data/libgcrypt/log
+# /data/libgcrypt/tmp
+# /data/libgcrypt/source
+# /data/libgcrypt/app
+# /data/libgcrypt/app/libgcrypt-2.44
+# /data/libgcrypt/app/libgcrypt-2.44/bin
+# /data/libgcrypt/app/libgcrypt-2.44/lib
+# /data/libgcrypt/app/libgcrypt-2.44/lib/pkgconfig
+# /data/libgcrypt/app/libgcrypt-2.44/include
+# /data/libgcrypt/app/libgcrypt-2.44/share
+# /data/libgcrypt/source/libgcrypt-2.44
 libgcrypt_dir: "{{ base_dir }}/libgcrypt"
-libgcrypt_app_dir: "{{ base_dir }}/libgcrypt/app"
-libgcrypt_base_dir: "{{ libgcrypt_app_dir }}/libgcrypt-{{ libgcrypt_version }}"
-libgcrypt_source_dir: "{{ libgcrypt_app_dir }}/source/libgcrypt-{{ libgcrypt_version }}"
+libgcrypt_data_dir: "{{ libgcrypt_dir }}/data"
+libgcrypt_conf_dir: "{{ libgcrypt_dir }}/conf"
+libgcrypt_log_dir: "{{ libgcrypt_dir }}/log"
+libgcrypt_tmp_dir: "{{ libgcrypt_dir }}/tmp"
+libgcrypt_app_base_dir: "{{ libgcrypt_dir }}/app"
+libgcrypt_source_base_dir: "{{ libgcrypt_dir }}/source"
+libgcrypt_app_dir: "{{ libgcrypt_app_base_dir }}/libgcrypt-{{ libgcrypt_version }}"
+libgcrypt_bin_dir: "{{ libgcrypt_app_dir }}/bin"
+libgcrypt_lib_dir: "{{ libgcrypt_app_dir }}/lib"
+libgcrypt_include_dir: "{{ libgcrypt_app_dir }}/include"
+libgcrypt_share_dir: "{{ libgcrypt_app_dir }}/share"
+libgcrypt_pkgconfig_dir: "{{ libgcrypt_lib_dir }}/pkgconfig"
+libgcrypt_source_dir: "{{ libgcrypt_source_base_dir }}/libgcrypt-{{ libgcrypt_version }}"

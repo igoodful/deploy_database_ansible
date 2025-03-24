@@ -1,0 +1,50 @@
+---
+# tasks file for attr by source
+
+# source
+- name: "attr_deploy_method == 'source'"
+  block:
+      - name: "cd {{ attr_source_dir }};./configure --prefix={{ attr_app_dir }}"
+        become: true
+        shell:
+            chdir: "{{ attr_source_dir }}"
+            cmd: "./configure --prefix={{ attr_app_dir }}"
+      - name: "cd {{ attr_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ attr_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ attr_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ attr_source_dir }}"
+            cmd: make install
+  when: attr_deploy_method == "source"
+
+# attr_port standalone
+- name: attr_port is defined
+  block:
+      - name: "cd {{ attr_source_dir }};./configure --prefix={{ attr_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ attr_source_dir }}"
+            cmd: "./configure --prefix={{ attr_base_dir }}"
+      - name: "cd {{ attr_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ attr_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ attr_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ attr_source_dir }}"
+            cmd: make install
+  when:
+      - attr_port is defined
+      - attr_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  attr_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ attr_install_user }}.{{ attr_install_group }} {{  attr_dir  }}"

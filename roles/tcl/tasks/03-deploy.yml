@@ -1,0 +1,57 @@
+---
+# tasks file for tcl by source
+- name: "chown -R {{  tcl_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ tcl_install_user }}.{{ tcl_install_group }} {{  tcl_dir  }}"
+
+# source
+- name: "tcl_deploy_method == 'source'"
+  block:
+# ./configure
+      - name: "cd {{ tcl_build_dir }};../unix/configure --prefix={{ tcl_app_dir }} --enable-shared	--enable-threads"
+        shell:
+            chdir: "{{ tcl_build_dir }}"
+            cmd: "../unix/configure --prefix={{ tcl_app_dir }} --enable-shared	--enable-threads"
+# make
+      - name: "cd {{ tcl_build_dir }};make -j{{ ansible_processor_vcpus }}"
+        shell:
+            chdir: "{{ tcl_build_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+# make install
+      - name: "cd {{ tcl_build_dir }};make install"
+        shell:
+            chdir: "{{ tcl_build_dir }}"
+            cmd: make install
+  when: tcl_deploy_method == "source"
+
+# tcl_port standalone
+- name: tcl_port is defined
+  block:
+# ./configure
+      - name: "cd {{ tcl_source_dir }};./configure --prefix={{ tcl_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ tcl_source_dir }}"
+            cmd: "./configure --prefix={{ tcl_base_dir }} --enable-shared --enable-static"
+# make
+      - name: "cd {{ tcl_source_dir }};make VERBOSE=1 -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ tcl_source_dir }}"
+            cmd: "make VERBOSE=1 -j{{ ansible_processor_vcpus }}"
+# make install
+      - name: "cd {{ tcl_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ tcl_source_dir }}"
+            cmd: make install
+  when:
+      - tcl_port is defined
+      - tcl_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  tcl_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ tcl_install_user }}.{{ tcl_install_group }} {{  tcl_dir  }}"

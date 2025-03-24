@@ -1,0 +1,56 @@
+---
+# tasks file for grub by source
+
+# source
+- name: "grub_deploy_method == 'source'"
+  block:
+# ./autogen.sh
+      - name: "cd {{ grub_source_dir }};./autogen.sh"
+        shell:
+            chdir: "{{ grub_source_dir }}"
+            cmd: "./autogen.sh"
+
+# ./configure
+      - name: "cd {{ grub_source_dir }};./configure --prefix={{ grub_app_dir }}"
+        shell:
+            chdir: "{{ grub_source_dir }}"
+            cmd: "./configure --prefix={{ grub_app_dir }}"
+# make
+      - name: "cd {{ grub_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        shell:
+            chdir: "{{ grub_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+# make install
+      - name: "cd {{ grub_source_dir }};make install"
+        shell:
+            chdir: "{{ grub_source_dir }}"
+            cmd: make install
+  when: grub_deploy_method == "source"
+
+# grub_port standalone
+- name: grub_port is defined
+  block:
+      - name: "cd {{ grub_source_dir }};./configure --prefix={{ grub_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ grub_source_dir }}"
+            cmd: "./configure --prefix={{ grub_base_dir }}"
+      - name: "cd {{ grub_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ grub_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ grub_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ grub_source_dir }}"
+            cmd: make install
+  when:
+      - grub_port is defined
+      - grub_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  grub_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ grub_install_user }}.{{ grub_install_group }} {{  grub_dir  }}"

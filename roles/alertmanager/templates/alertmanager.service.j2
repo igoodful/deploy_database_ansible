@@ -9,7 +9,7 @@ Type=simple
 
 ExecReload=/bin/sh -c "/bin/kill -1 `/usr/bin/pgrep alertmanager`"
 ExecStop=/bin/sh -c "/bin/kill -9 `/usr/bin/pgrep alertmanager`"
-ExecStart={{ alertmanager_bin_dir }}/alertmanager --config.file {{ alertmanager_conf_dir }}/alertmanager.yml --storage.path={{ alertmanager_data_dir }} --web.listen-address=:{{ alertmanager_port }}
+ExecStart={{alertmanager_bin_dir}}/alertmanager --config.file {{alertmanager_conf_dir}}/alertmanager.yml --storage.path={{alertmanager_data_dir}} --web.listen-address=:{{alertmanager_port}}
 
 Restart=on-failure
 KillMode=process

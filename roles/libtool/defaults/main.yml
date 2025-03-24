@@ -1,18 +1,58 @@
 ---
 # defaults file for libtool
 # https://ftp.gnu.org/gnu/libtool/libtool-2.5.4.tar.gz
+# https://mirrors.tuna.tsinghua.edu.cn/gnu/libtool/libtool-2.5.4.tar.gz
+
+# user
 libtool_install_user: "{{ ansible_user }}"
 libtool_install_group: "{{ ansible_user }}"
 libtool_version: "2.5.4"
-libtool_base_url: "{{ base_url }}"
+# libtool_port: "8032"
+
+# standalone/cluster/pseudo_cluster
+libtool_deploy_mode: "standalone"
+# binary/source/rpm/yum/dnf
+libtool_deploy_method: "source"
+
+# url
+libtool_base_url: "https://mirrors.tuna.tsinghua.edu.cn/gnu/libtool"
 libtool_base_url_remote: "https://ftp.gnu.org/gnu/libtool"
 
-# binary/source
-libtool_deploy_method: "source"
-libtool_package_name_binary: "libtool-{{ libtool_version }}"
-libtool_package_name_source: "libtool-{{ libtool_version }}"
+# package
+libtool_package_suffix: ".tar.gz"
+libtool_package_name_rpm: "libtool-{{ libtool_version }}.rpm"
+libtool_package_name_binary: "libtool-{{ libtool_version }}-{{ ansible_architecture }}{{ libtool_package_suffix }}"
+libtool_package_name_source: "libtool-{{ libtool_version }}{{ libtool_package_suffix }}"
+libtool_package_name: "{% if libtool_deploy_method == 'rpm' %}{{ libtool_package_name_rpm }}{% elif libtool_deploy_method == 'binary' %}{{ libtool_package_name_binary }}{% elif libtool_deploy_method == 'source' %}{{ libtool_package_name_source }}{% else %}{{ libtool_package_name_source }}{% endif %}"
 
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/libtool
+# /data/libtool/data
+# /data/libtool/conf
+# /data/libtool/log
+# /data/libtool/tmp
+# /data/libtool/source
+# /data/libtool/app
+# /data/libtool/app/libtool-2.44
+# /data/libtool/app/libtool-2.44/bin
+# /data/libtool/app/libtool-2.44/lib
+# /data/libtool/app/libtool-2.44/lib/pkgconfig
+# /data/libtool/app/libtool-2.44/include
+# /data/libtool/app/libtool-2.44/share
+# /data/libtool/source/libtool-2.44
 libtool_dir: "{{ base_dir }}/libtool"
-libtool_app_dir: "{{ base_dir }}/libtool/app"
-libtool_base_dir: "{{ libtool_app_dir }}/libtool-{{ libtool_version }}"
-libtool_source_dir: "{{ libtool_app_dir }}/source/libtool-{{ libtool_version }}"
+libtool_data_dir: "{{ libtool_dir }}/data"
+libtool_conf_dir: "{{ libtool_dir }}/conf"
+libtool_log_dir: "{{ libtool_dir }}/log"
+libtool_tmp_dir: "{{ libtool_dir }}/tmp"
+libtool_app_base_dir: "{{ libtool_dir }}/app"
+libtool_source_base_dir: "{{ libtool_dir }}/source"
+libtool_app_dir: "{{ libtool_app_base_dir }}/libtool-{{ libtool_version }}"
+libtool_bin_dir: "{{ libtool_app_dir }}/bin"
+libtool_lib_dir: "{{ libtool_app_dir }}/lib"
+libtool_include_dir: "{{ libtool_app_dir }}/include"
+libtool_share_dir: "{{ libtool_app_dir }}/share"
+libtool_pkgconfig_dir: "{{ libtool_lib_dir }}/pkgconfig"
+libtool_source_dir: "{{ libtool_source_base_dir }}/libtool-{{ libtool_version }}"

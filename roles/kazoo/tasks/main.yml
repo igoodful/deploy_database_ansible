@@ -1,0 +1,13 @@
+---
+# tasks file for kazoo
+- include_tasks: 01-dir.yml
+
+# install
+- name: "02-install_rpm.yml"
+  include_tasks: 02-install_rpm.yml
+  when: kazoo_deploy_method == "rpm"
+
+# init
+- name: "03-init_rpm.yml"
+  include_tasks: 03-init_rpm.yml
+  when: kazoo_deploy_method == "rpm"

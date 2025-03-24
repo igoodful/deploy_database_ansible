@@ -1,0 +1,26 @@
+---
+# tasks file for patch
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check patch_port
+- name: "lsof -i:{{ patch_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ patch_port }}"
+  register: patch_port_check_output
+  ignore_errors: true
+  when: patch_port is defined
+
+- name: "check patch port"
+  become: true
+  fail:
+      msg: "patchd端口被占用,可使用: ps aux|grep patchd"
+  when:
+      - patch_port is defined
+      - patch_port_check_output is defined
+      - patch_port_check_output.rc == 0

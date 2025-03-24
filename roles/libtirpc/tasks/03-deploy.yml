@@ -1,0 +1,57 @@
+---
+# tasks file for libtirpc by source
+- name: "chown -R {{  libtirpc_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ libtirpc_install_user }}.{{ libtirpc_install_group }} {{  libtirpc_dir  }}"
+
+# source
+- name: "libtirpc_deploy_method == 'source'"
+  block:
+# ./configure
+      - name: "cd {{ libtirpc_build_dir }};../configure --prefix={{ libtirpc_app_dir }}"
+        shell:
+            chdir: "{{ libtirpc_build_dir }}"
+            cmd: "../configure --prefix={{ libtirpc_app_dir }}"
+# make
+      - name: "cd {{ libtirpc_build_dir }};make -j{{ ansible_processor_vcpus }}"
+        shell:
+            chdir: "{{ libtirpc_build_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+# make install
+      - name: "cd {{ libtirpc_build_dir }};make install"
+        shell:
+            chdir: "{{ libtirpc_build_dir }}"
+            cmd: make install
+  when: libtirpc_deploy_method == "source"
+
+# libtirpc_port standalone
+- name: libtirpc_port is defined
+  block:
+# ./configure
+      - name: "cd {{ libtirpc_source_dir }};./configure --prefix={{ libtirpc_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ libtirpc_source_dir }}"
+            cmd: "./configure --prefix={{ libtirpc_base_dir }} --enable-shared --enable-static"
+# make
+      - name: "cd {{ libtirpc_source_dir }};make VERBOSE=1 -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ libtirpc_source_dir }}"
+            cmd: "make VERBOSE=1 -j{{ ansible_processor_vcpus }}"
+# make install
+      - name: "cd {{ libtirpc_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ libtirpc_source_dir }}"
+            cmd: make install
+  when:
+      - libtirpc_port is defined
+      - libtirpc_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  libtirpc_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ libtirpc_install_user }}.{{ libtirpc_install_group }} {{  libtirpc_dir  }}"

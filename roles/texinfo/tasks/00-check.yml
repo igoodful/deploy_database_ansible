@@ -1,0 +1,26 @@
+---
+# tasks file for texinfo
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check texinfo_port
+- name: "lsof -i:{{ texinfo_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ texinfo_port }}"
+  register: texinfo_port_check_output
+  ignore_errors: true
+  when: texinfo_port is defined
+
+- name: "check texinfo port"
+  become: true
+  fail:
+      msg: "texinfod端口被占用,可使用: ps aux|grep texinfod"
+  when:
+      - texinfo_port is defined
+      - texinfo_port_check_output is defined
+      - texinfo_port_check_output.rc == 0

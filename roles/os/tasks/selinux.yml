@@ -1,14 +1,14 @@
 ---
 - name: Change state of selinux
   selinux:
-          policy: targeted
-          state: "{{ selinux_state }}"
+      policy: targeted
+      state: "{{selinux_state}}"
   become: true
   when:
-          - change_selinux | bool
+      - change_selinux | bool
   register: selinux_change
 
 - name: Closed SELinux, Please restart system
   fail:
-          msg: "SELinux 未处于完全关闭的状态, 请重启节点后再次安装"
+      msg: "SELinux 未处于完全关闭的状态, 请重启节点后再次安装"
   when: selinux_change.reboot_required == true

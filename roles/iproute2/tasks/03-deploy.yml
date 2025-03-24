@@ -1,0 +1,50 @@
+---
+# tasks file for iproute2 by source
+
+# source
+- name: "iproute2_deploy_method == 'source'"
+  block:
+      - name: "cd {{ iproute2_source_dir }};./configure --prefix={{ iproute2_app_dir }}"
+        become: true
+        shell:
+            chdir: "{{ iproute2_source_dir }}"
+            cmd: "./configure --prefix={{ iproute2_app_dir }}"
+      - name: "cd {{ iproute2_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ iproute2_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ iproute2_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ iproute2_source_dir }}"
+            cmd: make install
+  when: iproute2_deploy_method == "source"
+
+# iproute2_port standalone
+- name: iproute2_port is defined
+  block:
+      - name: "cd {{ iproute2_source_dir }};./configure --prefix={{ iproute2_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ iproute2_source_dir }}"
+            cmd: "./configure --prefix={{ iproute2_base_dir }}"
+      - name: "cd {{ iproute2_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ iproute2_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ iproute2_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ iproute2_source_dir }}"
+            cmd: make install
+  when:
+      - iproute2_port is defined
+      - iproute2_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  iproute2_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ iproute2_install_user }}.{{ iproute2_install_group }} {{  iproute2_dir  }}"

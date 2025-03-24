@@ -1,0 +1,51 @@
+---
+# tasks file for make by source
+- name: "chown -R {{  make_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ make_install_user }}.{{ make_install_group }} {{  make_dir  }}"
+
+# source
+- name: "make_deploy_method == 'source'"
+  block:
+      - name: "cd {{ make_source_dir }};./configure --prefix={{ make_app_dir }}"
+        shell:
+            chdir: "{{ make_source_dir }}"
+            cmd: "./configure --prefix={{ make_app_dir }}"
+      - name: "cd {{ make_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        shell:
+            chdir: "{{ make_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ make_source_dir }};make install"
+        shell:
+            chdir: "{{ make_source_dir }}"
+            cmd: make install
+  when: make_deploy_method == "source"
+
+# make_port standalone
+- name: make_port is defined
+  block:
+      - name: "cd {{ make_source_dir }};./configure --prefix={{ make_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ make_source_dir }}"
+            cmd: "./configure --prefix={{ make_base_dir }}"
+      - name: "cd {{ make_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ make_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ make_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ make_source_dir }}"
+            cmd: make install
+  when:
+      - make_port is defined
+      - make_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  make_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ make_install_user }}.{{ make_install_group }} {{  make_dir  }}"

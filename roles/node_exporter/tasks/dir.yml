@@ -2,14 +2,14 @@
 - name: Create dir for node_exporter
   become: true
   file:
-    path: "{{ item }}"
-    state: directory
-    mode: 0755
+      path: "{{item}}"
+      state: directory
+      mode: 0755
   with_items:
-    - "{{ base_dir }}"
-    - "{{ node_exporter_base_dir }}"
-    - "{{ node_exporter_bin_dir }}"
-    - "{{ node_exporter_conf_dir }}"
-    - "{{ node_exporter_data_dir }}"
-    - "{{ node_exporter_log_dir }}"
-    - "{{ node_exporter_prom_dir }}"
+      - "{{base_dir}}"
+      - "{{node_exporter_base_dir}}"
+      - "{{node_exporter_bin_dir}}"
+      - "{{node_exporter_conf_dir}}"
+      - "{{node_exporter_data_dir}}"
+      - "{{node_exporter_log_dir}}"
+      - "{{node_exporter_prom_dir}}"

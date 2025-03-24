@@ -1,0 +1,26 @@
+---
+# tasks file for tcl
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check tcl_port
+- name: "lsof -i:{{ tcl_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ tcl_port }}"
+  register: tcl_port_check_output
+  ignore_errors: true
+  when: tcl_port is defined
+
+- name: "check tcl port"
+  become: true
+  fail:
+      msg: "tcld端口被占用,可使用: ps aux|grep tcld"
+  when:
+      - tcl_port is defined
+      - tcl_port_check_output is defined
+      - tcl_port_check_output.rc == 0

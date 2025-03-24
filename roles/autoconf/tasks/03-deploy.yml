@@ -1,0 +1,51 @@
+---
+# tasks file for autoconf by source
+- name: "chown -R {{  autoconf_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ autoconf_install_user }}.{{ autoconf_install_group }} {{  autoconf_dir  }}"
+
+# source
+- name: "autoconf_deploy_method == 'source'"
+  block:
+      - name: "cd {{ autoconf_source_dir }};./configure --prefix={{ autoconf_app_dir }}"
+        shell:
+            chdir: "{{ autoconf_source_dir }}"
+            cmd: "./configure --prefix={{ autoconf_app_dir }}"
+      - name: "cd {{ autoconf_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        shell:
+            chdir: "{{ autoconf_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ autoconf_source_dir }};make install"
+        shell:
+            chdir: "{{ autoconf_source_dir }}"
+            cmd: make install
+  when: autoconf_deploy_method == "source"
+
+# autoconf_port standalone
+- name: autoconf_port is defined
+  block:
+      - name: "cd {{ autoconf_source_dir }};./configure --prefix={{ autoconf_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ autoconf_source_dir }}"
+            cmd: "./configure --prefix={{ autoconf_base_dir }} --enable-shared --enable-static"
+      - name: "cd {{ autoconf_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ autoconf_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ autoconf_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ autoconf_source_dir }}"
+            cmd: make install
+  when:
+      - autoconf_port is defined
+      - autoconf_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  autoconf_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ autoconf_install_user }}.{{ autoconf_install_group }} {{  autoconf_dir  }}"

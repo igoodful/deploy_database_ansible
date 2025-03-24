@@ -2,120 +2,111 @@
 # change replication source
 - name: "change replication source"
   shell:
-    chdir: "{{ mysql_base_dir }}/bin"
-    cmd: ./mysql -uroot -p'{{ mysql_root_loacl_init_password }}' -S{{ mysql_tmp_dir }}/mysql.sock -e "{{ item }}"
+      chdir: "{{mysql_base_dir}}/bin"
+      cmd: ./mysql -uroot -p'{{mysql_root_loacl_init_password}}' -S{{mysql_tmp_dir}}/mysql.sock -e "{{item}}"
   loop:
-    - change replication source to source_host='{{ hostvars[groups['all'][0]]['ansible_host'] }}',source_port={{ mysql_port }},source_user='{{ mysql_rep_init_user }}',source_password='{{ mysql_rep_init_password }}',source_auto_position=1;
+      - change replication source to source_host='{{hostvars[groups['all'][0]]['ansible_host']}}',source_port={{mysql_port}},source_user='{{mysql_rep_init_user}}',source_password='{{mysql_rep_init_password}}',source_auto_position=1;
   when:
-    - groups['all'] | length > 1
-    - ansible_host != hostvars[groups['all'][0]]['ansible_host']
-    - mysql_cluster_mode == "replica"
+      - groups['all'] | length > 1
+      - ansible_host != hostvars[groups['all'][0]]['ansible_host']
+      - mysql_cluster_mode == "replica"
 
 # start replication and rpl_semi_sync_slave_enabled=on
 - name: "start replication and rpl_semi_sync_slave_enabled=on"
   shell:
-    chdir: "{{ mysql_base_dir }}/bin"
-    cmd: ./mysql -uroot -p'{{ mysql_root_loacl_init_password }}' -S{{ mysql_tmp_dir }}/mysql.sock -e "{{ item }}"
+      chdir: "{{mysql_base_dir}}/bin"
+      cmd: ./mysql -uroot -p'{{mysql_root_loacl_init_password}}' -S{{mysql_tmp_dir}}/mysql.sock -e "{{item}}"
   loop:
-    - start slave;
-    - set global rpl_semi_sync_slave_enabled=on;
-    - show slave status\G;
+      - start slave;
+      - set global rpl_semi_sync_slave_enabled=on;
+      - show slave status\G;
   when:
-    - groups['all'] | length > 1
-    - ansible_host != hostvars[groups['all'][0]]['ansible_host']
-    - mysql_cluster_mode == "replica"
+      - groups['all'] | length > 1
+      - ansible_host != hostvars[groups['all'][0]]['ansible_host']
+      - mysql_cluster_mode == "replica"
 
 # master  rpl_semi_sync_master_enabled=on
 - name: "set global rpl_semi_sync_master_enabled=on;  on master: hostvars[groups['all'][0]]['ansible_host']"
   shell:
-    chdir: "{{ mysql_base_dir }}/bin"
-    cmd: ./mysql -uroot -p'{{ mysql_root_loacl_init_password }}' -S{{ mysql_tmp_dir }}/mysql.sock -e "{{ item }}"
+      chdir: "{{mysql_base_dir}}/bin"
+      cmd: ./mysql -uroot -p'{{mysql_root_loacl_init_password}}' -S{{mysql_tmp_dir}}/mysql.sock -e "{{item}}"
   loop:
-    - set global rpl_semi_sync_master_enabled=on;
+      - set global rpl_semi_sync_master_enabled=on;
   when:
-    - groups['all'] | length > 1
-    - ansible_host == hostvars[groups['all'][0]]['ansible_host']
-    - mysql_cluster_mode == "replica"
+      - groups['all'] | length > 1
+      - ansible_host == hostvars[groups['all'][0]]['ansible_host']
+      - mysql_cluster_mode == "replica"
 
 #####################################################################
 
-
-
-
 # install plugin group_replication soname 'group_replication.so';
-
 
 # Copy my.cnf.j2 template
 - name: "Copy my.cnf.mgr.j2 template"
   become: true
   template:
-    src: my.cnf.mgr.j2
-    dest: "{{ mysql_conf_dir }}/my.cnf"
-    owner: "{{ mysql_install_user }}"
-    group: "{{ mysql_install_group }}"
-    mode: "0644"
+      src: my.cnf.mgr.j2
+      dest: "{{mysql_conf_dir}}/my.cnf"
+      owner: "{{mysql_install_user}}"
+      group: "{{mysql_install_group}}"
+      mode: "0644"
   when:
-    - mysql_cluster_mode == "mgr"
-
+      - mysql_cluster_mode == "mgr"
 
 - name: "started mysqld.service"
   become: true
   service:
-    name: mysqld.service
-    state: stopped
+      name: mysqld.service
+      state: stopped
   when:
-    - mysql_cluster_mode == "mgr"
+      - mysql_cluster_mode == "mgr"
 
 - name: "ps aux|grep mysqld"
   become: true
   shell:
-    cmd: ps aux|grep mysqld |grep -v grep  |awk '{print $2}' |xargs kill -9
+      cmd: ps aux|grep mysqld |grep -v grep  |awk '{print $2}' |xargs kill -9
   ignore_errors: True
   when:
-    - mysql_cluster_mode == "mgr"
+      - mysql_cluster_mode == "mgr"
 
 - name: "started mysqld.service"
   become: true
   service:
-    name: mysqld.service
-    state: started
+      name: mysqld.service
+      state: started
   when:
-    - mysql_cluster_mode == "mgr"
-
+      - mysql_cluster_mode == "mgr"
 
 # master group_replication_bootstrap_group
 - name: "master group_replication_bootstrap_group"
   shell:
-    chdir: "{{ mysql_base_dir }}/bin"
-    cmd: ./mysql -uroot -p'{{ mysql_root_loacl_init_password }}' -S{{ mysql_tmp_dir }}/mysql.sock -e "{{ item }}"
+      chdir: "{{mysql_base_dir}}/bin"
+      cmd: ./mysql -uroot -p'{{mysql_root_loacl_init_password}}' -S{{mysql_tmp_dir}}/mysql.sock -e "{{item}}"
   loop:
-    - change master to master_user='{{ mysql_rep_init_user }}', master_password='{{ mysql_rep_init_password }}' for channel 'group_replication_recovery';
-    - set global group_replication_bootstrap_group=on;
-    - start group_replication;
-    - set global group_replication_bootstrap_group=off;
+      - change master to master_user='{{mysql_rep_init_user}}', master_password='{{mysql_rep_init_password}}' for channel 'group_replication_recovery';
+      - set global group_replication_bootstrap_group=on;
+      - start group_replication;
+      - set global group_replication_bootstrap_group=off;
   when:
-    - groups['all'] | length > 1
-    - ansible_host == hostvars[groups['all'][0]]['ansible_host']
-    - mysql_cluster_mode == "mgr"
+      - groups['all'] | length > 1
+      - ansible_host == hostvars[groups['all'][0]]['ansible_host']
+      - mysql_cluster_mode == "mgr"
 
 - name: "sleep 60"
   shell:
-    cmd: sleep 60
+      cmd: sleep 60
   when:
-    - mysql_cluster_mode == "mgr"
+      - mysql_cluster_mode == "mgr"
 
 # start group_replication
 - name: "start group_replication"
   shell:
-    chdir: "{{ mysql_base_dir }}/bin"
-    cmd: ./mysql -uroot -p'{{ mysql_root_loacl_init_password }}' -S{{ mysql_tmp_dir }}/mysql.sock -e "{{ item }}"
+      chdir: "{{mysql_base_dir}}/bin"
+      cmd: ./mysql -uroot -p'{{mysql_root_loacl_init_password}}' -S{{mysql_tmp_dir}}/mysql.sock -e "{{item}}"
   loop:
-    - change master to master_user='{{ mysql_rep_init_user }}', master_password='{{ mysql_rep_init_password }}' for channel 'group_replication_recovery';
-    - start group_replication;
+      - change master to master_user='{{mysql_rep_init_user}}', master_password='{{mysql_rep_init_password}}' for channel 'group_replication_recovery';
+      - start group_replication;
   when:
-    - groups['all'] | length > 1
-    - ansible_host != hostvars[groups['all'][0]]['ansible_host']
-    - mysql_cluster_mode == "mgr"
-
-
-
+      - groups['all'] | length > 1
+      - ansible_host != hostvars[groups['all'][0]]['ansible_host']
+      - mysql_cluster_mode == "mgr"

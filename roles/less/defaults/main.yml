@@ -1,0 +1,59 @@
+---
+# defaults file for less
+# https://ftp.gnu.org/gnu/less/less-668.tar.gz
+# DONE
+
+# user
+less_install_user: "{{ ansible_user }}"
+less_install_group: "{{ ansible_user }}"
+less_version: "668"
+# less_port: "8032"
+
+# standalone/cluster/pseudo_cluster
+less_deploy_mode: "standalone"
+
+# binary/source/rpm/yum/dnf
+less_deploy_method: "source"
+
+# url
+less_base_url: "{{ base_url }}"
+less_base_url_remote: "https://ftp.gnu.org/gnu/less"
+
+# package
+less_package_suffix: ".tar.gz"
+less_package_name_rpm: "less-{{ less_version }}.rpm"
+less_package_name_binary: "less-{{ less_version }}-{{ ansible_architecture }}{{ less_package_suffix }}"
+less_package_name_source: "less-{{ less_version }}{{ less_package_suffix }}"
+less_package_name: "{% if less_deploy_method == 'rpm' %}{{ less_package_name_rpm }}{% elif less_deploy_method == 'binary' %}{{ less_package_name_binary }}{% elif less_deploy_method == 'source' %}{{ less_package_name_source }}{% else %}{{ less_package_name_source }}{% endif %}"
+
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/less
+# /data/less/data
+# /data/less/conf
+# /data/less/log
+# /data/less/tmp
+# /data/less/source
+# /data/less/app
+# /data/less/app/less-2.44
+# /data/less/app/less-2.44/bin
+# /data/less/app/less-2.44/lib
+# /data/less/app/less-2.44/lib/pkgconfig
+# /data/less/app/less-2.44/include
+# /data/less/app/less-2.44/share
+# /data/less/source/less-2.44
+less_dir: "{{ base_dir }}/less"
+less_data_dir: "{{ less_dir }}/data"
+less_conf_dir: "{{ less_dir }}/conf"
+less_log_dir: "{{ less_dir }}/log"
+less_tmp_dir: "{{ less_dir }}/tmp"
+less_app_base_dir: "{{ less_dir }}/app"
+less_source_base_dir: "{{ less_dir }}/source"
+less_app_dir: "{{ less_app_base_dir }}/less-{{ less_version }}"
+less_bin_dir: "{{ less_app_dir }}/bin"
+less_lib_dir: "{{ less_app_dir }}/lib"
+less_include_dir: "{{ less_app_dir }}/include"
+less_share_dir: "{{ less_app_dir }}/share"
+less_pkgconfig_dir: "{{ less_lib_dir }}/pkgconfig"
+less_source_dir: "{{ less_source_base_dir }}/less-{{ less_version }}"

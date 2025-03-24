@@ -3,16 +3,16 @@
 - name: Copy prometheus.yml.j2 template
   become: yes
   template:
-    src: prometheus.yml.j2
-    dest: "{{ prometheus_conf_dir }}/prometheus.yml"
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
+      src: prometheus.yml.j2
+      dest: "{{prometheus_conf_dir}}/prometheus.yml"
+      owner: "{{ansible_user}}"
+      group: "{{ansible_user}}"
   when: alertmanager_port is defined
 
 # copy prometheus.service.j2
 - name: Copy prometheus.service.j2 template
   become: yes
   template:
-    src: prometheus.service.j2
-    dest: "/lib/systemd/system/prometheus_{{ prometheus_port }}.service"
-    mode: "644"
+      src: prometheus.service.j2
+      dest: "/lib/systemd/system/prometheus_{{prometheus_port}}.service"
+      mode: "644"

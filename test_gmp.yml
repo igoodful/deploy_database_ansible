@@ -3,8 +3,4 @@
   hosts: all
   gather_facts: true
   roles:
-    - {
-        role: gmp,
-        tags: gmp,
-      }
-
+      - { role: gmp, tags: gmp }

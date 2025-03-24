@@ -1,0 +1,26 @@
+---
+# tasks file for make
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check make_port
+- name: "lsof -i:{{ make_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ make_port }}"
+  register: make_port_check_output
+  ignore_errors: true
+  when: make_port is defined
+
+- name: "check make port"
+  become: true
+  fail:
+      msg: "maked端口被占用,可使用: ps aux|grep maked"
+  when:
+      - make_port is defined
+      - make_port_check_output is defined
+      - make_port_check_output.rc == 0

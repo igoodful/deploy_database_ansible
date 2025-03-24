@@ -1,0 +1,50 @@
+---
+# tasks file for gawk by source
+
+# source
+- name: "gawk_deploy_method == 'source'"
+  block:
+      - name: "cd {{ gawk_source_dir }};./configure --prefix={{ gawk_app_dir }}"
+        become: true
+        shell:
+            chdir: "{{ gawk_source_dir }}"
+            cmd: "./configure --prefix={{ gawk_app_dir }}"
+      - name: "cd {{ gawk_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ gawk_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ gawk_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ gawk_source_dir }}"
+            cmd: make install
+  when: gawk_deploy_method == "source"
+
+# gawk_port standalone
+- name: gawk_port is defined
+  block:
+      - name: "cd {{ gawk_source_dir }};./configure --prefix={{ gawk_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ gawk_source_dir }}"
+            cmd: "./configure --prefix={{ gawk_base_dir }}"
+      - name: "cd {{ gawk_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ gawk_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ gawk_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ gawk_source_dir }}"
+            cmd: make install
+  when:
+      - gawk_port is defined
+      - gawk_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  gawk_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ gawk_install_user }}.{{ gawk_install_group }} {{  gawk_dir  }}"

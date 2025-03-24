@@ -1,0 +1,57 @@
+---
+# tasks file for openssl by source
+
+# source
+# 注意：./config --prefix=
+- name: "openssl_deploy_method == 'source'"
+  block:
+      - name: "cd {{ openssl_source_dir }};./configure --prefix={{ openssl_app_dir }}"
+        become: true
+        shell:
+            chdir: "{{ openssl_source_dir }}"
+            cmd: "./config --prefix={{ openssl_app_dir }}"
+      - name: "cd {{ openssl_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ openssl_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ openssl_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ openssl_source_dir }}"
+            cmd: make install
+  when: openssl_deploy_method == "source"
+
+# openssl_port standalone
+- name: openssl_port is defined
+  block:
+      - name: "cd {{ openssl_source_dir }};./configure --prefix={{ openssl_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ openssl_source_dir }}"
+            cmd: "./configure --prefix={{ openssl_base_dir }}"
+      - name: "cd {{ openssl_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ openssl_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ openssl_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ openssl_source_dir }}"
+            cmd: make install
+  when:
+      - openssl_port is defined
+      - openssl_deploy_mode == "standalone"
+
+#
+- name: "chown -R {{  openssl_dir  }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ openssl_install_user }}"
+      group: "{{ openssl_install_group }}"
+      recurse: true
+  with_items:
+      - "{{ openssl_dir }}"

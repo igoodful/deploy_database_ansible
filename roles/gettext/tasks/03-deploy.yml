@@ -1,0 +1,51 @@
+---
+# tasks file for gettext by source
+- name: "chown -R {{  gettext_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ gettext_install_user }}.{{ gettext_install_group }} {{  gettext_dir  }}"
+
+# source
+- name: "gettext_deploy_method == 'source'"
+  block:
+      - name: "cd {{ gettext_source_dir }};./configure --prefix={{ gettext_app_dir }}"
+        shell:
+            chdir: "{{ gettext_source_dir }}"
+            cmd: "./configure --prefix={{ gettext_app_dir }} --disable-static"
+      - name: "cd {{ gettext_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        shell:
+            chdir: "{{ gettext_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ gettext_source_dir }};make install"
+        shell:
+            chdir: "{{ gettext_source_dir }}"
+            cmd: make install
+  when: gettext_deploy_method == "source"
+
+# gettext_port standalone
+- name: gettext_port is defined
+  block:
+      - name: "cd {{ gettext_source_dir }};./configure --prefix={{ gettext_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ gettext_source_dir }}"
+            cmd: "./configure --prefix={{ gettext_base_dir }}"
+      - name: "cd {{ gettext_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ gettext_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ gettext_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ gettext_source_dir }}"
+            cmd: make install
+  when:
+      - gettext_port is defined
+      - gettext_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  gettext_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ gettext_install_user }}.{{ gettext_install_group }} {{  gettext_dir  }}"

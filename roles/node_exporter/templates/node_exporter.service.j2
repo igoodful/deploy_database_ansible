@@ -5,11 +5,11 @@ Documentation=https://github.com/prometheus/node_exporter
 After=network.target
 
 [Service]
-User={{ ansible_user }}
-Group={{ ansible_user }}
+User={{ansible_user}}
+Group={{ansible_user}}
 Type=simple
 
-ExecStart={{ node_exporter_bin_dir }}/node_exporter --web.listen-address=:{{ node_exporter_port }} --collector.textfile.directory={{ node_exporter_prom_dir }}
+ExecStart={{node_exporter_bin_dir}}/node_exporter --web.listen-address=:{{node_exporter_port}} --collector.textfile.directory={{node_exporter_prom_dir}}
 ExecReload=/bin/kill -HUP $MAINPID
 Restart=on-failure
 KillMode=process

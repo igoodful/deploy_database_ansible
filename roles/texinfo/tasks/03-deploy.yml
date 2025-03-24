@@ -1,0 +1,51 @@
+---
+# tasks file for texinfo by source
+- name: "chown -R {{  texinfo_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ texinfo_install_user }}.{{ texinfo_install_group }} {{  texinfo_dir  }}"
+
+# source
+- name: "texinfo_deploy_method == 'source'"
+  block:
+      - name: "cd {{ texinfo_source_dir }};./configure --prefix={{ texinfo_app_dir }}"
+        shell:
+            chdir: "{{ texinfo_source_dir }}"
+            cmd: "./configure --prefix={{ texinfo_app_dir }}"
+      - name: "cd {{ texinfo_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        shell:
+            chdir: "{{ texinfo_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ texinfo_source_dir }};make install"
+        shell:
+            chdir: "{{ texinfo_source_dir }}"
+            cmd: make install
+  when: texinfo_deploy_method == "source"
+
+# texinfo_port standalone
+- name: texinfo_port is defined
+  block:
+      - name: "cd {{ texinfo_source_dir }};./configure --prefix={{ texinfo_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ texinfo_source_dir }}"
+            cmd: "./configure --prefix={{ texinfo_base_dir }}"
+      - name: "cd {{ texinfo_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ texinfo_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ texinfo_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ texinfo_source_dir }}"
+            cmd: make install
+  when:
+      - texinfo_port is defined
+      - texinfo_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  texinfo_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ texinfo_install_user }}.{{ texinfo_install_group }} {{  texinfo_dir  }}"

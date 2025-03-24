@@ -1,0 +1,50 @@
+---
+# tasks file for readline by source
+
+# source
+- name: "readline_deploy_method == 'source'"
+  block:
+      - name: "cd {{ readline_source_dir }};./configure --prefix={{ readline_app_dir }}"
+        become: true
+        shell:
+            chdir: "{{ readline_source_dir }}"
+            cmd: "./configure --prefix={{ readline_app_dir }}"
+      - name: "cd {{ readline_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ readline_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ readline_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ readline_source_dir }}"
+            cmd: make install
+  when: readline_deploy_method == "source"
+
+# readline_port standalone
+- name: readline_port is defined
+  block:
+      - name: "cd {{ readline_source_dir }};./configure --prefix={{ readline_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ readline_source_dir }}"
+            cmd: "./configure --prefix={{ readline_base_dir }}"
+      - name: "cd {{ readline_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ readline_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ readline_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ readline_source_dir }}"
+            cmd: make install
+  when:
+      - readline_port is defined
+      - readline_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  readline_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ readline_install_user }}.{{ readline_install_group }} {{  readline_dir  }}"

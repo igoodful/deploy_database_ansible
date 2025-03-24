@@ -1,0 +1,58 @@
+---
+# defaults file for pkgconfig
+# https://pkg-config.freedesktop.org/releases/pkgconfig-0.12.0.tar.gz
+
+# user
+pkgconfig_install_user: "{{ ansible_user }}"
+pkgconfig_install_group: "{{ ansible_user }}"
+pkgconfig_version: "0.12.0"
+# pkgconfig_port: "8032"
+
+# standalone/cluster/pseudo_cluster
+pkgconfig_deploy_mode: "standalone"
+
+# binary/source/rpm/yum/dnf
+pkgconfig_deploy_method: "source"
+
+# url
+pkgconfig_base_url: "{{ base_url }}"
+pkgconfig_base_url_remote: "https://pkg-config.freedesktop.org/releases"
+
+# package
+pkgconfig_package_suffix: ".tar.gz"
+pkgconfig_package_name_rpm: "pkgconfig-{{ pkgconfig_version }}.rpm"
+pkgconfig_package_name_binary: "pkgconfig-{{ pkgconfig_version }}-{{ ansible_architecture }}{{ pkgconfig_package_suffix }}"
+pkgconfig_package_name_source: "pkgconfig-{{ pkgconfig_version }}{{ pkgconfig_package_suffix }}"
+pkgconfig_package_name: "{% if pkgconfig_deploy_method == 'rpm' %}{{ pkgconfig_package_name_rpm }}{% elif pkgconfig_deploy_method == 'binary' %}{{ pkgconfig_package_name_binary }}{% elif pkgconfig_deploy_method == 'source' %}{{ pkgconfig_package_name_source }}{% else %}{{ pkgconfig_package_name_source }}{% endif %}"
+
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/pkgconfig
+# /data/pkgconfig/data
+# /data/pkgconfig/conf
+# /data/pkgconfig/log
+# /data/pkgconfig/tmp
+# /data/pkgconfig/source
+# /data/pkgconfig/app
+# /data/pkgconfig/app/pkgconfig-{{ pkgconfig_version }}
+# /data/pkgconfig/app/pkgconfig-{{ pkgconfig_version }}/bin
+# /data/pkgconfig/app/pkgconfig-{{ pkgconfig_version }}/lib
+# /data/pkgconfig/app/pkgconfig-{{ pkgconfig_version }}/lib/pkgconfig
+# /data/pkgconfig/app/pkgconfig-{{ pkgconfig_version }}/include
+# /data/pkgconfig/app/pkgconfig-{{ pkgconfig_version }}/share
+# /data/pkgconfig/source/pkgconfig-{{ pkgconfig_version }}
+pkgconfig_dir: "{{ base_dir }}/pkgconfig"
+pkgconfig_data_dir: "{{ pkgconfig_dir }}/data"
+pkgconfig_conf_dir: "{{ pkgconfig_dir }}/conf"
+pkgconfig_log_dir: "{{ pkgconfig_dir }}/log"
+pkgconfig_tmp_dir: "{{ pkgconfig_dir }}/tmp"
+pkgconfig_app_base_dir: "{{ pkgconfig_dir }}/app"
+pkgconfig_source_base_dir: "{{ pkgconfig_dir }}/source"
+pkgconfig_app_dir: "{{ pkgconfig_app_base_dir }}/pkgconfig-{{ pkgconfig_version }}"
+pkgconfig_bin_dir: "{{ pkgconfig_app_dir }}/bin"
+pkgconfig_lib_dir: "{{ pkgconfig_app_dir }}/lib"
+pkgconfig_include_dir: "{{ pkgconfig_app_dir }}/include"
+pkgconfig_share_dir: "{{ pkgconfig_app_dir }}/share"
+pkgconfig_pkgconfig_dir: "{{ pkgconfig_lib_dir }}/pkgconfig"
+pkgconfig_source_dir: "{{ pkgconfig_source_base_dir }}/pkgconfig-{{ pkgconfig_version }}"

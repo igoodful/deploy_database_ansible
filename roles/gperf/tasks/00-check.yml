@@ -1,0 +1,26 @@
+---
+# tasks file for gperf
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check gperf_port
+- name: "lsof -i:{{ gperf_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ gperf_port }}"
+  register: gperf_port_check_output
+  ignore_errors: true
+  when: gperf_port is defined
+
+- name: "check gperf port"
+  become: true
+  fail:
+      msg: "gperfd端口被占用,可使用: ps aux|grep gperfd"
+  when:
+      - gperf_port is defined
+      - gperf_port_check_output is defined
+      - gperf_port_check_output.rc == 0

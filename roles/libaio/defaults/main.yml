@@ -1,17 +1,17 @@
 ---
 # defaults file for libaio
 # libaio-2.44.tar.gz
-libaio_install_user: "{{ ansible_user }}"
-libaio_install_group: "{{ ansible_user }}"
+libaio_install_user: "{{ansible_user}}"
+libaio_install_group: "{{ansible_user}}"
 libaio_version: "0.3.113"
-libaio_base_url: "{{ base_url }}"
-libaio_base_url_remote: "https://pagure.io/libaio/archive/libaio-{{ libaio_version }}"
+libaio_base_url: "{{base_url}}"
+libaio_base_url_remote: "https://pagure.io/libaio/archive/libaio-{{libaio_version}}"
 # binary/source
 libaio_deploy_method: "source"
-libaio_package_name_binary: "libaio-{{ libaio_version }}"
-libaio_package_name_source: "libaio-{{ libaio_version }}"
+libaio_package_name_binary: "libaio-{{libaio_version}}"
+libaio_package_name_source: "libaio-{{libaio_version}}"
 
-libaio_dir: "{{ base_dir }}/libaio"
-libaio_app_dir: "{{ base_dir }}/libaio/app"
-libaio_base_dir: "{{ libaio_app_dir }}/libaio-{{ libaio_version }}"
-libaio_source_dir: "{{ libaio_app_dir }}/source/libaio-{{ libaio_version }}"
+libaio_dir: "{{base_dir}}/libaio"
+libaio_app_dir: "{{base_dir}}/libaio/app"
+libaio_base_dir: "{{libaio_app_dir}}/libaio-{{libaio_version}}"
+libaio_source_dir: "{{libaio_app_dir}}/source/libaio-{{libaio_version}}"

@@ -1,0 +1,53 @@
+---
+# tasks file for libgcrypt by source
+# source ~/.bashrc
+# chown
+- name: "chown -R {{  libgcrypt_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ libgcrypt_install_user }}.{{ libgcrypt_install_group }} {{  libgcrypt_dir  }}"
+
+# source
+- name: "libgcrypt_deploy_method == 'source'"
+  block:
+      - name: "cd {{ libgcrypt_source_dir }};./configure --prefix={{ libgcrypt_app_dir }}"
+        shell:
+            chdir: "{{ libgcrypt_source_dir }}"
+            cmd: "./configure --prefix={{ libgcrypt_app_dir }}"
+      - name: "cd {{ libgcrypt_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        shell:
+            chdir: "{{ libgcrypt_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ libgcrypt_source_dir }};make install"
+        shell:
+            chdir: "{{ libgcrypt_source_dir }}"
+            cmd: make install
+  when: libgcrypt_deploy_method == "source"
+
+# libgcrypt_port standalone
+- name: libgcrypt_port is defined
+  block:
+      - name: "cd {{ libgcrypt_source_dir }};./configure --prefix={{ libgcrypt_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ libgcrypt_source_dir }}"
+            cmd: "./configure --prefix={{ libgcrypt_base_dir }}"
+      - name: "cd {{ libgcrypt_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ libgcrypt_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ libgcrypt_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ libgcrypt_source_dir }}"
+            cmd: make install
+  when:
+      - libgcrypt_port is defined
+      - libgcrypt_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  libgcrypt_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ libgcrypt_install_user }}.{{ libgcrypt_install_group }} {{  libgcrypt_dir  }}"

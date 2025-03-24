@@ -2,32 +2,27 @@
 # download
 - name: Download prometheus package for x86 architecture
   get_url:
-    url: "{{ prometheus_download_url_amd64 }}"
-    dest: "{{ install_tmpdir }}/"
+      url: "{{prometheus_download_url_amd64}}"
+      dest: "{{install_tmpdir}}/"
   when: ansible_architecture == 'x86_64' and prometheus_download
 
 - name: Download prometheus package for ARM architecture
   get_url:
-    url: "{{ prometheus_download_url_arm64 }}"
-    dest: "{{ install_tmpdir }}/"
+      url: "{{prometheus_download_url_arm64}}"
+      dest: "{{install_tmpdir}}/"
   when: ansible_architecture == 'aarch64' and prometheus_download
 
 # copy prometheus
 - name: copy prometheus for aarch64
   become: true
   copy:
-    src: "prometheus-{{ prometheus_version }}.linux-arm64.tar.gz"
-    dest: "{{ install_tmpdir }}/"
+      src: "prometheus-{{prometheus_version}}.linux-arm64.tar.gz"
+      dest: "{{install_tmpdir}}/"
   when: ansible_architecture == 'aarch64' and (not prometheus_download)
 
 - name: copy prometheus for x86_64
   become: true
   copy:
-    src: "prometheus-{{ prometheus_version }}.linux-amd64.tar.gz"
-    dest: "{{ install_tmpdir }}/"
+      src: "prometheus-{{prometheus_version}}.linux-amd64.tar.gz"
+      dest: "{{install_tmpdir}}/"
   when: ansible_architecture == 'x86_64' and (not prometheus_download)
-
-
-
-
-

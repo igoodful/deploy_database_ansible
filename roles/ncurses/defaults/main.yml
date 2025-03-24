@@ -1,20 +1,57 @@
 ---
 # defaults file for ncurses
 # https://ftp.gnu.org/gnu/ncurses/ncurses-6.4.tar.gz
+# https://mirrors.tuna.tsinghua.edu.cn/gnu/ncurses/ncurses-6.4.tar.gz
+
+# user
 ncurses_install_user: "{{ ansible_user }}"
 ncurses_install_group: "{{ ansible_user }}"
-ncurses_version: "6.4"
-ncurses_base_url: "{{ base_url }}"
+ncurses_version: "6.3"
+# ncurses_port: "8032"
+
+# standalone/cluster/pseudo_cluster
+ncurses_deploy_mode: "standalone"
+
+# binary/source/rpm/yum/dnf
+ncurses_deploy_method: "source"
+
+# url
+ncurses_base_url: "https://mirrors.tuna.tsinghua.edu.cn/gnu/ncurses"
 ncurses_base_url_remote: "https://ftp.gnu.org/gnu/ncurses"
 
-# binary/source
-
-ncurses_deploy_method: "source"
+# package
 ncurses_package_suffix: ".tar.gz"
-ncurses_package_name_binary: "ncurses-{{ ncurses_version }}"
-ncurses_package_name_source: "ncurses-{{ ncurses_version }}"
+ncurses_package_name_rpm: "ncurses-{{ ncurses_version }}.rpm"
+ncurses_package_name_binary: "ncurses-{{ ncurses_version }}-{{ ansible_architecture }}{{ ncurses_package_suffix }}"
+ncurses_package_name_source: "ncurses-{{ ncurses_version }}{{ ncurses_package_suffix }}"
+ncurses_package_name: "{% if ncurses_deploy_method == 'rpm' %}{{ ncurses_package_name_rpm }}{% elif ncurses_deploy_method == 'binary' %}{{ ncurses_package_name_binary }}{% elif ncurses_deploy_method == 'source' %}{{ ncurses_package_name_source }}{% else %}{{ ncurses_package_name_source }}{% endif %}"
 
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/ncurses
+# /data/ncurses/data
+# /data/ncurses/conf
+# /data/ncurses/log
+# /data/ncurses/tmp
+# /data/ncurses/source
+# /data/ncurses/app
+# /data/ncurses/app/ncurses-2.44
+# /data/ncurses/app/ncurses-2.44/bin
+# /data/ncurses/app/ncurses-2.44/lib
+# /data/ncurses/app/ncurses-2.44/include
+# /data/ncurses/app/ncurses-2.44/share
+# /data/ncurses/source/ncurses-2.44
 ncurses_dir: "{{ base_dir }}/ncurses"
-ncurses_app_dir: "{{ base_dir }}/ncurses/app"
-ncurses_base_dir: "{{ ncurses_app_dir }}/ncurses-{{ ncurses_version }}"
-ncurses_source_dir: "{{ ncurses_app_dir }}/source/ncurses-{{ ncurses_version }}"
+ncurses_data_dir: "{{ ncurses_dir }}/data"
+ncurses_conf_dir: "{{ ncurses_dir }}/conf"
+ncurses_log_dir: "{{ ncurses_dir }}/log"
+ncurses_tmp_dir: "{{ ncurses_dir }}/tmp"
+ncurses_app_base_dir: "{{ ncurses_dir }}/app"
+ncurses_source_base_dir: "{{ ncurses_dir }}/source"
+ncurses_app_dir: "{{ ncurses_app_base_dir }}/ncurses-{{ ncurses_version }}"
+ncurses_bin_dir: "{{ ncurses_app_dir }}/bin"
+ncurses_lib_dir: "{{ ncurses_app_dir }}/lib"
+ncurses_include_dir: "{{ ncurses_app_dir }}/include"
+ncurses_share_dir: "{{ ncurses_app_dir }}/share"
+ncurses_source_dir: "{{ ncurses_source_base_dir }}/ncurses-{{ ncurses_version }}"

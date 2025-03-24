@@ -1,38 +1,74 @@
 ---
 # tasks file for zlib
-- name: "remove {{ zlib_source_dir }} {{ zlib_base_dir }}"
-  become: true
-  file:
-          path: "{{ item }}"
-          state: absent
-  with_items:
-          - "{{ zlib_source_dir }}"
-          - "{{ zlib_base_dir }}"
+# delete zlib_source_dir zlib_app_dir
 
-- name: "mkdir for zlib"
+- name: "delete {{ zlib_source_dir }} {{ zlib_app_dir }}"
   become: true
   file:
-          path: "{{ item }}"
-          state: directory
-          owner: "{{ zlib_install_user }}"
-          group: "{{ zlib_install_group }}"
-          mode: 0755
+      path: "{{ item }}"
+      state: absent
   with_items:
-          - "{{ base_dir }}"
-          - "{{ zlib_dir }}"
-          - "{{ install_tmpdir }}"
-          - "{{ zlib_app_dir }}"
-          - "{{ zlib_base_dir }}"
+      - "{{ zlib_source_dir }}"
+      - "{{ zlib_app_dir }}"
 
-- name: "mkdir {{ zlib_source_dir }}"
+# basic dir
+- name: "mkdir {{ base_dir }} {{ install_tmpdir }}"
   become: true
   file:
-          path: "{{ item }}"
-          state: directory
-          mode: 0755
-          owner: "{{ zlib_install_user }}"
-          group: "{{ zlib_install_group }}"
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ zlib_install_user }}"
+      group: "{{ zlib_install_group }}"
+      mode: 0755
   with_items:
-          - "{{ base_dir }}"
-          - "{{ zlib_source_dir }}"
-  when: zlib_deploy_method == "source"
+      - "{{ base_dir }}"
+      - "{{ install_tmpdir }}"
+
+# binary and source dir
+- name: "mkdir {{ zlib_dir }} {{ zlib_app_base_dir }} {{ zlib_app_dir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ zlib_install_user }}"
+      group: "{{ zlib_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ zlib_dir }}"
+      - "{{ zlib_app_base_dir }}"
+      - "{{ zlib_app_dir }}"
+  when:
+      - zlib_deploy_method == "binary" or zlib_deploy_method == "source"
+
+# source dir
+- name: "mkdir {{ zlib_dir }} {{ zlib_source_base_dir }}  {{ zlib_source_dir }} "
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ zlib_install_user }}"
+      group: "{{ zlib_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ zlib_source_base_dir }}"
+      - "{{ zlib_source_dir }}"
+      - "{{ zlib_build_dir }}"
+  when:
+      - zlib_deploy_method == "source"
+
+# service dir
+- name: "mkdir {{ zlib_data_dir }} {{ zlib_conf_dir }} {{ zlib_log_dir }} {{ zlib_tmp_dir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ zlib_install_user }}"
+      group: "{{ zlib_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ zlib_data_dir }}"
+      - "{{ zlib_conf_dir }}"
+      - "{{ zlib_log_dir }}"
+      - "{{ zlib_tmp_dir }}"
+  when:
+      - zlib_port is defined

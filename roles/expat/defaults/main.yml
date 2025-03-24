@@ -1,0 +1,61 @@
+---
+# defaults file for expat
+# expat 是一个流行的 XML 解析库,Expat 是一个用 C 语言编写的快速、流式的 XML 解析库
+# yum -y install libxml2 libxml2-devel
+# https://github.com/libexpat/libexpat/archive/refs/tags/R_2_6_0.tar.gz
+
+# libexpat.so
+# user
+expat_install_user: "{{ ansible_user }}"
+expat_install_group: "{{ ansible_user }}"
+expat_version: "2.6.0"
+# expat_port: "8032"
+
+# standalone/cluster/pseudo_cluster
+expat_deploy_mode: "standalone"
+
+# binary/source/rpm/yum/dnf
+expat_deploy_method: "source"
+
+# url
+expat_base_url: "{{ base_url }}"
+expat_base_url_remote: "https://github.com/libexpat/libexpat/archive/refs/tags"
+
+# package
+expat_package_suffix: ".tar.gz"
+expat_package_name_rpm: "expat-{{ expat_version }}.rpm"
+expat_package_name_binary: "expat-{{ expat_version }}-{{ ansible_architecture }}{{ expat_package_suffix }}"
+expat_package_name_source: "expat-{{ expat_version }}{{ expat_package_suffix }}"
+expat_package_name: "{% if expat_deploy_method == 'rpm' %}{{ expat_package_name_rpm }}{% elif expat_deploy_method == 'binary' %}{{ expat_package_name_binary }}{% elif expat_deploy_method == 'source' %}{{ expat_package_name_source }}{% else %}{{ expat_package_name_source }}{% endif %}"
+
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/expat
+# /data/expat/data
+# /data/expat/conf
+# /data/expat/log
+# /data/expat/tmp
+# /data/expat/source
+# /data/expat/app
+# /data/expat/app/expat-2.44
+# /data/expat/app/expat-2.44/bin
+# /data/expat/app/expat-2.44/lib
+# /data/expat/app/expat-2.44/lib/pkgconfig
+# /data/expat/app/expat-2.44/include
+# /data/expat/app/expat-2.44/share
+# /data/expat/source/expat-2.44
+expat_dir: "{{ base_dir }}/expat"
+expat_data_dir: "{{ expat_dir }}/data"
+expat_conf_dir: "{{ expat_dir }}/conf"
+expat_log_dir: "{{ expat_dir }}/log"
+expat_tmp_dir: "{{ expat_dir }}/tmp"
+expat_app_base_dir: "{{ expat_dir }}/app"
+expat_source_base_dir: "{{ expat_dir }}/source"
+expat_app_dir: "{{ expat_app_base_dir }}/expat-{{ expat_version }}"
+expat_bin_dir: "{{ expat_app_dir }}/bin"
+expat_lib_dir: "{{ expat_app_dir }}/lib"
+expat_include_dir: "{{ expat_app_dir }}/include"
+expat_share_dir: "{{ expat_app_dir }}/share"
+expat_pkgconfig_dir: "{{ expat_lib_dir }}/pkgconfig"
+expat_source_dir: "{{ expat_source_base_dir }}/expat-{{ expat_version }}"

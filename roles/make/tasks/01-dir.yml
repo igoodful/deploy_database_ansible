@@ -1,0 +1,73 @@
+---
+# tasks file for make
+# delete make_source_dir make_app_dir
+
+- name: "delete {{ make_source_dir }} {{ make_app_dir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: absent
+  with_items:
+      - "{{ make_source_dir }}"
+      - "{{ make_app_dir }}"
+
+# basic dir
+- name: "mkdir {{ base_dir }} {{ install_tmpdir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ make_install_user }}"
+      group: "{{ make_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ base_dir }}"
+      - "{{ install_tmpdir }}"
+
+# binary and source dir
+- name: "mkdir {{ make_dir }} {{ make_app_base_dir }} {{ make_app_dir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ make_install_user }}"
+      group: "{{ make_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ make_dir }}"
+      - "{{ make_app_base_dir }}"
+      - "{{ make_app_dir }}"
+  when:
+      - make_deploy_method == "binary" or make_deploy_method == "source"
+
+# source dir
+- name: "mkdir {{ make_dir }} {{ make_source_base_dir }}  {{ make_source_dir }} "
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ make_install_user }}"
+      group: "{{ make_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ make_source_base_dir }}"
+      - "{{ make_source_dir }}"
+  when:
+      - make_deploy_method == "source"
+
+# service dir
+- name: "mkdir {{ make_data_dir }} {{ make_conf_dir }} {{ make_log_dir }} {{ make_tmp_dir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ make_install_user }}"
+      group: "{{ make_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ make_data_dir }}"
+      - "{{ make_conf_dir }}"
+      - "{{ make_log_dir }}"
+      - "{{ make_tmp_dir }}"
+  when:
+      - make_port is defined

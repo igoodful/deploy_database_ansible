@@ -1,0 +1,26 @@
+---
+# tasks file for gcc
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check gcc_port
+- name: "lsof -i:{{ gcc_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ gcc_port }}"
+  register: gcc_port_check_output
+  ignore_errors: true
+  when: gcc_port is defined
+
+- name: "check gcc port"
+  become: true
+  fail:
+      msg: "gccd端口被占用,可使用: ps aux|grep gccd"
+  when:
+      - gcc_port is defined
+      - gcc_port_check_output is defined
+      - gcc_port_check_output.rc == 0

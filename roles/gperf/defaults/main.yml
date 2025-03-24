@@ -1,20 +1,59 @@
 ---
 # defaults file for gperf
+# https://ftp.gnu.org/gnu/gperf/gperf-3.1.tar.gz
+# https://mirrors.tuna.tsinghua.edu.cn/gnu/gperf/gperf-3.1.tar.gz
+
+# user
 gperf_install_user: "{{ ansible_user }}"
 gperf_install_group: "{{ ansible_user }}"
-gperf_base_url: "{{ base_url }}"
-# https://ftp.gnu.org/gnu/gperf/gperf-3.1.tar.gz
 gperf_version: "3.1"
+# gperf_port: "8032"
+
+# standalone/cluster/pseudo_cluster
+gperf_deploy_mode: "standalone"
+
+# binary/source/rpm/yum/dnf
+gperf_deploy_method: "source"
+
+# url
+gperf_base_url: "https://mirrors.tuna.tsinghua.edu.cn/gnu/gperf"
 gperf_base_url_remote: "https://ftp.gnu.org/gnu/gperf"
 
-# binary/source
-
-gperf_deploy_method: "source"
+# package
 gperf_package_suffix: ".tar.gz"
-gperf_package_name_binary: "gperf-{{ gperf_version }}"
-gperf_package_name_source: "gperf-{{ gperf_version }}"
+gperf_package_name_rpm: "gperf-{{ gperf_version }}.rpm"
+gperf_package_name_binary: "gperf-{{ gperf_version }}-{{ ansible_architecture }}{{ gperf_package_suffix }}"
+gperf_package_name_source: "gperf-{{ gperf_version }}{{ gperf_package_suffix }}"
+gperf_package_name: "{% if gperf_deploy_method == 'rpm' %}{{ gperf_package_name_rpm }}{% elif gperf_deploy_method == 'binary' %}{{ gperf_package_name_binary }}{% elif gperf_deploy_method == 'source' %}{{ gperf_package_name_source }}{% else %}{{ gperf_package_name_source }}{% endif %}"
 
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/gperf
+# /data/gperf/data
+# /data/gperf/conf
+# /data/gperf/log
+# /data/gperf/tmp
+# /data/gperf/source
+# /data/gperf/app
+# /data/gperf/app/gperf-2.44
+# /data/gperf/app/gperf-2.44/bin
+# /data/gperf/app/gperf-2.44/lib
+# /data/gperf/app/gperf-2.44/lib/pkgconfig
+# /data/gperf/app/gperf-2.44/include
+# /data/gperf/app/gperf-2.44/share
+# /data/gperf/source/gperf-2.44
 gperf_dir: "{{ base_dir }}/gperf"
-gperf_app_dir: "{{ base_dir }}/gperf/app"
-gperf_base_dir: "{{ gperf_app_dir }}/gperf-{{ gperf_version }}"
-gperf_source_dir: "{{ gperf_app_dir }}/source/gperf-{{ gperf_version }}"
+gperf_data_dir: "{{ gperf_dir }}/data"
+gperf_conf_dir: "{{ gperf_dir }}/conf"
+gperf_log_dir: "{{ gperf_dir }}/log"
+gperf_tmp_dir: "{{ gperf_dir }}/tmp"
+gperf_app_base_dir: "{{ gperf_dir }}/app"
+gperf_source_base_dir: "{{ gperf_dir }}/source"
+gperf_app_dir: "{{ gperf_app_base_dir }}/gperf-{{ gperf_version }}"
+gperf_bin_dir: "{{ gperf_app_dir }}/bin"
+gperf_lib_dir: "{{ gperf_app_dir }}/lib"
+gperf_include_dir: "{{ gperf_app_dir }}/include"
+gperf_share_dir: "{{ gperf_app_dir }}/share"
+gperf_pkgconfig_dir: "{{ gperf_lib_dir }}/pkgconfig"
+gperf_source_dir: "{{ gperf_source_base_dir }}/gperf-{{ gperf_version }}"

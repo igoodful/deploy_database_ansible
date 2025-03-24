@@ -2,20 +2,20 @@
 # defaults file for work_jdk
 # /data/tmpdir/jdk-18.0.2-aarch64.tar.gz
 # /data/tmpdir/jdk-18.0.2-x86_64.tar.gz
-jdk_install_user: "{{ ansible_user }}"
-jdk_install_group: "{{ ansible_user }}"
+jdk_install_user: "{{ansible_user}}"
+jdk_install_group: "{{ansible_user}}"
 jdk_version: "18.0.2"
 # standalone/cluster/pseudo_cluster
 jdk_deploy_mode: "standalone"
 # binary/source
 jdk_deploy_method: "binary"
-jdk_base_url: "{{ base_url }}"
+jdk_base_url: "{{base_url}}"
 jdk_base_url_remote: "https://ftp.gnu.org/gnu/jdk"
 
 jdk_package_suffix: ".tar.gz"
-jdk_package_name_binary: "jdk-{{ jdk_version }}-{{ ansible_architecture }}{{ jdk_package_suffix }}"
-jdk_package_name_source: "jdk-{{ jdk_version }}{{ jdk_package_suffix }}"
+jdk_package_name_binary: "jdk-{{jdk_version}}-{{ansible_architecture}}{{jdk_package_suffix}}"
+jdk_package_name_source: "jdk-{{jdk_version}}{{jdk_package_suffix}}"
 
-jdk_app_dir: "{{ base_dir }}/app"
-jdk_base_dir: "{{ jdk_app_dir }}/jdk-{{ jdk_version }}"
-jdk_source_dir: "{{ jdk_app_dir }}/source/jdk-{{ jdk_version }}"
+jdk_app_dir: "{{base_dir}}/app"
+jdk_base_dir: "{{jdk_app_dir}}/jdk-{{jdk_version}}"
+jdk_source_dir: "{{jdk_app_dir}}/source/jdk-{{jdk_version}}"

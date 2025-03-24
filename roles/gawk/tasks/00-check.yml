@@ -1,0 +1,26 @@
+---
+# tasks file for gawk
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check gawk_port
+- name: "lsof -i:{{ gawk_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ gawk_port }}"
+  register: gawk_port_check_output
+  ignore_errors: true
+  when: gawk_port is defined
+
+- name: "check gawk port"
+  become: true
+  fail:
+      msg: "gawkd端口被占用,可使用: ps aux|grep gawkd"
+  when:
+      - gawk_port is defined
+      - gawk_port_check_output is defined
+      - gawk_port_check_output.rc == 0

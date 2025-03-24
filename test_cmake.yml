@@ -3,8 +3,4 @@
   hosts: all
   gather_facts: true
   roles:
-    - {
-        role: cmake,
-        tags: cmake,
-      }
-
+      - { role: cmake, tags: cmake }

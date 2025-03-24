@@ -3,16 +3,16 @@
 - name: Copy alertmanager.yml.j2 template
   become: yes
   template:
-    src: alertmanager.yml.j2
-    dest: "{{ alertmanager_conf_dir }}/alertmanager.yml"
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
+      src: alertmanager.yml.j2
+      dest: "{{alertmanager_conf_dir}}/alertmanager.yml"
+      owner: "{{ansible_user}}"
+      group: "{{ansible_user}}"
   when: alertmanager_port is defined
 
 # copy alertmanager.service.j2
 - name: Copy alertmanager.service.j2 template
   become: yes
   template:
-    src: alertmanager.service.j2
-    dest: "/lib/systemd/system/alertmanager_{{ alertmanager_port }}.service"
-    mode: "644"
+      src: alertmanager.service.j2
+      dest: "/lib/systemd/system/alertmanager_{{alertmanager_port}}.service"
+      mode: "644"

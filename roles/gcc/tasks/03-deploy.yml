@@ -1,0 +1,58 @@
+---
+# tasks file for gcc by source
+- name: "chown -R {{  gcc_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ gcc_install_user }}.{{ gcc_install_group }} {{  gcc_dir  }}"
+
+# source
+- name: "gcc_deploy_method == 'source'"
+  block:
+      - name: "cd {{ gcc_source_dir }};./contrib/download_prerequisites"
+        shell:
+            chdir: "{{ gcc_source_dir }}"
+            cmd: "./contrib/download_prerequisites"
+      # ./configure
+      - name: "cd {{ gcc_source_dir }};./configure --prefix={{ gcc_app_dir }} --with-gmp={{ base_dir }}/gmp/app/gmp-{{ gmp_version }} --with-mpfr={{ base_dir }}/mpfr/app/mpfr-{{ mpfr_version }} --with-mpc={{ base_dir }}/mpc/app/mpc-{{ mpc_version }} --enable-shared  --enable-languages=c,c++ --enable-threads=posix --enable-checking=release --disable-multilib --with-system-zlib"
+        shell:
+            chdir: "{{ gcc_source_dir }}"
+            cmd: "cd {{ gcc_source_dir }};./configure --prefix={{ gcc_app_dir }} --with-gmp={{ base_dir }}/gmp/app/gmp-{{ gmp_version }} --with-mpfr={{ base_dir }}/mpfr/app/mpfr-{{ mpfr_version }} --with-mpc={{ base_dir }}/mpc/app/mpc-{{ mpc_version }} --enable-shared  --enable-languages=c,c++ --enable-threads=posix --enable-checking=release --disable-multilib --with-system-zlib"
+      # make
+      - name: "cd {{ gcc_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        shell:
+            chdir: "{{ gcc_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      # make install
+      - name: "cd {{ gcc_source_dir }};make install"
+        shell:
+            chdir: "{{ gcc_source_dir }}"
+            cmd: make install
+  when: gcc_deploy_method == "source"
+
+# gcc_port standalone
+- name: gcc_port is defined
+  block:
+      - name: "cd {{ gcc_source_dir }};./configure --prefix={{ gcc_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ gcc_source_dir }}"
+            cmd: "./configure --prefix={{ gcc_base_dir }}"
+      - name: "cd {{ gcc_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ gcc_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ gcc_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ gcc_source_dir }}"
+            cmd: make install
+  when:
+      - gcc_port is defined
+      - gcc_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  gcc_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ gcc_install_user }}.{{ gcc_install_group }} {{  gcc_dir  }}"

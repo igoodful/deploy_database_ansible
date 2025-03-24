@@ -3,6 +3,6 @@
 - name: Install required software packages
   become: yes
   yum:
-    name: "{{ item }}"
-    state: present
-  loop: "{{ software_packages }}"
+      name: "{{item}}"
+      state: present
+  loop: "{{software_packages}}"

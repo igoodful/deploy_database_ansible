@@ -1,0 +1,52 @@
+---
+# tasks file for mpc by source
+
+- name: "chown -R {{  mpc_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ mpc_install_user }}.{{ mpc_install_group }} {{  mpc_dir  }}"
+
+# source
+- name: "mpc_deploy_method == 'source'"
+  block:
+      - name: "cd {{ mpc_source_dir }};./configure --prefix={{ mpc_app_dir }}"
+        shell:
+            chdir: "{{ mpc_source_dir }}"
+            cmd: "./configure --prefix={{ mpc_app_dir }} --with-gmp={{ base_dir }}/gmp/app/gmp-{{ gmp_version }} --with-mpfr={{ base_dir }}/mpfr/app/mpfr-{{ mpfr_version }}"
+      - name: "cd {{ mpc_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        shell:
+            chdir: "{{ mpc_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ mpc_source_dir }};make install"
+        shell:
+            chdir: "{{ mpc_source_dir }}"
+            cmd: make install
+  when: mpc_deploy_method == "source"
+
+# mpc_port standalone
+- name: mpc_port is defined
+  block:
+      - name: "cd {{ mpc_source_dir }};./configure --prefix={{ mpc_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ mpc_source_dir }}"
+            cmd: "./configure --prefix={{ mpc_base_dir }}"
+      - name: "cd {{ mpc_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ mpc_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ mpc_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ mpc_source_dir }}"
+            cmd: make install
+  when:
+      - mpc_port is defined
+      - mpc_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  mpc_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ mpc_install_user }}.{{ mpc_install_group }} {{  mpc_dir  }}"

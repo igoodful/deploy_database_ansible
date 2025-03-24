@@ -1,0 +1,26 @@
+---
+# tasks file for grub
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check grub_port
+- name: "lsof -i:{{ grub_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ grub_port }}"
+  register: grub_port_check_output
+  ignore_errors: true
+  when: grub_port is defined
+
+- name: "check grub port"
+  become: true
+  fail:
+      msg: "grubd端口被占用,可使用: ps aux|grep grubd"
+  when:
+      - grub_port is defined
+      - grub_port_check_output is defined
+      - grub_port_check_output.rc == 0

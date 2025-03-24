@@ -1,0 +1,50 @@
+---
+# tasks file for less by source
+
+# source
+- name: "less_deploy_method == 'source'"
+  block:
+      - name: "cd {{ less_source_dir }};./configure --prefix={{ less_app_dir }}"
+        become: true
+        shell:
+            chdir: "{{ less_source_dir }}"
+            cmd: "./configure --prefix={{ less_app_dir }}"
+      - name: "cd {{ less_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ less_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ less_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ less_source_dir }}"
+            cmd: make install
+  when: less_deploy_method == "source"
+
+# less_port standalone
+- name: less_port is defined
+  block:
+      - name: "cd {{ less_source_dir }};./configure --prefix={{ less_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ less_source_dir }}"
+            cmd: "./configure --prefix={{ less_base_dir }}"
+      - name: "cd {{ less_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ less_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ less_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ less_source_dir }}"
+            cmd: make install
+  when:
+      - less_port is defined
+      - less_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  less_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ less_install_user }}.{{ less_install_group }} {{  less_dir  }}"

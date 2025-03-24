@@ -1,20 +1,20 @@
 ---
 # defaults file for zstd
 # https://github.com/facebook/zstd/archive/refs/tags/v1.5.6.tar.gz
-zstd_install_user: "{{ ansible_user }}"
-zstd_install_group: "{{ ansible_user }}"
+zstd_install_user: "{{ansible_user}}"
+zstd_install_group: "{{ansible_user}}"
 zstd_version: "1.5.6"
-zstd_base_url: "{{ base_url }}"
+zstd_base_url: "{{base_url}}"
 zstd_base_url_remote: "https://github.com/facebook/zstd/archive/refs/tags"
 
 # binary/source
 
 zstd_deploy_method: "source"
 zstd_package_suffix: ".tar.gz"
-zstd_package_name_binary: "zstd-{{ zstd_version }}"
-zstd_package_name_source: "zstd-{{ zstd_version }}"
+zstd_package_name_binary: "zstd-{{zstd_version}}"
+zstd_package_name_source: "zstd-{{zstd_version}}"
 
-zstd_dir: "{{ base_dir }}/zstd"
-zstd_app_dir: "{{ base_dir }}/zstd/app"
-zstd_base_dir: "{{ zstd_app_dir }}/zstd-{{ zstd_version }}"
-zstd_source_dir: "{{ zstd_app_dir }}/source/zstd-{{ zstd_version }}"
+zstd_dir: "{{base_dir}}/zstd"
+zstd_app_dir: "{{base_dir}}/zstd/app"
+zstd_base_dir: "{{zstd_app_dir}}/zstd-{{zstd_version}}"
+zstd_source_dir: "{{zstd_app_dir}}/source/zstd-{{zstd_version}}"

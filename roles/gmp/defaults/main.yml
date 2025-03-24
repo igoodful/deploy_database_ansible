@@ -1,20 +1,61 @@
 ---
 # defaults file for gmp
-# https://ftp.gnu.org/gnu/gmp/gmp-6.3.0.tar.gz
+# https://gcc.gnu.org/pub/gcc/infrastructure/gmp-6.1.0.tar.bz2
+# https://mirrors.tuna.tsinghua.edu.cn/gnu/gmp/gmp-6.1.0.tar.bz2
+# DONE
+# must gmp_package_suffix: ".tar.bz2"
+
+# user
 gmp_install_user: "{{ ansible_user }}"
 gmp_install_group: "{{ ansible_user }}"
-gmp_version: "6.3.0"
-gmp_base_url: "{{ base_url }}"
-gmp_base_url_remote: "https://ftp.gnu.org/gnu/gmp"
+gmp_version: "6.1.0"
+# gmp_port: "8032"
 
-# binary/source
+# standalone/cluster/pseudo_cluster
+gmp_deploy_mode: "standalone"
 
+# binary/source/rpm/yum/dnf
 gmp_deploy_method: "source"
-gmp_package_suffix: ".tar.gz"
-gmp_package_name_binary: "gmp-{{ gmp_version }}"
-gmp_package_name_source: "gmp-{{ gmp_version }}"
 
+# url
+gmp_base_url: "https://mirrors.tuna.tsinghua.edu.cn/gnu/gmp"
+gmp_base_url_remote: "http://gcc.gnu.org/pub/gcc/infrastructure"
+
+# package
+gmp_package_suffix: ".tar.bz2"
+gmp_package_name_rpm: "gmp-{{ gmp_version }}.rpm"
+gmp_package_name_binary: "gmp-{{ gmp_version }}-{{ ansible_architecture }}{{ gmp_package_suffix }}"
+gmp_package_name_source: "gmp-{{ gmp_version }}{{ gmp_package_suffix }}"
+gmp_package_name: "{% if gmp_deploy_method == 'rpm' %}{{ gmp_package_name_rpm }}{% elif gmp_deploy_method == 'binary' %}{{ gmp_package_name_binary }}{% elif gmp_deploy_method == 'source' %}{{ gmp_package_name_source }}{% else %}{{ gmp_package_name_source }}{% endif %}"
+
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/gmp
+# /data/gmp/data
+# /data/gmp/conf
+# /data/gmp/log
+# /data/gmp/tmp
+# /data/gmp/source
+# /data/gmp/app
+# /data/gmp/app/gmp-2.44
+# /data/gmp/app/gmp-2.44/bin
+# /data/gmp/app/gmp-2.44/lib
+# /data/gmp/app/gmp-2.44/lib/pkgconfig
+# /data/gmp/app/gmp-2.44/include
+# /data/gmp/app/gmp-2.44/share
+# /data/gmp/source/gmp-2.44
 gmp_dir: "{{ base_dir }}/gmp"
-gmp_app_dir: "{{ base_dir }}/gmp/app"
-gmp_base_dir: "{{ gmp_app_dir }}/gmp-{{ gmp_version }}"
-gmp_source_dir: "{{ gmp_app_dir }}/source/gmp-{{ gmp_version }}"
+gmp_data_dir: "{{ gmp_dir }}/data"
+gmp_conf_dir: "{{ gmp_dir }}/conf"
+gmp_log_dir: "{{ gmp_dir }}/log"
+gmp_tmp_dir: "{{ gmp_dir }}/tmp"
+gmp_app_base_dir: "{{ gmp_dir }}/app"
+gmp_source_base_dir: "{{ gmp_dir }}/source"
+gmp_app_dir: "{{ gmp_app_base_dir }}/gmp-{{ gmp_version }}"
+gmp_bin_dir: "{{ gmp_app_dir }}/bin"
+gmp_lib_dir: "{{ gmp_app_dir }}/lib"
+gmp_include_dir: "{{ gmp_app_dir }}/include"
+gmp_share_dir: "{{ gmp_app_dir }}/share"
+gmp_pkgconfig_dir: "{{ gmp_lib_dir }}/pkgconfig"
+gmp_source_dir: "{{ gmp_source_base_dir }}/gmp-{{ gmp_version }}"

@@ -1,0 +1,26 @@
+---
+# tasks file for libgcrypt
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check libgcrypt_port
+- name: "lsof -i:{{ libgcrypt_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ libgcrypt_port }}"
+  register: libgcrypt_port_check_output
+  ignore_errors: true
+  when: libgcrypt_port is defined
+
+- name: "check libgcrypt port"
+  become: true
+  fail:
+      msg: "libgcryptd端口被占用,可使用: ps aux|grep libgcryptd"
+  when:
+      - libgcrypt_port is defined
+      - libgcrypt_port_check_output is defined
+      - libgcrypt_port_check_output.rc == 0

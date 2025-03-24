@@ -1,0 +1,57 @@
+---
+# tasks file for zlib by source
+- name: "chown -R {{  zlib_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ zlib_install_user }}.{{ zlib_install_group }} {{  zlib_dir  }}"
+
+# source
+- name: "zlib_deploy_method == 'source'"
+  block:
+# ./configure
+      - name: "cd {{ zlib_build_dir }};../configure --prefix={{ zlib_app_dir }}"
+        shell:
+            chdir: "{{ zlib_build_dir }}"
+            cmd: "../configure --prefix={{ zlib_app_dir }}"
+# make
+      - name: "cd {{ zlib_build_dir }};make -j{{ ansible_processor_vcpus }}"
+        shell:
+            chdir: "{{ zlib_build_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+# make install
+      - name: "cd {{ zlib_build_dir }};make install"
+        shell:
+            chdir: "{{ zlib_build_dir }}"
+            cmd: make install
+  when: zlib_deploy_method == "source"
+
+# zlib_port standalone
+- name: zlib_port is defined
+  block:
+# ./configure
+      - name: "cd {{ zlib_source_dir }};./configure --prefix={{ zlib_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ zlib_source_dir }}"
+            cmd: "./configure --prefix={{ zlib_base_dir }} --enable-shared --enable-static"
+# make
+      - name: "cd {{ zlib_source_dir }};make VERBOSE=1 -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ zlib_source_dir }}"
+            cmd: "make VERBOSE=1 -j{{ ansible_processor_vcpus }}"
+# make install
+      - name: "cd {{ zlib_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ zlib_source_dir }}"
+            cmd: make install
+  when:
+      - zlib_port is defined
+      - zlib_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  zlib_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ zlib_install_user }}.{{ zlib_install_group }} {{  zlib_dir  }}"

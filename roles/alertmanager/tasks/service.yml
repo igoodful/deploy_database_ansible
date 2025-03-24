@@ -1,7 +1,6 @@
 ---
 - name: started and enabled alertmanager
   systemd:
-    name: alertmanager_{{ alertmanager_port }}
-    state: started
-    enabled: yes
-
+      name: alertmanager_{{alertmanager_port}}
+      state: started
+      enabled: yes

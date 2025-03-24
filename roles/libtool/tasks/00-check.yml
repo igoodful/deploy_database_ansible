@@ -1,0 +1,26 @@
+---
+# tasks file for libtool
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check libtool_port
+- name: "lsof -i:{{ libtool_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ libtool_port }}"
+  register: libtool_port_check_output
+  ignore_errors: true
+  when: libtool_port is defined
+
+- name: "check libtool port"
+  become: true
+  fail:
+      msg: "libtoold端口被占用,可使用: ps aux|grep libtoold"
+  when:
+      - libtool_port is defined
+      - libtool_port_check_output is defined
+      - libtool_port_check_output.rc == 0

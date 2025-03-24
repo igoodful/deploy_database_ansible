@@ -1,0 +1,59 @@
+---
+# defaults file for findutils
+# https://ftp.gnu.org/gnu/findutils/findutils-4.6.0.tar.gz
+# DONE
+
+# user
+findutils_install_user: "{{ ansible_user }}"
+findutils_install_group: "{{ ansible_user }}"
+findutils_version: "4.6.0"
+# findutils_port: "8032"
+
+# standalone/cluster/pseudo_cluster
+findutils_deploy_mode: "standalone"
+
+# binary/source/rpm/yum/dnf
+findutils_deploy_method: "source"
+
+# url
+findutils_base_url: "{{ base_url }}"
+findutils_base_url_remote: "https://ftp.gnu.org/gnu/findutils"
+
+# package
+findutils_package_suffix: ".tar.gz"
+findutils_package_name_rpm: "findutils-{{ findutils_version }}.rpm"
+findutils_package_name_binary: "findutils-{{ findutils_version }}-{{ ansible_architecture }}{{ findutils_package_suffix }}"
+findutils_package_name_source: "findutils-{{ findutils_version }}{{ findutils_package_suffix }}"
+findutils_package_name: "{% if findutils_deploy_method == 'rpm' %}{{ findutils_package_name_rpm }}{% elif findutils_deploy_method == 'binary' %}{{ findutils_package_name_binary }}{% elif findutils_deploy_method == 'source' %}{{ findutils_package_name_source }}{% else %}{{ findutils_package_name_source }}{% endif %}"
+
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/findutils
+# /data/findutils/data
+# /data/findutils/conf
+# /data/findutils/log
+# /data/findutils/tmp
+# /data/findutils/source
+# /data/findutils/app
+# /data/findutils/app/findutils-2.44
+# /data/findutils/app/findutils-2.44/bin
+# /data/findutils/app/findutils-2.44/lib
+# /data/findutils/app/findutils-2.44/lib/pkgconfig
+# /data/findutils/app/findutils-2.44/include
+# /data/findutils/app/findutils-2.44/share
+# /data/findutils/source/findutils-2.44
+findutils_dir: "{{ base_dir }}/findutils"
+findutils_data_dir: "{{ findutils_dir }}/data"
+findutils_conf_dir: "{{ findutils_dir }}/conf"
+findutils_log_dir: "{{ findutils_dir }}/log"
+findutils_tmp_dir: "{{ findutils_dir }}/tmp"
+findutils_app_base_dir: "{{ findutils_dir }}/app"
+findutils_source_base_dir: "{{ findutils_dir }}/source"
+findutils_app_dir: "{{ findutils_app_base_dir }}/findutils-{{ findutils_version }}"
+findutils_bin_dir: "{{ findutils_app_dir }}/bin"
+findutils_lib_dir: "{{ findutils_app_dir }}/lib"
+findutils_include_dir: "{{ findutils_app_dir }}/include"
+findutils_share_dir: "{{ findutils_app_dir }}/share"
+findutils_pkgconfig_dir: "{{ findutils_lib_dir }}/pkgconfig"
+findutils_source_dir: "{{ findutils_source_base_dir }}/findutils-{{ findutils_version }}"

@@ -1,0 +1,59 @@
+---
+# defaults file for sed
+# https://ftp.gnu.org/gnu/sed/sed-4.9.tar.gz
+# DONE
+
+# user
+sed_install_user: "{{ ansible_user }}"
+sed_install_group: "{{ ansible_user }}"
+sed_version: "4.9"
+# sed_port: "8032"
+
+# standalone/cluster/pseudo_cluster
+sed_deploy_mode: "standalone"
+
+# binary/source/rpm/yum/dnf
+sed_deploy_method: "source"
+
+# url
+sed_base_url: "{{ base_url }}"
+sed_base_url_remote: "https://ftp.gnu.org/gnu/sed"
+
+# package
+sed_package_suffix: ".tar.gz"
+sed_package_name_rpm: "sed-{{ sed_version }}.rpm"
+sed_package_name_binary: "sed-{{ sed_version }}-{{ ansible_architecture }}{{ sed_package_suffix }}"
+sed_package_name_source: "sed-{{ sed_version }}{{ sed_package_suffix }}"
+sed_package_name: "{% if sed_deploy_method == 'rpm' %}{{ sed_package_name_rpm }}{% elif sed_deploy_method == 'binary' %}{{ sed_package_name_binary }}{% elif sed_deploy_method == 'source' %}{{ sed_package_name_source }}{% else %}{{ sed_package_name_source }}{% endif %}"
+
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/sed
+# /data/sed/data
+# /data/sed/conf
+# /data/sed/log
+# /data/sed/tmp
+# /data/sed/source
+# /data/sed/app
+# /data/sed/app/sed-2.44
+# /data/sed/app/sed-2.44/bin
+# /data/sed/app/sed-2.44/lib
+# /data/sed/app/sed-2.44/lib/pkgconfig
+# /data/sed/app/sed-2.44/include
+# /data/sed/app/sed-2.44/share
+# /data/sed/source/sed-2.44
+sed_dir: "{{ base_dir }}/sed"
+sed_data_dir: "{{ sed_dir }}/data"
+sed_conf_dir: "{{ sed_dir }}/conf"
+sed_log_dir: "{{ sed_dir }}/log"
+sed_tmp_dir: "{{ sed_dir }}/tmp"
+sed_app_base_dir: "{{ sed_dir }}/app"
+sed_source_base_dir: "{{ sed_dir }}/source"
+sed_app_dir: "{{ sed_app_base_dir }}/sed-{{ sed_version }}"
+sed_bin_dir: "{{ sed_app_dir }}/bin"
+sed_lib_dir: "{{ sed_app_dir }}/lib"
+sed_include_dir: "{{ sed_app_dir }}/include"
+sed_share_dir: "{{ sed_app_dir }}/share"
+sed_pkgconfig_dir: "{{ sed_lib_dir }}/pkgconfig"
+sed_source_dir: "{{ sed_source_base_dir }}/sed-{{ sed_version }}"

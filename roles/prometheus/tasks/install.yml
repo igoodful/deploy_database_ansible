@@ -1,33 +1,32 @@
 ---
 # Extract
-- name: "Extract {{ install_tmpdir }}/prometheus-{{ prometheus_version }}"
+- name: "Extract {{install_tmpdir}}/prometheus-{{prometheus_version}}"
   become: true
   unarchive:
-    src: "{{ install_tmpdir }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz"
-    dest: "{{ prometheus_bin_dir }}/"
-    remote_src: true
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-    mode: 0755
-    extra_opts:
-      - --strip-components=1
-    exclude:
-      - "*.md"
-      - "Document*"
+      src: "{{install_tmpdir}}/prometheus-{{prometheus_version}}.linux-amd64.tar.gz"
+      dest: "{{prometheus_bin_dir}}/"
+      remote_src: true
+      owner: "{{ansible_user}}"
+      group: "{{ansible_user}}"
+      mode: 0755
+      extra_opts:
+          - --strip-components=1
+      exclude:
+          - "*.md"
+          - "Document*"
   when: ansible_architecture == 'x86_64'
 
-- name: "Extract {{ install_tmpdir }}/prometheus-{{ prometheus_version }}"
+- name: "Extract {{install_tmpdir}}/prometheus-{{prometheus_version}}"
   become: true
   unarchive:
-    src: "{{ install_tmpdir }}/prometheus-{{ prometheus_version }}.linux-arm64.tar.gz"
-    dest: "{{ prometheus_bin_dir }}/"
-    remote_src: true
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-    extra_opts:
-      - --strip-components=1
-    exclude:
-      - "*.md"
-      - "Document*"
+      src: "{{install_tmpdir}}/prometheus-{{prometheus_version}}.linux-arm64.tar.gz"
+      dest: "{{prometheus_bin_dir}}/"
+      remote_src: true
+      owner: "{{ansible_user}}"
+      group: "{{ansible_user}}"
+      extra_opts:
+          - --strip-components=1
+      exclude:
+          - "*.md"
+          - "Document*"
   when: ansible_architecture == 'aarch64'
-

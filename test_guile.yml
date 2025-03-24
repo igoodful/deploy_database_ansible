@@ -3,8 +3,4 @@
   hosts: all
   gather_facts: true
   roles:
-    - {
-        role: guile,
-        tags: guile,
-      }
-
+      - { role: guile, tags: guile }

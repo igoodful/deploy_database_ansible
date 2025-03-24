@@ -1,18 +1,59 @@
 ---
 # defaults file for m4
-# m4-1.4.tar.gz
-m4_base_url: "{{ base_url }}"
-m4_base_url_remote: "https://ftp.gnu.org/gnu/m4"
+# https://mirrors.tuna.tsinghua.edu.cn/gnu/m4/m4-1.4.8.tar.gz
+# https://ftp.gnu.org/gnu/m4/m4-1.4.8.tar.gz
+
+# user
 m4_install_user: "{{ ansible_user }}"
 m4_install_group: "{{ ansible_user }}"
-m4_version: "1.4"
+m4_version: "1.4.8"
+# m4_port: "8032"
 
-# binary/source
+# standalone/cluster/pseudo_cluster
+m4_deploy_mode: "standalone"
+
+# binary/source/rpm/yum/dnf
 m4_deploy_method: "source"
-m4_package_name_binary: "m4-{{ m4_version }}"
-m4_package_name_source: "m4-{{ m4_version }}"
 
+# url
+m4_base_url: "https://mirrors.tuna.tsinghua.edu.cn/gnu/m4"
+m4_base_url_remote: "https://ftp.gnu.org/gnu/m4"
+
+# package
+m4_package_suffix: ".tar.gz"
+m4_package_name_rpm: "m4-{{ m4_version }}.rpm"
+m4_package_name_binary: "m4-{{ m4_version }}-{{ ansible_architecture }}{{ m4_package_suffix }}"
+m4_package_name_source: "m4-{{ m4_version }}{{ m4_package_suffix }}"
+m4_package_name: "{% if m4_deploy_method == 'rpm' %}{{ m4_package_name_rpm }}{% elif m4_deploy_method == 'binary' %}{{ m4_package_name_binary }}{% elif m4_deploy_method == 'source' %}{{ m4_package_name_source }}{% else %}{{ m4_package_name_source }}{% endif %}"
+
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/m4
+# /data/m4/data
+# /data/m4/conf
+# /data/m4/log
+# /data/m4/tmp
+# /data/m4/source
+# /data/m4/app
+# /data/m4/app/m4-2.44
+# /data/m4/app/m4-2.44/bin
+# /data/m4/app/m4-2.44/lib
+# /data/m4/app/m4-2.44/lib/pkgconfig
+# /data/m4/app/m4-2.44/include
+# /data/m4/app/m4-2.44/share
+# /data/m4/source/m4-2.44
 m4_dir: "{{ base_dir }}/m4"
-m4_app_dir: "{{ base_dir }}/m4/app"
-m4_base_dir: "{{ m4_app_dir }}/m4-{{ m4_version }}"
-m4_source_dir: "{{ m4_app_dir }}/source/m4-{{ m4_version }}"
+m4_data_dir: "{{ m4_dir }}/data"
+m4_conf_dir: "{{ m4_dir }}/conf"
+m4_log_dir: "{{ m4_dir }}/log"
+m4_tmp_dir: "{{ m4_dir }}/tmp"
+m4_app_base_dir: "{{ m4_dir }}/app"
+m4_source_base_dir: "{{ m4_dir }}/source"
+m4_app_dir: "{{ m4_app_base_dir }}/m4-{{ m4_version }}"
+m4_bin_dir: "{{ m4_app_dir }}/bin"
+m4_lib_dir: "{{ m4_app_dir }}/lib"
+m4_include_dir: "{{ m4_app_dir }}/include"
+m4_share_dir: "{{ m4_app_dir }}/share"
+m4_pkgconfig_dir: "{{ m4_lib_dir }}/pkgconfig"
+m4_source_dir: "{{ m4_source_base_dir }}/m4-{{ m4_version }}"

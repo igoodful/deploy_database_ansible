@@ -1,20 +1,59 @@
 ---
 # defaults file for gcc
-# https://ftp.gnu.org/gnu/gcc/gcc-9.3.0/gcc-9.3.0.tar.gz
+# https://ftp.gnu.org/gnu/gcc/gcc-9.5.0/gcc-9.5.0.tar.gz
+# https://mirrors.tuna.tsinghua.edu.cn/gnu/gcc/gcc-10.4.0/gcc-10.4.0.tar.gz
+
+# user
 gcc_install_user: "{{ ansible_user }}"
 gcc_install_group: "{{ ansible_user }}"
-gcc_version: "9.3.0"
-gcc_base_url: "{{ base_url }}"
+gcc_version: "10.4.0"
+# gcc_port: "8032"
+
+# standalone/cluster/pseudo_cluster
+gcc_deploy_mode: "standalone"
+
+# binary/source/rpm/yum/dnf
+gcc_deploy_method: "source"
+
+# url
+gcc_base_url: "https://mirrors.tuna.tsinghua.edu.cn/gnu/gcc/gcc-10.4.0"
 gcc_base_url_remote: "https://ftp.gnu.org/gnu/gcc/gcc-{{ gcc_version }}"
 
-# binary/source
-
-gcc_deploy_method: "source"
+# package
 gcc_package_suffix: ".tar.gz"
-gcc_package_name_binary: "gcc-{{ gcc_version }}"
-gcc_package_name_source: "gcc-{{ gcc_version }}"
+gcc_package_name_rpm: "gcc-{{ gcc_version }}.rpm"
+gcc_package_name_binary: "gcc-{{ gcc_version }}-{{ ansible_architecture }}{{ gcc_package_suffix }}"
+gcc_package_name_source: "gcc-{{ gcc_version }}{{ gcc_package_suffix }}"
+gcc_package_name: "{% if gcc_deploy_method == 'rpm' %}{{ gcc_package_name_rpm }}{% elif gcc_deploy_method == 'binary' %}{{ gcc_package_name_binary }}{% elif gcc_deploy_method == 'source' %}{{ gcc_package_name_source }}{% else %}{{ gcc_package_name_source }}{% endif %}"
 
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/gcc
+# /data/gcc/data
+# /data/gcc/conf
+# /data/gcc/log
+# /data/gcc/tmp
+# /data/gcc/source
+# /data/gcc/app
+# /data/gcc/app/gcc-2.44
+# /data/gcc/app/gcc-2.44/bin
+# /data/gcc/app/gcc-2.44/lib
+# /data/gcc/app/gcc-2.44/lib/pkgconfig
+# /data/gcc/app/gcc-2.44/include
+# /data/gcc/app/gcc-2.44/share
+# /data/gcc/source/gcc-2.44
 gcc_dir: "{{ base_dir }}/gcc"
-gcc_app_dir: "{{ base_dir }}/gcc/app"
-gcc_base_dir: "{{ gcc_app_dir }}/gcc-{{ gcc_version }}"
-gcc_source_dir: "{{ gcc_app_dir }}/source/gcc-{{ gcc_version }}"
+gcc_data_dir: "{{ gcc_dir }}/data"
+gcc_conf_dir: "{{ gcc_dir }}/conf"
+gcc_log_dir: "{{ gcc_dir }}/log"
+gcc_tmp_dir: "{{ gcc_dir }}/tmp"
+gcc_app_base_dir: "{{ gcc_dir }}/app"
+gcc_source_base_dir: "{{ gcc_dir }}/source"
+gcc_app_dir: "{{ gcc_app_base_dir }}/gcc-{{ gcc_version }}"
+gcc_bin_dir: "{{ gcc_app_dir }}/bin"
+gcc_lib_dir: "{{ gcc_app_dir }}/lib"
+gcc_include_dir: "{{ gcc_app_dir }}/include"
+gcc_share_dir: "{{ gcc_app_dir }}/share"
+gcc_pkgconfig_dir: "{{ gcc_lib_dir }}/pkgconfig"
+gcc_source_dir: "{{ gcc_source_base_dir }}/gcc-{{ gcc_version }}"

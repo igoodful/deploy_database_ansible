@@ -1,33 +1,33 @@
 ---
 # tasks file for mysql
 
-- name: remove PS1 from /etc/profile
+- name: remove PS1 from ~/.bashrc
   become: true
   lineinfile:
-    path: /etc/profile
-    regexp: '^PS1'
-    state: absent
+      path: ~/.bashrc
+      regexp: "^PS1"
+      state: absent
 
-- name: Add PS1 to /etc/profile
+- name: Add PS1 to ~/.bashrc
   become: true
   lineinfile:
-    path: /etc/profile
-    line: "PS1={{ PS1 }}"
-    #line: 'PS1="\[\033[01;37m\]\D{\%Y-\%m-\%d}T\t "'
-    insertafter: EOF
-    state: present
+      path: ~/.bashrc
+      line: "PS1={{PS1}}"
+      #line: 'PS1="\[\033[01;37m\]\D{\%Y-\%m-\%d}T\t "'
+      insertafter: EOF
+      state: present
 
-- name: remove MYSQL_PS1 from /etc/profile
+- name: remove MYSQL_PS1 from ~/.bashrc
   become: true
   lineinfile:
-    path: /etc/profile
-    regexp: 'MYSQL_PS1'
-    state: absent
+      path: ~/.bashrc
+      regexp: "MYSQL_PS1"
+      state: absent
 
-- name: Add MYSQL_PS1 to /etc/profile
+- name: Add MYSQL_PS1 to ~/.bashrc
   become: true
   lineinfile:
-    path: /etc/profile
-    line: 'export MYSQL_PS1="[\\U \\R:\\m:\\s(\\d)]$"'
-    insertafter: EOF
-    state: present
+      path: ~/.bashrc
+      line: 'export MYSQL_PS1="[\\U \\R:\\m:\\s(\\d)]$"'
+      insertafter: EOF
+      state: present

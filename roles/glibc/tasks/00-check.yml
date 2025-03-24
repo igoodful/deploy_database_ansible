@@ -1,0 +1,26 @@
+---
+# tasks file for glibc
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check glibc_port
+- name: "lsof -i:{{ glibc_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ glibc_port }}"
+  register: glibc_port_check_output
+  ignore_errors: true
+  when: glibc_port is defined
+
+- name: "check glibc port"
+  become: true
+  fail:
+      msg: "glibcd端口被占用,可使用: ps aux|grep glibcd"
+  when:
+      - glibc_port is defined
+      - glibc_port_check_output is defined
+      - glibc_port_check_output.rc == 0

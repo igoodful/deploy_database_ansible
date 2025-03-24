@@ -1,19 +1,19 @@
 [client]
-socket                                                  =  {{ mysql_socket_dir }}/mysql.sock
+socket                                                  =  {{mysql_socket_dir}}/mysql.sock
 [mysqld]
 {% if mysql_version == "8.0.32" %}
 innodb_redo_log_capacity                                =  4294967296
 {% endif %}
-basedir                                                 =  {{ mysql_app_base_dir }}
-datadir                                                 =  {{ mysql_data_dir }}
-port                                                    =  {{ mysql_port }}
-socket                                                  =  {{ mysql_socket_dir }}/mysql.sock
-server-id                                               =  {{ server_id.stdout|int }}
-tmpdir                                                  =  {{ mysql_tmp_dir }}
-general-log-file                                        =  {{ mysql_log_dir }}/general.log
-slow-query-log-file                                     =  {{ mysql_log_dir }}/mysqld-slow.log
-pid-file                                                =  {{ mysql_pid_dir }}/mysqld.pid
-log-error                                               =  {{ mysql_log_dir }}/mysqld.err
+basedir                                                 =  {{mysql_app_base_dir}}
+datadir                                                 =  {{mysql_data_dir}}
+port                                                    =  {{mysql_port}}
+socket                                                  =  {{mysql_socket_dir}}/mysql.sock
+server-id                                               =  {{server_id.stdout|int}}
+tmpdir                                                  =  {{mysql_tmp_dir}}
+general-log-file                                        =  {{mysql_log_dir}}/general.log
+slow-query-log-file                                     =  {{mysql_log_dir}}/mysqld-slow.log
+pid-file                                                =  {{mysql_pid_dir}}/mysqld.pid
+log-error                                               =  {{mysql_log_dir}}/mysqld.err
 slow_query_log                                          =  on
 long_query_time                                         =  1
 relay_log                                               =  mysql-relay
@@ -34,9 +34,9 @@ log_replica_updates                                     =  1
 binlog_rows_query_log_events                            =  ON
 binlog_transaction_dependency_tracking                  =  WRITESET
 innodb_parallel_read_threads                            =  16
-innodb_buffer_pool_size                                 =  {{ innodb_buffer_pool_size|int }}M
+innodb_buffer_pool_size                                 =  {{innodb_buffer_pool_size|int}}M
 {% if ansible_processor_vcpus|int <=8 %}
-innodb_buffer_pool_instances                            =  {{ ansible_processor_vcpus * 2 }}
+innodb_buffer_pool_instances                            =  {{ansible_processor_vcpus * 2}}
 {% else %}
 innodb_buffer_pool_instances                            =  32
 {% endif %}
@@ -51,7 +51,7 @@ innodb_read_io_threads                                  =  32
 innodb_write_io_threads                                 =  32
 {% endif %}
 {% if ansible_processor_vcpus|int  <= 40 %}
-innodb_thread_concurrency                               =  {{ ansible_processor_vcpus * 2 }}
+innodb_thread_concurrency                               =  {{ansible_processor_vcpus * 2}}
 {% else %}
 innodb_thread_concurrency                               =  80
 {% endif %}
@@ -70,7 +70,7 @@ innodb_numa_interleave                                  =  ON
 innodb_online_alter_log_max_size                        =  2147483648
 innodb_open_files                                       =  40960
 {% if ansible_processor_vcpus|int  <= 8 %}
-innodb_page_cleaners                                    =  {{ ansible_processor_vcpus * 2 }}
+innodb_page_cleaners                                    =  {{ansible_processor_vcpus * 2}}
 {% else %}
 innodb_page_cleaners                                    =  16
 {% endif %}

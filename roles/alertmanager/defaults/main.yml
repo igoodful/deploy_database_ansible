@@ -4,12 +4,11 @@ alertmanager_port: "9093"
 alertmanager_version: "0.27.0"
 
 alertmanager_download: false
-alertmanager_download_url_amd64: "https://github.com/prometheus/alertmanager/releases/download/v{{ alertmanager_version }}/alertmanager-{{ alertmanager_version }}.linux-amd64.tar.gz"
-alertmanager_download_url_arm64: "https://github.com/prometheus/alertmanager/releases/download/v{{ alertmanager_version }}/alertmanager-{{ alertmanager_version }}.linux-arm64.tar.gz"
+alertmanager_download_url_amd64: "https://github.com/prometheus/alertmanager/releases/download/v{{alertmanager_version}}/alertmanager-{{alertmanager_version}}.linux-amd64.tar.gz"
+alertmanager_download_url_arm64: "https://github.com/prometheus/alertmanager/releases/download/v{{alertmanager_version}}/alertmanager-{{alertmanager_version}}.linux-arm64.tar.gz"
 
-alertmanager_base_dir: "{{ base_dir }}/alertmanager"
-alertmanager_bin_dir: "{{ alertmanager_base_dir }}/bin"
-alertmanager_conf_dir: "{{ alertmanager_base_dir }}/conf"
-alertmanager_data_dir: "{{ alertmanager_base_dir }}/data"
-alertmanager_log_dir: "{{ alertmanager_base_dir }}/log"
-
+alertmanager_base_dir: "{{base_dir}}/alertmanager"
+alertmanager_bin_dir: "{{alertmanager_base_dir}}/bin"
+alertmanager_conf_dir: "{{alertmanager_base_dir}}/conf"
+alertmanager_data_dir: "{{alertmanager_base_dir}}/data"
+alertmanager_log_dir: "{{alertmanager_base_dir}}/log"

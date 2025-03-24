@@ -1,20 +1,59 @@
 ---
 # defaults file for texinfo
+# https://ftp.gnu.org/gnu/texinfo/texinfo-7.2.tar.gz
+# https://mirrors.tuna.tsinghua.edu.cn/gnu/texinfo/texinfo-7.2.tar.gz
+
+# user
 texinfo_install_user: "{{ ansible_user }}"
 texinfo_install_group: "{{ ansible_user }}"
-texinfo_base_url: "{{ base_url }}"
-# https://ftp.gnu.org/gnu/texinfo/texinfo-7.2.tar.gz
 texinfo_version: "7.2"
+# texinfo_port: "8032"
+
+# standalone/cluster/pseudo_cluster
+texinfo_deploy_mode: "standalone"
+
+# binary/source/rpm/yum/dnf
+texinfo_deploy_method: "source"
+
+# url
+texinfo_base_url: "https://mirrors.tuna.tsinghua.edu.cn/gnu/texinfo"
 texinfo_base_url_remote: "https://ftp.gnu.org/gnu/texinfo"
 
-# binary/source
-
-texinfo_deploy_method: "source"
+# package
 texinfo_package_suffix: ".tar.gz"
-texinfo_package_name_binary: "texinfo-{{ texinfo_version }}"
-texinfo_package_name_source: "texinfo-{{ texinfo_version }}"
+texinfo_package_name_rpm: "texinfo-{{ texinfo_version }}.rpm"
+texinfo_package_name_binary: "texinfo-{{ texinfo_version }}-{{ ansible_architecture }}{{ texinfo_package_suffix }}"
+texinfo_package_name_source: "texinfo-{{ texinfo_version }}{{ texinfo_package_suffix }}"
+texinfo_package_name: "{% if texinfo_deploy_method == 'rpm' %}{{ texinfo_package_name_rpm }}{% elif texinfo_deploy_method == 'binary' %}{{ texinfo_package_name_binary }}{% elif texinfo_deploy_method == 'source' %}{{ texinfo_package_name_source }}{% else %}{{ texinfo_package_name_source }}{% endif %}"
 
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/texinfo
+# /data/texinfo/data
+# /data/texinfo/conf
+# /data/texinfo/log
+# /data/texinfo/tmp
+# /data/texinfo/source
+# /data/texinfo/app
+# /data/texinfo/app/texinfo-2.44
+# /data/texinfo/app/texinfo-2.44/bin
+# /data/texinfo/app/texinfo-2.44/lib
+# /data/texinfo/app/texinfo-2.44/lib/pkgconfig
+# /data/texinfo/app/texinfo-2.44/include
+# /data/texinfo/app/texinfo-2.44/share
+# /data/texinfo/source/texinfo-2.44
 texinfo_dir: "{{ base_dir }}/texinfo"
-texinfo_app_dir: "{{ base_dir }}/texinfo/app"
-texinfo_base_dir: "{{ texinfo_app_dir }}/texinfo-{{ texinfo_version }}"
-texinfo_source_dir: "{{ texinfo_app_dir }}/source/texinfo-{{ texinfo_version }}"
+texinfo_data_dir: "{{ texinfo_dir }}/data"
+texinfo_conf_dir: "{{ texinfo_dir }}/conf"
+texinfo_log_dir: "{{ texinfo_dir }}/log"
+texinfo_tmp_dir: "{{ texinfo_dir }}/tmp"
+texinfo_app_base_dir: "{{ texinfo_dir }}/app"
+texinfo_source_base_dir: "{{ texinfo_dir }}/source"
+texinfo_app_dir: "{{ texinfo_app_base_dir }}/texinfo-{{ texinfo_version }}"
+texinfo_bin_dir: "{{ texinfo_app_dir }}/bin"
+texinfo_lib_dir: "{{ texinfo_app_dir }}/lib"
+texinfo_include_dir: "{{ texinfo_app_dir }}/include"
+texinfo_share_dir: "{{ texinfo_app_dir }}/share"
+texinfo_pkgconfig_dir: "{{ texinfo_lib_dir }}/pkgconfig"
+texinfo_source_dir: "{{ texinfo_source_base_dir }}/texinfo-{{ texinfo_version }}"

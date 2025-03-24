@@ -1,0 +1,6 @@
+---
+- name: Apply role less
+  hosts: all
+  gather_facts: true
+  roles:
+      - { role: less, tags: less }

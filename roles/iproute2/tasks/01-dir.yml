@@ -1,0 +1,73 @@
+---
+# tasks file for iproute2
+# delete iproute2_source_dir iproute2_app_dir
+
+- name: "delete {{ iproute2_source_dir }} {{ iproute2_app_dir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: absent
+  with_items:
+      - "{{ iproute2_source_dir }}"
+      - "{{ iproute2_app_dir }}"
+
+# basic dir
+- name: "mkdir {{ base_dir }} {{ install_tmpdir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ iproute2_install_user }}"
+      group: "{{ iproute2_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ base_dir }}"
+      - "{{ install_tmpdir }}"
+
+# binary and source dir
+- name: "mkdir {{ iproute2_dir }} {{ iproute2_app_base_dir }} {{ iproute2_app_dir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ iproute2_install_user }}"
+      group: "{{ iproute2_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ iproute2_dir }}"
+      - "{{ iproute2_app_base_dir }}"
+      - "{{ iproute2_app_dir }}"
+  when:
+      - iproute2_deploy_method == "binary" or iproute2_deploy_method == "source"
+
+# source dir
+- name: "mkdir {{ iproute2_dir }} {{ iproute2_source_base_dir }}  {{ iproute2_source_dir }} "
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ iproute2_install_user }}"
+      group: "{{ iproute2_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ iproute2_source_base_dir }}"
+      - "{{ iproute2_source_dir }}"
+  when:
+      - iproute2_deploy_method == "source"
+
+# service dir
+- name: "mkdir {{ iproute2_data_dir }} {{ iproute2_conf_dir }} {{ iproute2_log_dir }} {{ iproute2_tmp_dir }}"
+  become: true
+  file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ iproute2_install_user }}"
+      group: "{{ iproute2_install_group }}"
+      mode: 0755
+  with_items:
+      - "{{ iproute2_data_dir }}"
+      - "{{ iproute2_conf_dir }}"
+      - "{{ iproute2_log_dir }}"
+      - "{{ iproute2_tmp_dir }}"
+  when:
+      - iproute2_port is defined

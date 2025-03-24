@@ -1,0 +1,51 @@
+---
+# tasks file for pkgconfig by source
+- name: "chown -R {{  pkgconfig_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ pkgconfig_install_user }}.{{ pkgconfig_install_group }} {{  pkgconfig_dir  }}"
+
+# source
+- name: "pkgconfig_deploy_method == 'source'"
+  block:
+      - name: "cd {{ pkgconfig_source_dir }};./configure --prefix={{ pkgconfig_app_dir }} --with-internal-glib"
+        shell:
+            chdir: "{{ pkgconfig_source_dir }}"
+            cmd: "./configure --prefix={{ pkgconfig_app_dir }} --with-internal-glib"
+      - name: "cd {{ pkgconfig_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        shell:
+            chdir: "{{ pkgconfig_source_dir }}"
+            cmd: "make VERBOSE=1 -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ pkgconfig_source_dir }};make install"
+        shell:
+            chdir: "{{ pkgconfig_source_dir }}"
+            cmd: make install
+  when: pkgconfig_deploy_method == "source"
+
+# pkgconfig_port standalone
+- name: pkgconfig_port is defined
+  block:
+      - name: "cd {{ pkgconfig_source_dir }};./configure --prefix={{ pkgconfig_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ pkgconfig_source_dir }}"
+            cmd: "./configure --prefix={{ pkgconfig_base_dir }} --enable-shared --enable-static"
+      - name: "cd {{ pkgconfig_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ pkgconfig_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ pkgconfig_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ pkgconfig_source_dir }}"
+            cmd: make install
+  when:
+      - pkgconfig_port is defined
+      - pkgconfig_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  pkgconfig_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ pkgconfig_install_user }}.{{ pkgconfig_install_group }} {{  pkgconfig_dir  }}"

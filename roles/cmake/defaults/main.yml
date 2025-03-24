@@ -2,19 +2,19 @@
 # defaults file for cmake
 # https://github.com/Kitware/CMake/archive/refs/tags/v3.30.8.tar.gz
 # DONE
-cmake_install_user: "{{ ansible_user }}"
-cmake_install_group: "{{ ansible_user }}"
+cmake_install_user: "{{ansible_user}}"
+cmake_install_group: "{{ansible_user}}"
 cmake_version: "3.30.8"
 # binary/source
 cmake_deploy_method: "source"
-cmake_base_url: "{{ base_url }}"
+cmake_base_url: "{{base_url}}"
 cmake_base_url_remote: "https://github.com/Kitware/CMake/archive/refs/tags"
 
 cmake_package_suffix: ".tar.gz"
-cmake_package_name_binary: "cmake-{{ cmake_version }}-{{ ansible_architecture }}{{ cmake_package_suffix }}"
-cmake_package_name_source: "cmake-{{ cmake_version }}{{ cmake_package_suffix }}"
+cmake_package_name_binary: "cmake-{{cmake_version}}-{{ansible_architecture}}{{cmake_package_suffix}}"
+cmake_package_name_source: "cmake-{{cmake_version}}{{cmake_package_suffix}}"
 
-cmake_dir: "{{ base_dir }}/cmake"
-cmake_app_dir: "{{ base_dir }}/cmake/app"
-cmake_base_dir: "{{ cmake_app_dir }}/cmake-{{ cmake_version }}"
-cmake_source_dir: "{{ cmake_app_dir }}/source/cmake-{{ cmake_version }}"
+cmake_dir: "{{base_dir}}/cmake"
+cmake_app_dir: "{{base_dir}}/cmake/app"
+cmake_base_dir: "{{cmake_app_dir}}/cmake-{{cmake_version}}"
+cmake_source_dir: "{{cmake_app_dir}}/source/cmake-{{cmake_version}}"

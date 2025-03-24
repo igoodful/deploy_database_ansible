@@ -1,0 +1,58 @@
+---
+# defaults file for grep
+# https://ftp.gnu.org/gnu/grep/grep-3.11.tar.gz
+
+# user
+grep_install_user: "{{ ansible_user }}"
+grep_install_group: "{{ ansible_user }}"
+grep_version: "3.11"
+# grep_port: "8032"
+
+# standalone/cluster/pseudo_cluster
+grep_deploy_mode: "standalone"
+
+# binary/source/rpm/yum/dnf
+grep_deploy_method: "source"
+
+# url
+grep_base_url: "{{ base_url }}"
+grep_base_url_remote: "https://ftp.gnu.org/gnu/grep"
+
+# package
+grep_package_suffix: ".tar.gz"
+grep_package_name_rpm: "grep-{{ grep_version }}.rpm"
+grep_package_name_binary: "grep-{{ grep_version }}-{{ ansible_architecture }}{{ grep_package_suffix }}"
+grep_package_name_source: "grep-{{ grep_version }}{{ grep_package_suffix }}"
+grep_package_name: "{% if grep_deploy_method == 'rpm' %}{{ grep_package_name_rpm }}{% elif grep_deploy_method == 'binary' %}{{ grep_package_name_binary }}{% elif grep_deploy_method == 'source' %}{{ grep_package_name_source }}{% else %}{{ grep_package_name_source }}{% endif %}"
+
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/grep
+# /data/grep/data
+# /data/grep/conf
+# /data/grep/log
+# /data/grep/tmp
+# /data/grep/source
+# /data/grep/app
+# /data/grep/app/grep-2.44
+# /data/grep/app/grep-2.44/bin
+# /data/grep/app/grep-2.44/lib
+# /data/grep/app/grep-2.44/lib/pkgconfig
+# /data/grep/app/grep-2.44/include
+# /data/grep/app/grep-2.44/share
+# /data/grep/source/grep-2.44
+grep_dir: "{{ base_dir }}/grep"
+grep_data_dir: "{{ grep_dir }}/data"
+grep_conf_dir: "{{ grep_dir }}/conf"
+grep_log_dir: "{{ grep_dir }}/log"
+grep_tmp_dir: "{{ grep_dir }}/tmp"
+grep_app_base_dir: "{{ grep_dir }}/app"
+grep_source_base_dir: "{{ grep_dir }}/source"
+grep_app_dir: "{{ grep_app_base_dir }}/grep-{{ grep_version }}"
+grep_bin_dir: "{{ grep_app_dir }}/bin"
+grep_lib_dir: "{{ grep_app_dir }}/lib"
+grep_include_dir: "{{ grep_app_dir }}/include"
+grep_share_dir: "{{ grep_app_dir }}/share"
+grep_pkgconfig_dir: "{{ grep_lib_dir }}/pkgconfig"
+grep_source_dir: "{{ grep_source_base_dir }}/grep-{{ grep_version }}"

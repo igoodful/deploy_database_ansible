@@ -1,0 +1,26 @@
+---
+# tasks file for tar
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check tar_port
+- name: "lsof -i:{{ tar_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ tar_port }}"
+  register: tar_port_check_output
+  ignore_errors: true
+  when: tar_port is defined
+
+- name: "check tar port"
+  become: true
+  fail:
+      msg: "tard端口被占用,可使用: ps aux|grep tard"
+  when:
+      - tar_port is defined
+      - tar_port_check_output is defined
+      - tar_port_check_output.rc == 0

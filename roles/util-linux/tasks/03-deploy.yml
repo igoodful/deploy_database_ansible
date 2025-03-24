@@ -1,0 +1,59 @@
+---
+# tasks file for util_linux by source
+- name: "chown -R {{  util_linux_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ util_linux_install_user }}.{{ util_linux_install_group }} {{  util_linux_dir  }}"
+
+# source
+- name: "util_linux_deploy_method == 'source'"
+  block:
+      - name: "cd {{ util_linux_source_dir }};./autogen.sh"
+        become: true
+        shell:
+            chdir: "{{ util_linux_source_dir }}"
+            cmd: "./autogen.sh"
+      - name: "cd {{ util_linux_source_dir }};./configure --prefix={{ util_linux_app_dir }}"
+        become: true
+        shell:
+            chdir: "{{ util_linux_source_dir }}"
+            cmd: "./configure --prefix={{ util_linux_app_dir }}"
+      - name: "cd {{ util_linux_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ util_linux_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ util_linux_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ util_linux_source_dir }}"
+            cmd: make install
+  when: util_linux_deploy_method == "source"
+
+# util_linux_port standalone
+- name: util_linux_port is defined
+  block:
+      - name: "cd {{ util_linux_source_dir }};./configure --prefix={{ util_linux_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ util_linux_source_dir }}"
+            cmd: "./configure --prefix={{ util_linux_base_dir }}"
+      - name: "cd {{ util_linux_source_dir }};make -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ util_linux_source_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+      - name: "cd {{ util_linux_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ util_linux_source_dir }}"
+            cmd: make install
+  when:
+      - util_linux_port is defined
+      - util_linux_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  util_linux_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ util_linux_install_user }}.{{ util_linux_install_group }} {{  util_linux_dir  }}"

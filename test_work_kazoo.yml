@@ -1,0 +1,6 @@
+---
+- name: Apply role work_kazoo
+  hosts: all
+  gather_facts: true
+  roles:
+      - { role: work_kazoo, tags: work_kazoo }

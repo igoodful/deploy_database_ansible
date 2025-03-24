@@ -1,2 +1,70 @@
 ---
 # defaults file for glibc
+# https://mirrors.tuna.tsinghua.edu.cn/gnu/libc/glibc-2.18.tar.gz
+# https://ftp.gnu.org/gnu/libc/glibc-2.18.tar.gz
+# https://ftp.gnu.org/gnu/glibc/glibc-2.40.tar.gz
+
+# user
+glibc_install_user: "{{ ansible_user }}"
+glibc_install_group: "{{ ansible_user }}"
+glibc_version: "2.40"
+# glibc_port: "8032"
+
+# standalone/cluster/pseudo_cluster
+glibc_deploy_mode: "standalone"
+
+# binary/source/rpm/yum/dnf
+glibc_deploy_method: "source"
+
+# url
+glibc_base_url: "https://mirrors.tuna.tsinghua.edu.cn/gnu/libc"
+glibc_base_url_remote: "https://ftp.gnu.org/gnu/libc"
+
+# package
+glibc_package_suffix: ".tar.gz"
+glibc_package_name_rpm: "glibc-{{ glibc_version }}.rpm"
+glibc_package_name_binary: "glibc-{{ glibc_version }}-{{ ansible_architecture }}{{ glibc_package_suffix }}"
+glibc_package_name_source: "glibc-{{ glibc_version }}{{ glibc_package_suffix }}"
+glibc_package_name: "{% if glibc_deploy_method == 'rpm' %}{{ glibc_package_name_rpm }}{% elif glibc_deploy_method == 'binary' %}{{ glibc_package_name_binary }}{% elif glibc_deploy_method == 'source' %}{{ glibc_package_name_source }}{% else %}{{ glibc_package_name_source }}{% endif %}"
+
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/glibc
+# /data/glibc/data
+# /data/glibc/conf
+# /data/glibc/log
+# /data/glibc/tmp
+# /data/glibc/source
+# /data/glibc/app
+# /data/glibc/app/glibc-{{ glibc_version }}
+# /data/glibc/app/glibc-{{ glibc_version }}/bin
+# /data/glibc/app/glibc-{{ glibc_version }}/lib
+# /data/glibc/app/glibc-{{ glibc_version }}/lib/pkgconfig
+# /data/glibc/app/glibc-{{ glibc_version }}/include
+# /data/glibc/app/glibc-{{ glibc_version }}/share
+# /data/glibc/source/glibc-{{ glibc_version }}
+# /data/glibc/source/glibc-{{ glibc_version }}/build
+glibc_dir: "{{ base_dir }}/glibc"
+glibc_data_dir: "{{ glibc_dir }}/data"
+glibc_conf_dir: "{{ glibc_dir }}/conf"
+glibc_log_dir: "{{ glibc_dir }}/log"
+glibc_tmp_dir: "{{ glibc_dir }}/tmp"
+glibc_app_base_dir: "{{ glibc_dir }}/app"
+glibc_source_base_dir: "{{ glibc_dir }}/source"
+glibc_app_dir: "{{ glibc_app_base_dir }}/glibc-{{ glibc_version }}"
+glibc_bin_dir: "{{ glibc_app_dir }}/bin"
+glibc_lib_dir: "{{ glibc_app_dir }}/lib"
+glibc_include_dir: "{{ glibc_app_dir }}/include"
+glibc_share_dir: "{{ glibc_app_dir }}/share"
+glibc_pkgconfig_dir: "{{ glibc_lib_dir }}/pkgconfig"
+glibc_source_dir: "{{ glibc_source_base_dir }}/glibc-{{ glibc_version }}"
+glibc_build_dir: "{{ glibc_source_dir }}/build_{{ date_output.stdout }}"
+
+
+
+
+
+
+
+
