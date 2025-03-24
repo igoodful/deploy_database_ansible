@@ -24,3 +24,59 @@
       - glibc_port is defined
       - glibc_port_check_output is defined
       - glibc_port_check_output.rc == 0
+
+- name: "gcc --version"
+  shell:
+      cmd: "gcc --version |head -n 1 |awk '{print $3}'"
+  register: glibc_gcc_version
+
+
+
+- name: "bison --version"
+  shell:
+      cmd: "bison --version | head -n 1 |awk '{print $4}'"
+  register: glibc_bison_version
+
+
+- name: "gawk --version"
+  shell:
+      cmd: "gawk --version | head -n 1 |awk '{print $3}' |awk -F',' '{print $1}' "
+  register: glibc_gawk_version
+
+
+- name: "ld --version"
+  shell:
+      cmd: "ld --version | head -n 1 |awk '{print $4}'"
+  register: glibc_ld_version
+
+
+- name: "python3 --version"
+  shell:
+      cmd: "python3 --version | head -n 1 |awk '{print $2}'"
+  register: glibc_python3_version
+
+
+- name: "make --version"
+  shell:
+      cmd: "make --version | head -n 1 |awk '{print $3}'"
+  register: glibc_make_version
+
+
+- name: "uname -r"
+  shell:
+      cmd: "uname -r"
+  register: glibc_uname_version
+
+
+
+- name: "version"
+  debug:
+      msg: |
+          gcc:              {{ glibc_gcc_version.stdout }}
+          bison:            {{ glibc_bison_version.stdout }}
+          gawk:             {{ glibc_gawk_version.stdout }}
+          ld:               {{ glibc_ld_version.stdout }}
+          python3:          {{ glibc_python3_version.stdout }}
+          make:             {{ glibc_make_version.stdout }}
+          uname:            {{ glibc_uname_version.stdout }}
+
