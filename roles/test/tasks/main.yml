@@ -13,12 +13,15 @@
 
 
 
+- name: "ldd --version"
+  shell:
+      cmd: "ldd --version |head -n 1 |awk '{print $4}'"
+  register: test_ldd_version
+
 - name: "gcc --version"
   shell:
       cmd: "gcc --version |head -n 1 |awk '{print $3}'"
   register: test_gcc_version
-
-
 
 - name: "bison --version"
   shell:
@@ -60,6 +63,7 @@
 - name: "version"
   debug:
       msg: |
+          glibc:            {{ test_ldd_version.stdout }}
           gcc:              {{ test_gcc_version.stdout }}
           bison:            {{ test_bison_version.stdout }}
           gawk:             {{ test_gawk_version.stdout }}
