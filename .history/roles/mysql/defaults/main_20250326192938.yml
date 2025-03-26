@@ -1,24 +1,12 @@
 ---
 # defaults file for mysql
-# https://ftp.gnu.org/gnu/mysql/mysql-2.44.tar.gz
+# mysql_deploy_method: bin,source,rpm
+# mysql_url: local,url
+
 # mysql-8.0.32-aarch64.tar.gz
 # mysql-8.0.32-x86_64.tar.gz
 # mysql-8.0.32.tar.gz
 
-# standalone/cluster/replica
-mysql_deploy_mode: "standalone"
-# binary/source/rpm/yum/dnf
-mysql_deploy_method: "source"
-# url
-mysql_base_url: "{{ base_url }}"
-mysql_base_url_remote: "https://ftp.gnu.org/gnu/mysql"
-
-# user
-mysql_install_user: "{{ ansible_user }}"
-mysql_install_group: "{{ ansible_user }}"
-mysql_version: "8.0.32"
-mysql_port: 8032
-mysql_mgr_port: "{{ mysql_port + 1000 }}"
 mysql_root_loacl_init_password: "dudVPkt1u73kOj3uoUjPxAAB0t2JxZtg"
 mysql_root_init_password: "EmI8ddUp8RPFd0mK8ZUEMl3c6HJrOm9N"
 mysql_admin_init_user: "admin"
@@ -28,6 +16,38 @@ mysql_rep_init_password: "it8bjGZaBcNJLGYTTCZggv27XAMR8YyL"
 mysql_monitor_init_user: "monitor"
 mysql_monitor_init_password: "XqgLB0DztWYouSBJ8L0P5p5Hq83Ks5Jm"
 
+mysql_url: "local"
+# replica,mgr
+mysql_cluster_mode: "mgr"
+mysql_mgr_port: "1{{mysql_port}}"
+# on,off
+single_primary_mode: "on"
+mysql_bin_package_name: "mysql-{{mysql_version}}"
+mysql_source_package_name: "mysql-{{mysql_version}}"
+
+
+
+# 一般来说，设置为总 RAM 的 50% – 70% 作为起点
+innodb_buffer_pool_size: "{{ansible_memtotal_mb * 1 // 2 |int}}"
+
+# defaults file for mysql
+# https://ftp.gnu.org/gnu/mysql/mysql-2.44.tar.gz
+
+# user
+mysql_install_user: "{{ ansible_user }}"
+mysql_install_group: "{{ ansible_user }}"
+mysql_version: "8.0.32"
+# mysql_port: "8032"
+
+# standalone/cluster/pseudo_cluster
+mysql_deploy_mode: "standalone"
+
+# binary/source/rpm/yum/dnf
+mysql_deploy_method: "source"
+
+# url
+mysql_base_url: "{{ base_url }}"
+mysql_base_url_remote: "https://ftp.gnu.org/gnu/mysql"
 
 # package
 mysql_package_suffix: ".tar.gz"
@@ -36,27 +56,36 @@ mysql_package_name_binary: "mysql-{{ mysql_version }}-{{ ansible_architecture }}
 mysql_package_name_source: "mysql-{{ mysql_version }}{{ mysql_package_suffix }}"
 mysql_package_name: "{% if mysql_deploy_method == 'rpm' %}{{ mysql_package_name_rpm }}{% elif mysql_deploy_method == 'binary' %}{{ mysql_package_name_binary }}{% elif mysql_deploy_method == 'source' %}{{ mysql_package_name_source }}{% else %}{{ mysql_package_name_source }}{% endif %}"
 
-# dir
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/mysql
+# /data/mysql/data
+# /data/mysql/conf
+# /data/mysql/log
+# /data/mysql/tmp
+# /data/mysql/source
+# /data/mysql/app
+# /data/mysql/app/mysql-{{ mysql_version }}
+# /data/mysql/app/mysql-{{ mysql_version }}/bin
+# /data/mysql/app/mysql-{{ mysql_version }}/lib
+# /data/mysql/app/mysql-{{ mysql_version }}/lib/pkgconfig
+# /data/mysql/app/mysql-{{ mysql_version }}/include
+# /data/mysql/app/mysql-{{ mysql_version }}/share
+# /data/mysql/source/mysql-{{ mysql_version }}
 mysql_dir: "{{ base_dir }}/mysql"
 mysql_data_dir: "{{ mysql_dir }}/data"
 mysql_conf_dir: "{{ mysql_dir }}/conf"
 mysql_log_dir: "{{ mysql_dir }}/log"
 mysql_tmp_dir: "{{ mysql_dir }}/tmp"
 mysql_app_base_dir: "{{ mysql_dir }}/app"
+mysql_source_base_dir: "{{ mysql_dir }}/source"
 mysql_app_dir: "{{ mysql_app_base_dir }}/mysql-{{ mysql_version }}"
 mysql_bin_dir: "{{ mysql_app_dir }}/bin"
 mysql_lib_dir: "{{ mysql_app_dir }}/lib"
 mysql_include_dir: "{{ mysql_app_dir }}/include"
 mysql_share_dir: "{{ mysql_app_dir }}/share"
 mysql_pkgconfig_dir: "{{ mysql_lib_dir }}/pkgconfig"
-mysql_source_base_dir: "{{ mysql_dir }}/source"
 mysql_source_dir: "{{ mysql_source_base_dir }}/mysql-{{ mysql_version }}"
 mysql_build_dir: "{{ mysql_source_dir }}/build_{{ date_output.stdout }}"
-
-
-
-# var
-innodb_buffer_pool_size: "{{ ansible_memtotal_mb * 1 // 2 |int }}"
-
-
 
