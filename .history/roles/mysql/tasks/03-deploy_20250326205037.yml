@@ -1,0 +1,57 @@
+---
+# tasks file for binutils by source
+- name: "chown -R {{  binutils_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ binutils_install_user }}.{{ binutils_install_group }} {{  binutils_dir  }}"
+
+# source
+- name: "binutils_deploy_method == 'source'"
+  block:
+# ./configure
+      - name: "cd {{ binutils_build_dir }};../configure --prefix={{ binutils_app_dir }}"
+        shell:
+            chdir: "{{ binutils_build_dir }}"
+            cmd: "../configure --prefix={{ binutils_app_dir }}"
+# make
+      - name: "cd {{ binutils_build_dir }};make -j{{ ansible_processor_vcpus }}"
+        shell:
+            chdir: "{{ binutils_build_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+# make install
+      - name: "cd {{ binutils_build_dir }};make install"
+        shell:
+            chdir: "{{ binutils_build_dir }}"
+            cmd: make install
+  when: binutils_deploy_method == "source"
+
+# binutils_port standalone
+- name: binutils_port is defined
+  block:
+# ./configure
+      - name: "cd {{ binutils_source_dir }};./configure --prefix={{ binutils_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ binutils_source_dir }}"
+            cmd: "./configure --prefix={{ binutils_base_dir }} --enable-shared --enable-static"
+# make
+      - name: "cd {{ binutils_source_dir }};make VERBOSE=1 -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ binutils_source_dir }}"
+            cmd: "make VERBOSE=1 -j{{ ansible_processor_vcpus }}"
+# make install
+      - name: "cd {{ binutils_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ binutils_source_dir }}"
+            cmd: make install
+  when:
+      - binutils_port is defined
+      - binutils_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  binutils_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ binutils_install_user }}.{{ binutils_install_group }} {{  binutils_dir  }}"

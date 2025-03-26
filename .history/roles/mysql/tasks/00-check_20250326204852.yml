@@ -1,0 +1,26 @@
+---
+# tasks file for binutils
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+# check binutils_port
+- name: "lsof -i:{{ binutils_port }}"
+  become: true
+  shell:
+      cmd: "lsof -i:{{ binutils_port }}"
+  register: binutils_port_check_output
+  ignore_errors: true
+  when: binutils_port is defined
+
+- name: "check binutils port"
+  become: true
+  fail:
+      msg: "binutilsd端口被占用,可使用: ps aux|grep binutilsd"
+  when:
+      - binutils_port is defined
+      - binutils_port_check_output is defined
+      - binutils_port_check_output.rc == 0

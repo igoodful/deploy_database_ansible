@@ -1,0 +1,59 @@
+---
+# defaults file for binutils
+# https://ftp.gnu.org/gnu/binutils/binutils-2.44.tar.gz
+
+# user
+binutils_install_user: "{{ ansible_user }}"
+binutils_install_group: "{{ ansible_user }}"
+binutils_version: "2.44"
+# binutils_port: "8032"
+
+# standalone/cluster/pseudo_cluster
+binutils_deploy_mode: "standalone"
+
+# binary/source/rpm/yum
+binutils_deploy_method: "source"
+
+# url
+binutils_base_url: "{{ base_url }}"
+binutils_base_url_remote: "https://ftp.gnu.org/gnu/binutils"
+
+# package
+binutils_package_suffix: ".tar.gz"
+binutils_package_name_rpm: "binutils-{{ binutils_version }}.rpm"
+binutils_package_name_binary: "binutils-{{ binutils_version }}-{{ ansible_architecture }}{{ binutils_package_suffix }}"
+binutils_package_name_source: "binutils-{{ binutils_version }}{{ binutils_package_suffix }}"
+binutils_package_name: "{% if binutils_deploy_method == 'rpm' %}{{ binutils_package_name_rpm }}{% elif binutils_deploy_method == 'binary' %}{{ binutils_package_name_binary }}{% elif binutils_deploy_method == 'source' %}{{ binutils_package_name_source }}{% else %}{{ binutils_package_name_source }}{% endif %}"
+
+# 一台机器上部署相同服务时，通过不同端口号和不同的base_dir来区分是最佳的，这样不用修改目录结构
+# 1. 通过变更base_dir和端口
+# /data
+# /data/binutils
+# /data/binutils/data
+# /data/binutils/conf
+# /data/binutils/log
+# /data/binutils/tmp
+# /data/binutils/source
+# /data/binutils/app
+# /data/binutils/app/binutils-{{ binutils_version }}
+# /data/binutils/app/binutils-{{ binutils_version }}/bin
+# /data/binutils/app/binutils-{{ binutils_version }}/lib
+# /data/binutils/app/binutils-{{ binutils_version }}/lib/pkgconfig
+# /data/binutils/app/binutils-{{ binutils_version }}/include
+# /data/binutils/app/binutils-{{ binutils_version }}/share
+# /data/binutils/source/binutils-{{ binutils_version }}
+binutils_dir: "{{ base_dir }}/binutils"
+binutils_data_dir: "{{ binutils_dir }}/data"
+binutils_conf_dir: "{{ binutils_dir }}/conf"
+binutils_log_dir: "{{ binutils_dir }}/log"
+binutils_tmp_dir: "{{ binutils_dir }}/tmp"
+binutils_app_base_dir: "{{ binutils_dir }}/app"
+binutils_source_base_dir: "{{ binutils_dir }}/source"
+binutils_app_dir: "{{ binutils_app_base_dir }}/binutils-{{ binutils_version }}"
+binutils_bin_dir: "{{ binutils_app_dir }}/bin"
+binutils_lib_dir: "{{ binutils_app_dir }}/lib"
+binutils_include_dir: "{{ binutils_app_dir }}/include"
+binutils_share_dir: "{{ binutils_app_dir }}/share"
+binutils_pkgconfig_dir: "{{ binutils_lib_dir }}/pkgconfig"
+binutils_source_dir: "{{ binutils_source_base_dir }}/binutils-{{ binutils_version }}"
+binutils_build_dir: "{{ binutils_source_dir }}/build_{{ date_output.stdout }}"

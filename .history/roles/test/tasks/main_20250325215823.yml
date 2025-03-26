@@ -1,0 +1,83 @@
+---
+# tasks file for test
+- name: "echo $LIBRARY_PATH"
+  shell:
+      cmd: "echo $LIBRARY_PATH"
+  register: check_output
+
+- name: "date '+%Y%m%dT%H%M%S'"
+  become: true
+  shell:
+      cmd: "date '+%Y%m%dT%H%M%S'"
+  register: date_output
+
+
+
+- name: "ldd --version"
+  shell:
+      cmd: "ldd --version |head -n 1 |awk '{print $4}'"
+  register: test_ldd_version
+
+- name: "gcc --version"
+  shell:
+      cmd: "gcc --version |head -n 1 |awk '{print $3}'"
+  register: test_gcc_version
+
+- name: "bison --version"
+  shell:
+      cmd: "bison --version | head -n 1 |awk '{print $4}'"
+  register: test_bison_version
+
+
+- name: "gawk --version"
+  shell:
+      cmd: "gawk --version | head -n 1 |awk '{print $3}' |awk -F',' '{print $1}' "
+  register: test_gawk_version
+
+
+- name: "ld --version"
+  shell:
+      cmd: "ld --version | head -n 1 |awk '{print $4}'"
+  register: test_ld_version
+
+
+- name: "python3 --version"
+  shell:
+      cmd: "python3 --version | head -n 1 |awk '{print $2}'"
+  register: test_python3_version
+
+
+- name: "make --version"
+  shell:
+      cmd: "make --version | head -n 1 |awk '{print $3}'"
+  register: test_make_version
+
+
+- name: "uname -r"
+  shell:
+      cmd: "uname -r"
+  register: test_uname_version
+
+
+
+- name: "version"
+  debug:
+      msg: |
+          glibc:            {{ test_ldd_version.stdout }}
+          gcc:              {{ test_gcc_version.stdout }}
+          bison:            {{ test_bison_version.stdout }}
+          gawk:             {{ test_gawk_version.stdout }}
+          ld:               {{ test_ld_version.stdout }}
+          python3:          {{ test_python3_version.stdout }}
+          make:             {{ test_make_version.stdout }}
+          uname:            {{ test_uname_version.stdout }}
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,86 @@
+---
+# tasks file for mysql by source
+- name: "chown -R {{  mysql_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ mysql_install_user }}.{{ mysql_install_group }} {{  mysql_dir  }}"
+
+# source
+- name: "configure; make; make install"
+  block:
+# ./configure
+      - name: "cd {{ mysql_build_dir }};../configure --prefix={{ mysql_app_dir }}"
+        shell:
+            chdir: "{{ mysql_build_dir }}"
+            cmd: "../configure --prefix={{ mysql_app_dir }}"
+# make
+      - name: "cd {{ mysql_build_dir }};make -j{{ ansible_processor_vcpus }}"
+        shell:
+            chdir: "{{ mysql_build_dir }}"
+            cmd: "make -j{{ ansible_processor_vcpus }}"
+# make install
+      - name: "cd {{ mysql_build_dir }};make install"
+        shell:
+            chdir: "{{ mysql_build_dir }}"
+            cmd: make install
+  when: mysql_deploy_method == "source"
+
+##############################################
+
+# mysql_deploy_mode,先按照单实例部署成功，然后再在此基础上调整为其他模式，比如集群、半同步
+
+##############################################
+
+- name: "Copy mysql.cnf.j2 template"
+  template:
+      src: mysql.cnf.j2
+      dest: "{{ mysql_conf_dir }}/mysql.cnf"
+      owner: "{{ mysql_install_user }}"
+      group: "{{ mysql_install_group }}"
+      mode: "0644"
+  when: mysql_port is defined
+
+
+- name: "Copy mysql.service template"
+  become: true
+  template:
+      src: mysql.service.j2
+      dest: "/usr/lib/systemd/system/mysql_{{ mysql_port }}.service"
+      owner: "{{ mysql_install_user }}"
+      group: "{{ mysql_install_group }}"
+      mode: "0644"
+  when: mysql_port is defined
+
+
+
+
+
+# standalone
+- name: mysql_port is defined
+  block:
+# ./configure
+      - name: "cd {{ mysql_source_dir }};./configure --prefix={{ mysql_base_dir }}"
+        become: true
+        shell:
+            chdir: "{{ mysql_source_dir }}"
+            cmd: "./configure --prefix={{ mysql_base_dir }} --enable-shared --enable-static"
+# make
+      - name: "cd {{ mysql_source_dir }};make VERBOSE=1 -j{{ ansible_processor_vcpus }}"
+        become: true
+        shell:
+            chdir: "{{ mysql_source_dir }}"
+            cmd: "make VERBOSE=1 -j{{ ansible_processor_vcpus }}"
+# make install
+      - name: "cd {{ mysql_source_dir }};make install"
+        become: true
+        shell:
+            chdir: "{{ mysql_source_dir }}"
+            cmd: make install
+  when:
+      - mysql_deploy_mode == "standalone"
+
+# chown
+- name: "chown -R {{  mysql_dir  }}"
+  become: true
+  shell:
+      cmd: "chown -R {{ mysql_install_user }}.{{ mysql_install_group }} {{  mysql_dir  }}"
